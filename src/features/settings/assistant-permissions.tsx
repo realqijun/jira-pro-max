@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { setToolPermissionsAction } from "@/server/modules/assistant/actions";
 import type { ToolGroup } from "@/shared/lib/assistant-tools";
-import { cn } from "@/shared/lib/cn";
-import { Panel } from "@/shared/ui";
+import { Panel, Switch } from "@/shared/ui";
 
 /**
  * Every approvable write tool in a scope, grouped by entity type (ADR 0011).
@@ -54,7 +53,7 @@ export function AssistantPermissions({
       <span className="min-w-0 text-body-sm text-ink-muted">
         {tool.label} <span className="text-ink-faint font-mono text-[11px]">{tool.name}</span>
       </span>
-      <Toggle
+      <Switch
         checked={granted.has(tool.name)}
         disabled={pending}
         onChange={(v) => void setMany([tool.name], v)}
@@ -72,7 +71,7 @@ export function AssistantPermissions({
           <div key={group.name} className="px-4 py-3">
             <div className="flex items-center justify-between">
               <p className="text-body-sm font-medium text-ink">{group.name}</p>
-              <Toggle
+              <Switch
                 checked={allOn}
                 disabled={pending}
                 onChange={(v) => void setMany(names, v)}
@@ -90,39 +89,5 @@ export function AssistantPermissions({
         </div>
       )}
     </Panel>
-  );
-}
-
-function Toggle({
-  checked,
-  disabled,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  disabled?: boolean;
-  onChange: (checked: boolean) => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      disabled={disabled}
-      onClick={() => onChange(!checked)}
-      className={cn(
-        "relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:opacity-50",
-        checked ? "bg-primary" : "border border-hairline bg-surface-3",
-      )}
-    >
-      <span
-        className={cn(
-          "absolute top-0.5 left-0.5 size-4 rounded-full bg-ink transition-transform",
-          checked && "translate-x-4",
-        )}
-      />
-    </button>
   );
 }

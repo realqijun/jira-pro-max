@@ -7,6 +7,7 @@ import { PageHeader, SectionTitle } from "@/shared/ui";
 import { MemoryEditor } from "@/features/memory/memory-editor";
 import { ApiTokens } from "@/features/settings/api-tokens";
 import { AssistantPermissions } from "@/features/settings/assistant-permissions";
+import { ProductTourSetting } from "@/features/settings/product-tour";
 
 export const metadata = { title: "Settings" };
 
@@ -46,6 +47,11 @@ export default async function UserSettingsPage() {
               </p>
             </div>
             <AssistantPermissions projectId={null} groups={WORKSPACE_TOOL_GROUPS} permissions={permissions} />
+          </section>
+
+          <section className="flex flex-col gap-4">
+            <SectionTitle>Guided tour</SectionTitle>
+            <ProductTourSetting />
           </section>
 
           <section className="flex flex-col gap-4">

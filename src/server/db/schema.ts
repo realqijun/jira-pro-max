@@ -17,3 +17,4 @@ export * from "@/server/modules/api-tokens/schema";
 export * from "@/server/modules/decisions/schema";
 export * from "@/server/modules/proposals/schema";
 export * from "@/server/modules/messaging/schema";
+export * from "@/server/modules/renders/schema";

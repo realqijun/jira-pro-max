@@ -75,8 +75,9 @@ test.describe("auth", () => {
     await shot(page, "signup-filled");
     await page.getByRole("button", { name: "Create account" }).click();
     await expect(page).toHaveURL("/dashboard");
-    await expect(page.getByText("No projects yet", { exact: true })).toBeVisible();
-    await shot(page, "empty-workspace");
+    // A new account is not empty: every User starts with the sample Project (ADR 0013).
+    await expect(page.getByText("Bedok Community Centre").first()).toBeVisible();
+    await shot(page, "starter-workspace");
 
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/login/);

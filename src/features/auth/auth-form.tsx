@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { authenticationCompleted } from "@/shared/analytics/browser";
 import { signIn, signUp } from "@/shared/lib/auth-client";
+import { startTour } from "@/shared/lib/tour";
 import { Button, Field, Input } from "@/shared/ui";
 
 /** Only same-origin absolute paths; rejects `//host`, `javascript:` and anything else attacker-controlled. */
@@ -32,6 +33,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setLoading(false);
     if (res.error) return setError(res.error.message ?? "Something went wrong");
     if (res.data?.user.id) authenticationCompleted(res.data.user.id, mode === "signup");
+    // Signing up is the only thing that starts the tour, so signing in to an existing account
+    // never does. Switch it back on in Settings to run it again.
+    if (mode === "signup") startTour();
     router.push(safeReturnPath(params.get("next")));
     router.refresh();
   }

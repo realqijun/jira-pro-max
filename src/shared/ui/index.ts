@@ -6,6 +6,7 @@ export * from "./page-header";
 export * from "./action-form";
 export * from "./form-fields";
 export * from "./logo";
+export * from "./switch";
 export * from "./tabs";
 export * from "./command-picker";
 export * from "./scroll-to-hash";

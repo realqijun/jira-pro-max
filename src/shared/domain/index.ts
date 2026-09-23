@@ -104,6 +104,7 @@ export const ENTITY_TYPES = [
   "room",
   "participant",
   "chat_message",
+  "render",
 ] as const;
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
@@ -202,6 +203,31 @@ export type ProposalExtractor = (typeof PROPOSAL_EXTRACTORS)[number];
 /** A group Room has a name and many Participants; a one_to_one Room is the PM and exactly one Person. */
 export const ROOM_TYPES = ["group", "one_to_one"] as const;
 export type RoomType = (typeof ROOM_TYPES)[number];
+
+// ---------------------------------------------------------------------------
+// Concept renders. A Render is a generated picture of what a Project delivers,
+// so the PM and the people building it argue about one image instead of one
+// paragraph each. It is an illustration of intent, never a measured drawing.
+// ---------------------------------------------------------------------------
+/**
+ * Where a Render is in its life. "State" rather than "Status" on purpose: a Status is
+ * user-defined and maps to a Status Category (ADR 0003), and a Render has neither.
+ */
+export const RENDER_STATES = ["pending", "ready", "failed"] as const;
+export type RenderState = (typeof RENDER_STATES)[number];
+
+/** Per-Project ceiling. A generated image costs money and nobody needs eleven of them. */
+export const RENDER_MAX_PER_PROJECT = 10;
+export const RENDER_PROMPT_MAX = 1000;
+
+/**
+ * A pending Render is waited on the same way a Chat Message is (ADR 0011): the page asks
+ * again rather than holding a connection open. Generation takes roughly 5 to 30 seconds,
+ * so the interval is longer than messaging's and the poll stops as soon as nothing is pending.
+ */
+export const RENDER_POLL_MS = 2500;
+/** A Render still pending after this long is presumed dead; the poll gives up and says so. */
+export const RENDER_POLL_GIVE_UP_MS = 180_000;
 
 export const labelFor = (value: string) => value.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 

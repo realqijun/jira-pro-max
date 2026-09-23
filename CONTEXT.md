@@ -117,6 +117,13 @@ _Avoid_: Message (that is an Assistant turn), post, chat, DM
 A single-use link the PM generates for one Person, by which that Person sets a password and gains a messaging-only login to that Project. Expires after seven days, is superseded by the next Invite for the same Person, and is stored only as a hash.
 _Avoid_: Invitation email, magic link, signup link, token
 
+### Renders
+
+**Render**:
+A generated picture of what a Project delivers, made from a description the PM writes by hand, so the PM and the people building the thing can react to one image instead of a paragraph each. It is pending, ready or failed, and it carries the exact description, model and seed it was produced from.
+A Render illustrates intent. It is not a drawing, is not to scale, and never enters a build package.
+_Avoid_: Image, mockup, visualisation, drawing, rendering (the verb)
+
 ### Assistant
 
 **Assistant**:

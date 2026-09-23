@@ -18,6 +18,7 @@ import {
   PROJECT_STATUSES,
   PROPOSAL_EXTRACTORS,
   PROPOSAL_STATUSES,
+  RENDER_STATES,
   ROOM_TYPES,
   SCALE_LEVELS,
   SOURCE_KINDS,
@@ -50,3 +51,4 @@ export const sourceKindEnum = pgEnum("source_kind", SOURCE_KINDS);
 export const proposalStatusEnum = pgEnum("proposal_status", PROPOSAL_STATUSES);
 export const proposalExtractorEnum = pgEnum("proposal_extractor", PROPOSAL_EXTRACTORS);
 export const roomTypeEnum = pgEnum("room_type", ROOM_TYPES);
+export const renderStateEnum = pgEnum("render_state", RENDER_STATES);

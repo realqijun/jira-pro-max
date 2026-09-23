@@ -25,7 +25,7 @@ export function ProjectHeader({ project }: { project: ProjectRow }) {
           <AssistantToggle />
         </span>
       </div>
-      <nav className="flex gap-1 px-4">
+      <nav data-tour="project-tabs" className="flex gap-1 px-4">
         {PROJECT_SECTIONS.map((s) => {
           const href = s.slug ? `${base}/${s.slug}` : base;
           const active = s.slug ? pathname.startsWith(href) : pathname === base;

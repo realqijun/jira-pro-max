@@ -22,9 +22,9 @@ test("unauthenticated users are redirected to login", async ({ page }) => {
 
 test("sign up → create project → create task → move it → see it on the timeline", async ({ page }) => {
   await signUp(page);
-  await expect(page.getByText("No projects yet", { exact: true })).toBeVisible();
+  // A new account starts with the sample Project (ADR 0013), not an empty workspace.
+  await expect(page.getByText("Bedok Community Centre").first()).toBeVisible();
 
-  // Create a project from the empty state.
   await page.getByRole("button", { name: "New project" }).first().click();
   await page.getByLabel("Name").fill("E2E Project");
   await page.getByLabel("Key").fill(`E${stamp}`);

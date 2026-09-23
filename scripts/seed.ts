@@ -13,6 +13,7 @@ import { messagingService, participantMessagingService } from "@/server/modules/
 import { milestonesService } from "@/server/modules/milestones/service";
 import { peopleRepo } from "@/server/modules/people/repository";
 import { peopleService } from "@/server/modules/people/service";
+import { seedSampleProject } from "@/server/modules/onboarding/sample-project";
 import { projects } from "@/server/modules/projects/schema";
 import { projectsService } from "@/server/modules/projects/service";
 import { risksService } from "@/server/modules/risks/service";
@@ -38,6 +39,9 @@ async function ensureDemoUser(): Promise<string> {
   const res = await auth.api.signUpEmail({
     body: { email: DEMO_EMAIL, password: DEMO_PASSWORD, name: "Demo PM" },
   });
+  // Signing up fires the onboarding hook, which gives every new User the sample Project.
+  // The demo account is seeded explicitly below, so clear it and start from nothing.
+  await db.delete(projects).where(eq(projects.ownerId, res.user.id));
   console.log(`Created ${DEMO_EMAIL}`);
   return res.user.id;
 }
@@ -514,6 +518,8 @@ async function main() {
   const ctx: Ctx = { db, userId };
   await seedPayments(ctx);
   await seedWarehouse(ctx);
+  const sample = await seedSampleProject(ctx);
+  console.log(`Seeded ${sample.name}`);
   console.log(`\nDemo login: ${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
   process.exit(0);
 }

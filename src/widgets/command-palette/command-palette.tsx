@@ -5,8 +5,10 @@ import {
   AlertTriangle,
   CalendarDays,
   CalendarRange,
+  Compass,
   FileText,
   FolderKanban,
+  ImageIcon,
   LayoutDashboard,
   ListTodo,
   Loader2,
@@ -32,6 +34,7 @@ export const PROJECT_SECTIONS = [
   { slug: "risks", label: "Risks", icon: AlertTriangle },
   { slug: "decisions", label: "Decisions", icon: GitBranch },
   { slug: "evidence", label: "Evidence", icon: FileText },
+  { slug: "renders", label: "Renders", icon: ImageIcon },
   { slug: "people", label: "People", icon: Users },
   { slug: "messages", label: "Messages", icon: MessagesSquare },
   { slug: "settings", label: "Settings", icon: Settings },
@@ -57,6 +60,7 @@ interface CommandPaletteProps {
   projects: ProjectRow[];
   onNewProject: () => void;
   onToggleAssistant: () => void;
+  onStartTour: () => void;
 }
 
 /**
@@ -70,7 +74,13 @@ export function CommandPalette({ open, ...props }: CommandPaletteProps) {
   return <CommandPaletteBody {...props} />;
 }
 
-function CommandPaletteBody({ onClose, projects, onNewProject, onToggleAssistant }: Omit<CommandPaletteProps, "open">) {
+function CommandPaletteBody({
+  onClose,
+  projects,
+  onNewProject,
+  onToggleAssistant,
+  onStartTour,
+}: Omit<CommandPaletteProps, "open">) {
   const router = useRouter();
   const pathname = usePathname();
   const currentProject = projects.find((p) => pathname.startsWith(`/projects/${p.id}`));
@@ -125,6 +135,7 @@ function CommandPaletteBody({ onClose, projects, onNewProject, onToggleAssistant
   const actionHits = [
     ...(hit("New project") ? ["new-project"] : []),
     ...(currentProject && hit("Toggle Assistant", "Assistant") ? ["assistant"] : []),
+    ...(hit("Take the product tour", "Tour") ? ["tour"] : []),
   ];
   const staticCount = sectionHits.length + goToHits.length + projectHits.length + actionHits.length;
 
@@ -212,6 +223,18 @@ function CommandPaletteBody({ onClose, projects, onNewProject, onToggleAssistant
                   }}
                 >
                   Toggle Assistant
+                </Item>
+              )}
+              {actionHits.includes("tour") && (
+                <Item
+                  value="action:tour"
+                  icon={Compass}
+                  onSelect={() => {
+                    onClose();
+                    onStartTour();
+                  }}
+                >
+                  Take the product tour
                 </Item>
               )}
             </Command.Group>

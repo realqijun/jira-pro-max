@@ -20,7 +20,7 @@ describe("repairInterruptedToolCalls", () => {
   it("rewrites calls that never ran as interrupted errors", () => {
     for (const state of ["input-streaming", "input-available", "approval-requested"]) {
       const part = state === "approval-requested" ? toolPart(state, { approval: { id: "ap1" } }) : toolPart(state);
-      const [repaired] = repairInterruptedToolCalls(thread([part]));
+      const [, repaired] = repairInterruptedToolCalls(thread([part]));
       const fixed = repaired!.parts[0] as { state: string; errorText?: string; approval?: unknown };
       expect(fixed.state).toBe("output-error");
       expect(fixed.errorText).toContain("interrupted");
@@ -35,7 +35,7 @@ describe("repairInterruptedToolCalls", () => {
       toolPart("approval-responded", { approval: { id: "ap2", approved: true } }),
       toolPart("output-denied", { approval: { id: "ap3", approved: false } }),
     ];
-    const [repaired] = repairInterruptedToolCalls(thread(parts));
+    const [, repaired] = repairInterruptedToolCalls(thread(parts));
     expect(repaired!.parts).toEqual(parts);
   });
 

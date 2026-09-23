@@ -10,6 +10,7 @@ export function AssistantToggle() {
   return (
     <Button
       size="sm"
+      data-tour="assistant-toggle"
       variant={assistantOpen ? "secondary" : "ghost"}
       onClick={toggleAssistant}
       aria-pressed={assistantOpen}

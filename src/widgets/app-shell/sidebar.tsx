@@ -72,13 +72,14 @@ export function Sidebar({
         <span className="text-eyebrow font-medium tracking-[0.4px] text-ink-tertiary uppercase">Your projects</span>
         <button
           onClick={onNewProject}
+          data-tour="new-project"
           className="rounded-xs p-0.5 text-ink-tertiary hover:bg-surface-2 hover:text-ink"
           aria-label="New project"
         >
           <Plus className="size-3.5" />
         </button>
       </div>
-      <div className="mt-1 flex-1 overflow-y-auto px-3">
+      <div data-tour="sidebar-projects" className="mt-1 flex-1 overflow-y-auto px-3">
         {projects.length === 0 && <p className="px-2.5 py-2 text-caption text-ink-tertiary">No projects yet.</p>}
         {projects.map((p) => {
           const active = pathname.startsWith(`/projects/${p.id}`);

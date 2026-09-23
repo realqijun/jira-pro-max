@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "16mb",
     },
   },
+  /**
+   * The sample Project's renders are read from disk at signup, so the images have to travel
+   * with the server bundle; file tracing cannot see a path built at runtime.
+   */
+  outputFileTracingIncludes: {
+    "/api/auth/[...all]": ["./public/samples/renders/**"],
+  },
 };
 
 export default nextConfig;
