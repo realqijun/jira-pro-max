@@ -23,3 +23,16 @@ ffmpeg -i public/landing/prismpm-scroll.mp4 -vframes 1 -q:v 3 \
 
 The `delogo` filter paints out the generator's watermark in the lower right by interpolating from its surroundings; drop it for footage that has none.
 Thin bright lines on black compress well, so crf 26 holds up where a photographic clip would not: 20 seconds lands at 3.6 MB and is indistinguishable from the source at 2x zoom.
+
+## Prism prologue
+
+Before the descent, the same pinned stage scrubs `prismpm-prism.mp4`, a 10 second shot of a strategist raising a glass prism into a beam of light, showing `prismpm-prism-poster.jpg` until it decodes.
+Three quotes on strategy and the view from above (`prologueBeats`) sit over the dark right of the frame, one per stretch of scroll.
+From the 7 second mark the last quote clears, the camera pushes into the prism, and as it fills the screen the plan view slides in from the right.
+The prism's position in the frame is `PRISM_FOCUS` in `src/widgets/landing/scroll-video.tsx`; re-measure it if the clip is replaced.
+It is encoded like the descent, without audio and at crf 24 since it is photographic:
+
+```bash
+ffmpeg -i source.mp4 -an -c:v libx264 -preset slow -crf 24 -g 4 -keyint_min 4 -sc_threshold 0 \
+  -pix_fmt yuv420p -movflags +faststart public/landing/prismpm-prism.mp4
+```
