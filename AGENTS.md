@@ -12,6 +12,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Vocabulary lives in `CONTEXT.md`; use its terms (Task, not issue; Person, not assignee; Evidence, not document). Decisions with trade-offs are in `docs/adr/`. Visual language is `DESIGN.md`; tokens are already in `src/app/globals.css` (`bg-surface-1`, `text-ink-subtle`, `text-tag-red`, `panel`, …) — reach for those, never raw hex.
 
+This project is created to solve a common paint point across project managers, having sparse context with no way of unifying them. Another thing we do is to have constantly improving agents that update a memory.md per user.
+
 ## Setup and verification
 
 `cp .env.example .env`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed` (demo account only, see `.env.example`), `npm run dev`. Scripts are in `package.json`; `typecheck`, `lint`, `test` (Vitest, needs the `db_test` container), `test:e2e` (Playwright, needs a running dev server or lets the config start one). Pre-commit runs lint-staged + typecheck. CI (`.github/workflows/ci.yml`, runs on Bun) checks `format:check`, `eslint --max-warnings=0` and `typecheck` on every PR. A Devin `PostToolUse` hook (`.devin/hooks.v1.json`) runs Prettier + `eslint --fix` on each file the agent edits.
