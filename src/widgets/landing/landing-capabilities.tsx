@@ -1,4 +1,5 @@
 import { CalendarRange, FileText, GitBranch, History, MessageSquare, TriangleAlert } from "lucide-react";
+import { ProductShowcase } from "./product-showcase";
 import { Reveal } from "./reveal";
 
 const capabilities = [
@@ -48,6 +49,10 @@ export function LandingCapabilities() {
           An intelligence layer is only as good as the record beneath it. PrismPM keeps that record strict enough to
           reason over.
         </p>
+
+        <div data-reveal className="mt-14">
+          <ProductShowcase />
+        </div>
 
         {/* Hairlines rather than six floating boxes: the grid reads as one structure. */}
         <div className="mt-16 grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-3">

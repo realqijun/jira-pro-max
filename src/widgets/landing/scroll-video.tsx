@@ -120,7 +120,6 @@ export function ScrollVideo() {
   const planLayerRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const prologueCopyRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLSpanElement>(null);
   /** Written every scroll frame, read by the scrub loop - deliberately not state. */
   const progress = useRef(0);
   /** The beat on screen, counting the prologue's beats first and then the chapters. */
@@ -183,8 +182,6 @@ export function ScrollVideo() {
     return scroll(
       (p: number) => {
         progress.current = p;
-        const rail = railRef.current;
-        if (rail) rail.style.transform = `scaleX(${Math.max(p, 0.004)})`;
         let next: number;
         if (p < prologueShare) {
           const intro = p / prologueShare;
@@ -407,7 +404,7 @@ export function ScrollVideo() {
           />
 
           {prologueCount > 0 && (
-            <div ref={prologueCopyRef} className="absolute inset-0 flex items-end pb-20">
+            <div ref={prologueCopyRef} className="absolute inset-0 flex items-end">
               {/* The strategist fills the middle of the frame, so the quotes take the dark left edge and a scrim behind them. */}
               <div
                 aria-hidden
@@ -417,7 +414,7 @@ export function ScrollVideo() {
                     "linear-gradient(to right, color-mix(in srgb, var(--color-canvas) 82%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 45%, transparent) 30%, transparent 55%)",
                 }}
               />
-              <div className="relative mx-auto grid w-full max-w-[1280px] px-6 pb-10">
+              <div className="relative mx-auto grid w-full max-w-[1280px] px-6 pb-16">
                 {prologueBeats.map((beat, i) => (
                   <figure
                     key={beat.id}
@@ -478,7 +475,7 @@ export function ScrollVideo() {
 
             <div
               ref={copyRef}
-              className="mx-auto w-full max-w-[1280px] px-6 pb-10"
+              className="mx-auto w-full max-w-[1280px] px-6 pb-16"
               style={{ opacity: prologue > 0 ? 0 : 1 }}
             >
               <div className="grid max-w-2xl">
@@ -502,16 +499,6 @@ export function ScrollVideo() {
                     <p className="mt-4 max-w-lg text-body-lg text-ink-muted">{chapter.body}</p>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <div className="mx-auto w-full max-w-[1280px] px-6 pb-10">
-              <div className="relative h-px w-full bg-hairline-tertiary">
-                <span
-                  ref={railRef}
-                  className="absolute inset-0 origin-left bg-primary"
-                  style={{ transform: "scaleX(0.004)" }}
-                />
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { animate, splitText, stagger, utils } from "animejs";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { DotGrid } from "./dot-grid";
 
 const stats = [
   { value: 6, suffix: "", label: "record types, one graph" },
@@ -61,16 +62,17 @@ export function LandingHero({ signedIn }: { signedIn: boolean }) {
 
   return (
     <div ref={rootRef} className="relative isolate px-6 pt-24 pb-16 sm:pt-32">
-      {/* The film's first frame, held far back, so the page opens in the world the descent continues into. */}
+      {/* A dim field of dots, a few blinking at a time, fading out toward the film below. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-[120%] bg-cover bg-center opacity-[0.28]"
+        className="absolute inset-x-0 top-0 -z-10 h-[120%]"
         style={{
-          backgroundImage: "url('/landing/prismpm-scroll-poster.jpg')",
-          maskImage: "linear-gradient(to bottom, transparent, black 18%, black 42%, transparent 82%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 18%, black 42%, transparent 82%)",
+          maskImage: "radial-gradient(ellipse 75% 70% at 50% 38%, black 30%, transparent 78%)",
+          WebkitMaskImage: "radial-gradient(ellipse 75% 70% at 50% 38%, black 30%, transparent 78%)",
         }}
-      />
+      >
+        <DotGrid />
+      </div>
       <div className="mx-auto max-w-4xl text-center">
         <span
           data-hero-fade

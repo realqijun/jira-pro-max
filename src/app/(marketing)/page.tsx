@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { preload } from "react-dom";
 import { getSession } from "@/server/auth/session";
 import { isPreview } from "@/shared/lib/site-url";
 import {
@@ -58,7 +57,6 @@ async function isSignedIn() {
 }
 
 export default async function LandingPage() {
-  preload("/landing/prismpm-scroll-poster.jpg", { as: "image", fetchPriority: "high" });
   const signedIn = await isSignedIn();
 
   return (
