@@ -2,6 +2,7 @@ import { boolean, index, jsonb, pgTable, primaryKey, text, timestamp, unique } f
 import { user } from "@/server/auth/schema";
 import { id, timestamps } from "@/server/db/columns";
 import { messageRoleEnum } from "@/server/db/enums";
+import { userAiConfigs } from "@/server/modules/ai-config/schema";
 import { projects } from "@/server/modules/projects/schema";
 
 /**
@@ -17,6 +18,8 @@ export const conversations = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     projectId: text("project_id").references(() => projects.id, { onDelete: "cascade" }),
+    /** The credential this thread answers with; null falls back to the User default / env. */
+    aiConfigId: text("ai_config_id").references(() => userAiConfigs.id, { onDelete: "set null" }),
     title: text("title"),
     pinned: boolean("pinned").notNull().default(false),
     ...timestamps,

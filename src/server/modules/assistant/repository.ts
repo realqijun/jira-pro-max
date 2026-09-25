@@ -56,6 +56,9 @@ export const conversationsRepo = {
   setPinned: (db: DbOrTx, id: string, pinned: boolean) =>
     db.update(conversations).set({ pinned, updatedAt: conversations.updatedAt }).where(eq(conversations.id, id)),
 
+  setAiConfig: (db: DbOrTx, id: string, aiConfigId: string | null) =>
+    db.update(conversations).set({ aiConfigId, updatedAt: conversations.updatedAt }).where(eq(conversations.id, id)),
+
   /** Re-scope a Conversation onto a Project (or back to the dashboard with null). Bumps updatedAt so it opens first there. */
   setProject: (db: DbOrTx, id: string, projectId: string | null) =>
     db.update(conversations).set({ projectId }).where(eq(conversations.id, id)),

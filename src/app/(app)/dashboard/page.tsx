@@ -1,6 +1,7 @@
 import { ArrowRight, Diamond, Inbox } from "lucide-react";
 import Link from "next/link";
 import { ctxForCurrentUser } from "@/server/core/action";
+import { aiConfigService } from "@/server/modules/ai-config/service";
 import { getModel } from "@/server/modules/assistant/model";
 import { assistantService } from "@/server/modules/assistant/service";
 import { workspaceOverview } from "@/server/modules/workspace/queries";
@@ -19,7 +20,11 @@ export const metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
   const ctx = await ctxForCurrentUser();
-  const [o, assistantDock] = await Promise.all([workspaceOverview(ctx), assistantService.dock(ctx, null)]);
+  const [o, assistantDock, aiConfigs] = await Promise.all([
+    workspaceOverview(ctx),
+    assistantService.dock(ctx, null),
+    aiConfigService.list(ctx),
+  ]);
   const conversations = await assistantService.library(ctx, assistantDock.thread.conversation.id);
   const dock = (
     <AssistantDock
@@ -27,7 +32,7 @@ export default async function DashboardPage() {
       projects={o.projects}
       conversations={conversations}
       thread={assistantDock.thread}
-      configured={getModel() !== null}
+      configured={getModel() !== null || aiConfigs.length > 0}
     />
   );
 

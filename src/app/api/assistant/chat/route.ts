@@ -15,7 +15,7 @@ import { z } from "zod";
 import { ctxForCurrentUser } from "@/server/core/action";
 import { DomainError } from "@/server/core/errors";
 import { toAiTools, toolApprovalFor } from "@/server/modules/assistant/ai-tools";
-import { assistantConfig, getModel, modelInfo } from "@/server/modules/assistant/model";
+import { assistantConfig, getModelForUser, modelInfo } from "@/server/modules/assistant/model";
 import { projectSystemPrompt, workspaceSystemPrompt } from "@/server/modules/assistant/prompt";
 import { repairInterruptedToolCalls } from "@/server/modules/assistant/repair";
 import { assistantService } from "@/server/modules/assistant/service";
@@ -32,19 +32,26 @@ type ValidateTools = Parameters<typeof safeValidateUIMessages>[0]["tools"];
 
 // `messages` gets its real check from safeValidateUIMessages against the bound tools below.
 // The Conversation carries the scope: projectId on its row, null = dashboard.
-const bodySchema = z.object({ conversationId: z.string().min(1), messages: z.array(z.unknown()) });
+const bodySchema = z.object({
+  conversationId: z.string().min(1),
+  aiConfigId: z.string().nullish(),
+  messages: z.array(z.unknown()),
+});
 
 export async function POST(req: Request) {
-  const model = getModel();
-  if (!model) return new Response(ASSISTANT_NOT_CONFIGURED, { status: 503 });
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) return new Response("Bad request", { status: 400 });
-  const { conversationId } = parsed.data;
+  const { conversationId, aiConfigId: requestedConfigId } = parsed.data;
 
   const ctx = { ...(await ctxForCurrentUser()), via: "assistant" as const };
   const { maxSteps, dailyTurnCap } = assistantConfig();
   try {
     const conversation = await assistantService.getConversation(ctx, conversationId);
+    const aiConfigId = requestedConfigId ?? conversation.aiConfigId;
+    const model = await getModelForUser(ctx, aiConfigId);
+    if (!model) return new Response(ASSISTANT_NOT_CONFIGURED, { status: 503 });
+    if (requestedConfigId !== undefined && requestedConfigId !== conversation.aiConfigId)
+      await assistantService.selectModel(ctx, conversation.id, requestedConfigId ?? null);
     const projectId = conversation.projectId;
     const scope = { projectId: projectId ?? undefined, conversationId };
     const tools = toAiTools(ctx, projectId ? PROJECT_TOOLS : ASSISTANT_TOOLS, scope);

@@ -204,6 +204,17 @@ export type ProposalExtractor = (typeof PROPOSAL_EXTRACTORS)[number];
 export const ROOM_TYPES = ["group", "one_to_one"] as const;
 export type RoomType = (typeof ROOM_TYPES)[number];
 
+/** LLM providers supported by a User's personal Assistant configuration. */
+export const AI_PROVIDERS = ["openai", "anthropic", "google", "openai_compatible"] as const;
+export type AiProvider = (typeof AI_PROVIDERS)[number];
+
+export const AI_PROVIDER_LABELS: Record<AiProvider, string> = {
+  openai: "OpenAI",
+  anthropic: "Anthropic",
+  google: "Google Gemini",
+  openai_compatible: "OpenAI-compatible",
+};
+
 // ---------------------------------------------------------------------------
 // Concept renders. A Render is a generated picture of what a Project delivers,
 // so the PM and the people building it argue about one image instead of one

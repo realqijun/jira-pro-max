@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getViewer } from "@/server/auth/viewer";
 import { ctxForCurrentUser } from "@/server/core/action";
 import { DomainError } from "@/server/core/errors";
+import { aiConfigService } from "@/server/modules/ai-config/service";
 import { getModel } from "@/server/modules/assistant/model";
 import { assistantService } from "@/server/modules/assistant/service";
 import { projectsService } from "@/server/modules/projects/service";
@@ -20,7 +21,11 @@ export default async function ProjectLayout({ children, params }: LayoutProps<"/
     if (e instanceof DomainError) notFound();
     throw e;
   });
-  const [dock, projects] = await Promise.all([assistantService.dock(ctx, projectId), projectsService.list(ctx)]);
+  const [dock, projects, aiConfigs] = await Promise.all([
+    assistantService.dock(ctx, projectId),
+    projectsService.list(ctx),
+    aiConfigService.list(ctx),
+  ]);
   const conversations = await assistantService.library(ctx, dock.thread.conversation.id);
   return (
     <>
@@ -32,7 +37,7 @@ export default async function ProjectLayout({ children, params }: LayoutProps<"/
           projects={projects}
           conversations={conversations}
           thread={dock.thread}
-          configured={getModel() !== null}
+          configured={getModel() !== null || aiConfigs.length > 0}
         />
       </div>
     </>

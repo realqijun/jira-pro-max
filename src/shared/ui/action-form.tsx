@@ -29,6 +29,7 @@ export function ActionForm({
   hidden = {},
   danger,
   footerStart,
+  formRef,
 }: {
   action: Action;
   onSuccess?: (data: unknown) => void;
@@ -41,6 +42,7 @@ export function ActionForm({
   danger?: boolean;
   /** Rendered at the left of the footer row, opposite Cancel/Submit (e.g. a Delete button). */
   footerStart?: React.ReactNode;
+  formRef?: React.Ref<HTMLFormElement>;
 }) {
   const [state, setState] = React.useState<Ctx>({ pending: false, error: null, fieldErrors: {} });
 
@@ -68,7 +70,7 @@ export function ActionForm({
 
   return (
     <FormCtx.Provider value={state}>
-      <form onSubmit={onSubmit} className={cn("flex flex-col gap-4", className)}>
+      <form ref={formRef} onSubmit={onSubmit} className={cn("flex flex-col gap-4", className)}>
         {Object.entries(hidden).map(([k, v]) => v !== undefined && <input key={k} type="hidden" name={k} value={v} />)}
         {children}
         {state.error && (

@@ -7,10 +7,10 @@ import { proposalsService } from "./service";
  * ADR 0007). Failures are logged and never reach the User. No-op when no extractor can run.
  */
 export function scheduleProposalPass(ctx: Ctx, projectId: string) {
-  if (!proposalsService.enabled()) return;
-  after(() =>
-    proposalsService
-      .runPass(ctx, projectId, { trigger: "automatic" })
-      .catch((e) => console.error("Proposal pass failed", e)),
-  );
+  after(async () => {
+    if (await proposalsService.enabled(ctx))
+      await proposalsService
+        .runPass(ctx, projectId, { trigger: "automatic" })
+        .catch((e) => console.error("Proposal pass failed", e));
+  });
 }
