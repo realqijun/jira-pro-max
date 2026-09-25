@@ -120,6 +120,27 @@
       "when": 1790183722151,
       "tag": "0016_known_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790342940000,
+      "tag": "0017_create_user_ai_configs",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1790342940001,
+      "tag": "0018_add_google_ai_provider",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790342940002,
+      "tag": "0019_add_ai_config_fields",
+      "breakpoints": true
     }
   ]
 }

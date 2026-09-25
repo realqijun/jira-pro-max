@@ -984,11 +984,14 @@ test.describe("proposals", () => {
     await dialog.getByRole("button", { name: "Add evidence" }).click();
     await expect(dialog).toBeHidden();
   };
-  const propose = async (page: Page) => {
+  const propose = async (page: Page, expectPopup = false) => {
     await page.getByRole("main").getByRole("link", { name: "Decisions", exact: true }).click();
     await expect(page).toHaveURL(/\/decisions$/);
     await page.getByTestId("propose-from-evidence").click();
     await expect(page.getByText(/proposed from|Nothing new/)).toBeVisible();
+    const proposalDialog = page.getByRole("dialog", { name: "Confirm proposed decision" });
+    if (expectPopup) await expect(proposalDialog).toBeVisible();
+    if (await proposalDialog.isVisible()) await proposalDialog.getByRole("button", { name: "Close" }).click();
   };
   const overview = async (page: Page) => {
     await page.getByRole("main").getByRole("link", { name: "Overview", exact: true }).click();
@@ -1002,7 +1005,7 @@ test.describe("proposals", () => {
       "Steering call notes",
       "Attendees: Priya, Marcus.\n\nAfter the pilot we decided to switch from weekly surveys to fortnightly interviews because response rates fell to 4%. The vendor sandbox is still pending.",
     );
-    await propose(page);
+    await propose(page, true);
     await overview(page);
     const cards = page.getByTestId("proposal-card");
     await expect(cards).toHaveCount(1);
@@ -1039,7 +1042,7 @@ test.describe("proposals", () => {
       "Sprint review notes",
       "We agreed to freeze the legacy gateway on 1 October instead of running both in parallel. The team chose Playwright over Cypress for the regression suite.",
     );
-    await propose(page);
+    await propose(page, true);
     await overview(page);
     await expect(cards).toHaveCount(2);
     await cards.filter({ hasText: "freeze the legacy gateway" }).getByTestId("accept-proposal").click();

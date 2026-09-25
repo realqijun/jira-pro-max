@@ -22,7 +22,13 @@ import { attachPassages, traceProposals, type TraceRefs } from "./trace";
 
 export type PassOutcome =
   | { skipped: "not_configured" | "nothing_new" | "failed" }
-  | { extractor: ProposalExtractor; sourcesPassed: number; proposed: number; discarded: number };
+  | {
+      extractor: ProposalExtractor;
+      sourcesPassed: number;
+      proposed: number;
+      discarded: number;
+      proposalId?: string;
+    };
 
 const hashOf = (text: string) => createHash("sha1").update(text).digest("hex");
 
@@ -173,7 +179,7 @@ export const proposalsService = {
         comment: candidates.filter((c) => c.kind === "comment").length,
       },
     });
-    return outcome;
+    return inserted[0] ? { ...outcome, proposalId: inserted[0].id } : outcome;
   },
 
   listPending: async (ctx: Ctx, projectId: string) => {

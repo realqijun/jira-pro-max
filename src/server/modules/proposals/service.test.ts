@@ -65,6 +65,8 @@ describe("proposalsService.runPass", () => {
     expect(await graphCounts()).toEqual(before);
 
     const pending = await proposalsService.listPending(ctx, projectId);
+    expect("proposalId" in out).toBe(true);
+    if ("proposalId" in out) expect(pending.map((p) => p.id)).toContain(out.proposalId);
     expect(pending.map((p) => p.title).sort()).toEqual([
       "Recruit through the alumni list instead of a public call",
       "Switch from weekly surveys to fortnightly interviews",
