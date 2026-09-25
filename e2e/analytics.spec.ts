@@ -76,6 +76,8 @@ async function signup(page: Page) {
   await page.getByRole("button", { name: "Create account" }).click();
   const { user } = await (await response).json();
   await expect(page).toHaveURL("/dashboard");
+  // Signup starts the product tour, whose overlay takes every click until it is dismissed.
+  await page.getByRole("button", { name: "Skip tour" }).click();
   return { id: user.id as string, email };
 }
 
@@ -90,8 +92,12 @@ async function createProject(page: Page) {
 }
 
 async function captured(name: string, userId?: string, since = 0) {
+  // posthog-js flushes its batch every 3s after hydration, which on the dev-served landing page
+  // lands just past the default 5s poll.
   await expect
-    .poll(() => events.slice(since).some((event) => event.event === name && (!userId || id(event) === userId)))
+    .poll(() => events.slice(since).some((event) => event.event === name && (!userId || id(event) === userId)), {
+      timeout: 15_000,
+    })
     .toBe(true);
   return events.slice(since).findLast((event) => event.event === name && (!userId || id(event) === userId))!;
 }
@@ -178,6 +184,8 @@ test("landing, signup, Project creation, restoration, logout and returning/switc
   const returning = await captured("$identify", user.id, signInStart);
   expect(returning.properties.$anon_distinct_id).toBe(id(loginPageview));
   expect(session(returning)).toBe(session(loginPageview));
+  const login = await captured("login_completed", user.id, signInStart);
+  expect(session(login)).toBe(session(returning));
   await expect
     .poll(() =>
       events

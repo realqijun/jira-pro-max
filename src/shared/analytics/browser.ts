@@ -126,7 +126,14 @@ export function authenticationCompleted(id: string, signup: boolean) {
   syncAnalyticsIdentity(id);
   expectedIdentity = id;
   safely(() => {
-    if (signup && usable()) posthog.capture("signup_completed");
+    if (usable()) posthog.capture(signup ? "signup_completed" : "login_completed");
+  });
+}
+
+/** A named workflow event from the browser. Properties must be ids or bounded metadata, never content. */
+export function captureEvent(event: string, properties?: Record<string, unknown>) {
+  safely(() => {
+    if (usable()) posthog.capture(event, properties);
   });
 }
 

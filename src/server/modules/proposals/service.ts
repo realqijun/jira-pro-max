@@ -133,6 +133,10 @@ export const proposalsService = {
           tasks: refs.tasks.map((t) => t.title),
           conversation: transcriptOf(recent.map((r) => ({ id: r.id, role: r.role, parts: r.parts }) as UIMessage)),
         },
+        telemetry: {
+          userId: ctx.userId,
+          properties: { project_id: projectId, trigger: opts.trigger, source_count: candidates.length },
+        },
       });
     } catch (e) {
       console.error("Proposal pass failed", e);

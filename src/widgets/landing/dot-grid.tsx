@@ -83,6 +83,8 @@ export function DotGrid({ className }: { className?: string }) {
     const draw = (now: number) => {
       const { width, height } = canvas.getBoundingClientRect();
       ctx.clearRect(0, 0, width, height);
+      // Before layout (or while hidden) the canvas is 0x0, and drawImage throws on an empty source.
+      if (!base.width || !base.height) return;
       ctx.drawImage(base, 0, 0, width, height);
 
       blinks = blinks.filter((b) => now - b.start < BLINK_MS);

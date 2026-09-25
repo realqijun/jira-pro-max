@@ -71,6 +71,8 @@ describe("browser identity boundary", () => {
     expect(sdk.capture).toHaveBeenCalledExactlyOnceWith("$pageview", { $current_url: "/login" });
     sdk.capture.mockClear();
     analytics.authenticationCompleted("user-b", false);
+    expect(sdk.capture).toHaveBeenCalledExactlyOnceWith("login_completed");
+    sdk.capture.mockClear();
     analytics.syncAnalyticsIdentity(null);
     analytics.capturePageview("/dashboard");
     expect(sdk.capture).not.toHaveBeenCalled();
@@ -79,9 +81,11 @@ describe("browser identity boundary", () => {
     expect(sdk.capture).toHaveBeenCalledOnce();
   });
 
-  it("does not emit signup on returning sign-in and deduplicates effect pageviews", async () => {
+  it("emits login, not signup, on returning sign-in and deduplicates effect pageviews", async () => {
     const analytics = await import("./browser");
     analytics.authenticationCompleted("user-a", false);
+    expect(sdk.capture).toHaveBeenCalledExactlyOnceWith("login_completed");
+    sdk.capture.mockClear();
     analytics.capturePageview("/dashboard");
     analytics.syncAnalyticsIdentity("user-a");
     analytics.capturePageview("/dashboard");
