@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { FileSearch } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { runProposalPassAction } from "@/server/modules/proposals/actions";
@@ -45,7 +45,7 @@ export function ProposeButton({ projectId }: { projectId: string }) {
           }
         }}
       >
-        <Sparkles className="size-3.5" /> Propose from evidence
+        <FileSearch className="size-3.5" /> Propose from evidence
       </Button>
     </span>
   );

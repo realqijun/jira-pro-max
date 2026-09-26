@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChatStatus, UIMessage } from "ai";
-import { History, Sparkles, SquarePen, X } from "lucide-react";
+import { History, MessageSquare, SquarePen, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import {
@@ -146,7 +146,7 @@ export function AssistantDock({
       )}
       <div className="flex w-96 flex-col">
         <div className="flex h-11 items-center gap-1 border-b border-hairline px-4">
-          <Sparkles className="size-3.5 shrink-0 text-primary" />
+          <MessageSquare className="size-3.5 shrink-0 text-primary" />
           <h2 className="text-body-sm font-medium text-ink">Assistant</h2>
           <span className="text-ink-faint min-w-0 truncate text-caption" title={activeTitle}>
             {activeTitle}

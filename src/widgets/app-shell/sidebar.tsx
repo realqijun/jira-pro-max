@@ -40,7 +40,7 @@ export function Sidebar({
 
       <button
         onClick={onOpenPalette}
-        className="mx-3 mb-3 flex h-8 items-center gap-2 rounded-md border border-hairline bg-surface-1 px-2.5 text-caption text-ink-subtle transition-colors hover:border-hairline-strong hover:text-ink"
+        className="mx-3 mb-3 flex h-8 items-center gap-2 rounded-md border border-hairline bg-surface-1 px-2.5 text-caption text-ink-subtle transition-[transform,background-color,border-color,box-shadow,color] duration-200 hover:-translate-y-px hover:border-primary/50 hover:bg-surface-2 hover:text-ink hover:shadow-[0_0_18px_rgb(94_106_210_/_0.12)]"
       >
         <Search className="size-3.5" />
         <span className="flex-1 text-left">Search or jump to…</span>
@@ -56,12 +56,15 @@ export function Sidebar({
             <Link
               key={href}
               href={href}
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "flex h-8 items-center gap-2.5 rounded-md px-2.5 text-body-sm transition-colors",
-                active ? "bg-surface-2 text-ink" : "text-ink-subtle hover:bg-surface-1 hover:text-ink",
+                "group sidebar-nav-item flex h-9 items-center gap-2.5 rounded-md px-2.5 text-body-sm transition-[transform,background-color,color] duration-200",
+                active
+                  ? "bg-surface-2 text-ink shadow-[inset_2px_0_0_var(--color-primary)]"
+                  : "text-ink-subtle hover:translate-x-0.5",
               )}
             >
-              <Icon className="size-4" />
+              <Icon className="size-4 transition-transform duration-200 group-hover:scale-110" />
               {label}
             </Link>
           );
@@ -88,8 +91,10 @@ export function Sidebar({
               key={p.id}
               href={`/projects/${p.id}`}
               className={cn(
-                "flex h-8 items-center gap-2.5 rounded-md px-2.5 text-body-sm transition-colors",
-                active ? "bg-surface-2 text-ink" : "text-ink-subtle hover:bg-surface-1 hover:text-ink",
+                "group flex h-9 items-center gap-2.5 rounded-md px-2.5 text-body-sm transition-[transform,background-color,color] duration-200",
+                active
+                  ? "bg-surface-2 text-ink shadow-[inset_2px_0_0_var(--color-primary)]"
+                  : "text-ink-subtle hover:translate-x-0.5 hover:bg-surface-1 hover:text-ink",
               )}
             >
               <HealthDot health={p.health} />

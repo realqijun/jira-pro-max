@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChatStatus, UIMessage } from "ai";
-import { Sparkles, SquarePen } from "lucide-react";
+import { MessageSquare, SquarePen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import {
@@ -79,7 +79,7 @@ export function AssistantPage({
     <div className="flex min-h-0 flex-1">
       <div className="flex w-64 shrink-0 flex-col border-r border-hairline bg-surface-1">
         <div className="flex h-11 items-center gap-1 border-b border-hairline px-4">
-          <Sparkles className="size-3.5 shrink-0 text-primary" />
+          <MessageSquare className="size-3.5 shrink-0 text-primary" />
           <h2 className="text-body-sm font-medium text-ink">Assistant</h2>
           <div className="ml-auto">
             <Button size="icon" variant="ghost" onClick={() => void newChat()} aria-label="New chat">

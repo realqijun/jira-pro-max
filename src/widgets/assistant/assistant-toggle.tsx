@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useShell } from "@/shared/lib/shell-context";
 import { Button } from "@/shared/ui";
 
@@ -15,7 +15,7 @@ export function AssistantToggle() {
       onClick={toggleAssistant}
       aria-pressed={assistantOpen}
     >
-      <Sparkles className="size-3.5 text-primary" /> Assistant
+      <MessageSquare className="size-3.5 text-primary" /> Assistant
     </Button>
   );
 }

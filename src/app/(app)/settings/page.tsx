@@ -1,4 +1,5 @@
 import { ctxForCurrentUser } from "@/server/core/action";
+import { requireUser } from "@/server/auth/session";
 import { aiConfigService } from "@/server/modules/ai-config/service";
 import { apiTokensService } from "@/server/modules/api-tokens/service";
 import { assistantService } from "@/server/modules/assistant/service";
@@ -14,7 +15,7 @@ import { ProductTourSetting } from "@/features/settings/product-tour";
 export const metadata = { title: "Settings" };
 
 export default async function UserSettingsPage() {
-  const ctx = await ctxForCurrentUser();
+  const [ctx, user] = await Promise.all([ctxForCurrentUser(), requireUser()]);
   const [versions, tokens, permissions, aiConfigs] = await Promise.all([
     memoryService.versions(ctx, null),
     apiTokensService.list(ctx),
@@ -62,7 +63,7 @@ export default async function UserSettingsPage() {
 
           <section className="flex flex-col gap-4">
             <SectionTitle>Guided tour</SectionTitle>
-            <ProductTourSetting />
+            <ProductTourSetting userEmail={user.email} />
           </section>
 
           <section className="flex flex-col gap-4">

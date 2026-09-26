@@ -1,4 +1,4 @@
-import { FileText, MessageSquare, Sparkles } from "lucide-react";
+import { FileText, GitBranch, MessageSquare } from "lucide-react";
 import type { ProposalRow } from "@/server/modules/proposals/schema";
 import { labelFor } from "@/shared/domain";
 import { fmtDate } from "@/shared/lib/dates";
@@ -27,7 +27,7 @@ export function ProposalCards({
       {proposals.map((p) => (
         <Panel key={p.id} className="border-l-2 border-l-tag-purple" data-testid="proposal-card">
           <div className="flex items-start gap-3 px-4 py-3">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-tag-purple" />
+            <GitBranch className="mt-0.5 size-4 shrink-0 text-tag-purple" />
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2 text-body-sm">
                 <span className="font-medium text-ink">Proposed decision</span>

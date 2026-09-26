@@ -13,7 +13,12 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex h-14 shrink-0 items-center justify-between gap-4 hairline-b px-6", className)}>
+    <div
+      className={cn(
+        "flex h-16 shrink-0 items-center justify-between gap-4 hairline-b bg-canvas/90 px-6 backdrop-blur-sm",
+        className,
+      )}
+    >
       <div className="flex min-w-0 items-baseline gap-3">
         <h1 className="truncate text-body font-medium text-ink">{title}</h1>
         {description && <p className="truncate text-caption text-ink-subtle">{description}</p>}

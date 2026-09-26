@@ -15,11 +15,12 @@
  * The whole state of the tour: "run" while it is on screen, "done" once it has been finished,
  * skipped or switched off, and absent for anyone who never asked for it.
  *
- * Absent is the important value. Signing up writes "run", and nothing else does, so the tour
- * only ever starts itself for an account created in this browser. An existing User signing in
- * has no key and is left alone.
+ * Absent is the important value. Signing up writes "run" for that account, and nothing else does,
+ * so an interrupted signup cannot start the tour for a different User signing in on the same browser.
  */
 export const TOUR_KEY = "prismpm.tour";
+
+const storageKey = (userEmail?: string) => (userEmail ? `${TOUR_KEY}:${userEmail}` : TOUR_KEY);
 
 /** True while the tour should be on screen. Anything other than "run", including null, is off. */
 export const tourIsRunning = (stored: string | null) => stored === "run";
@@ -77,13 +78,13 @@ export const TOUR_STEPS: readonly TourStep[] = [
  * tour's own buttons cannot disagree about whether it is running.
  */
 const listeners = new Set<() => void>();
-const write = (state: "run" | "done") => {
-  localStorage.setItem(TOUR_KEY, state);
+const write = (state: "run" | "done", userEmail?: string) => {
+  localStorage.setItem(storageKey(userEmail), state);
   listeners.forEach((l) => l());
 };
 
 export const tourStore = {
-  read: () => localStorage.getItem(TOUR_KEY),
+  read: (userEmail?: string) => localStorage.getItem(storageKey(userEmail)),
   subscribe: (l: () => void) => {
     listeners.add(l);
     return () => listeners.delete(l);
@@ -91,9 +92,9 @@ export const tourStore = {
 };
 
 /** Run the tour from step one. Called on signup, from Settings and from the command palette. */
-export const startTour = () => write("run");
+export const startTour = (userEmail?: string) => write("run", userEmail);
 /** Finished, skipped, or switched off in Settings: all the same thing. */
-export const endTour = () => write("done");
+export const endTour = (userEmail?: string) => write("done", userEmail);
 
 /**
  * The steps that can actually be shown. A step pinned to a Project section is dropped when the

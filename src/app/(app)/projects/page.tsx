@@ -19,7 +19,11 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <PageHeader title="Projects" description={`${projects.length} total`} actions={<NewProjectButton />} />
+      <PageHeader
+        title="Projects"
+        description={`${projects.length} total · health, progress, and target dates at a glance`}
+        actions={<NewProjectButton />}
+      />
       <div className="flex-1 overflow-y-auto p-6">
         {projects.length === 0 ? (
           <EmptyState
@@ -29,7 +33,7 @@ export default async function ProjectsPage() {
             action={<NewProjectButton />}
           />
         ) : (
-          <div className="mx-auto grid max-w-6xl grid-cols-3 gap-4">
+          <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {projects.map((p) => {
               const c = counts[p.id] ?? {};
               const total = Object.values(c).reduce((a, b) => a + b, 0);
@@ -37,11 +41,13 @@ export default async function ProjectsPage() {
               const pct = total ? Math.round((done / total) * 100) : 0;
               return (
                 <Link key={p.id} href={`/projects/${p.id}`} className="group">
-                  <Panel className="flex h-full flex-col gap-3 p-5 transition-colors group-hover:border-hairline-strong group-hover:bg-surface-2">
+                  <Panel className="project-card interactive-lift flex h-full flex-col gap-3 p-5 transition-colors group-hover:border-primary/35 group-hover:bg-surface-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="font-mono text-caption text-ink-tertiary">{p.key}</p>
-                        <h3 className="truncate text-card-title font-medium text-ink">{p.name}</h3>
+                        <h3 className="truncate text-card-title font-medium text-ink transition-colors group-hover:text-primary-hover">
+                          {p.name}
+                        </h3>
                       </div>
                       <HealthBadge health={p.health} />
                     </div>
@@ -54,7 +60,10 @@ export default async function ProjectsPage() {
                         <span>{pct}%</span>
                       </div>
                       <div className="h-1 overflow-hidden rounded-full bg-surface-3">
-                        <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                        <div
+                          className="h-full animate-progress-in rounded-full bg-primary"
+                          style={{ width: `${pct}%` }}
+                        />
                       </div>
                       <div className="flex items-center justify-between pt-1">
                         <ProjectStatusBadge status={p.status} />

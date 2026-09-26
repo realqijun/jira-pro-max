@@ -35,7 +35,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     if (res.data?.user.id) authenticationCompleted(res.data.user.id, mode === "signup");
     // Signing up is the only thing that starts the tour, so signing in to an existing account
     // never does. Switch it back on in Settings to run it again.
-    if (mode === "signup") startTour();
+    if (mode === "signup") startTour(email);
     router.push(safeReturnPath(params.get("next")));
     router.refresh();
   }

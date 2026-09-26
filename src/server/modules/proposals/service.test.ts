@@ -75,9 +75,8 @@ describe("proposalsService.runPass", () => {
     expect(fromMinutes.sources).toEqual([{ kind: "evidence", entityId: minutes.id, excerpt: SENTENCE }]);
     expect(pending.find((p) => p.sources[0]!.entityId === commentId)?.alternatives).toBe("a public call");
 
-    expect(await proposalsService.runPass(ctx, projectId, { extract: heuristicExtract, trigger: "manual" })).toEqual({
-      skipped: "nothing_new",
-    });
+    const retry = await proposalsService.runPass(ctx, projectId, { extract: heuristicExtract, trigger: "manual" });
+    expect(retry).toMatchObject({ skipped: "nothing_new", proposalId: pending[0]!.id });
     expect(await proposalsService.listPending(ctx, projectId)).toHaveLength(2);
   });
 

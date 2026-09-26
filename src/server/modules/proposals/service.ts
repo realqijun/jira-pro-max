@@ -21,7 +21,7 @@ import type { ProposalRow } from "./schema";
 import { attachPassages, traceProposals, type TraceRefs } from "./trace";
 
 export type PassOutcome =
-  | { skipped: "not_configured" | "nothing_new" | "failed" }
+  | { skipped: "not_configured" | "nothing_new" | "failed"; proposalId?: string }
   | {
       extractor: ProposalExtractor;
       sourcesPassed: number;
@@ -106,7 +106,11 @@ export const proposalsService = {
         textHash,
       });
     }
-    if (!candidates.length) return { skipped: "nothing_new" };
+    if (!candidates.length) {
+      if (opts.trigger !== "manual") return { skipped: "nothing_new" };
+      const [pending] = await proposalsRepo.listByProject(ctx.db, projectId, "pending");
+      return { skipped: "nothing_new", proposalId: pending?.id };
+    }
 
     const [people, milestones, tasks, conversation] = await Promise.all([
       peopleRepo.listByProject(ctx.db, projectId),

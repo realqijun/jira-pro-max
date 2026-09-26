@@ -19,16 +19,16 @@ const MEASURE_MS = 120;
  * The body really unmounts when the tour is not running, so running it again always starts at
  * step one without an effect that resets the index. Same shape as `CommandPalette`.
  */
-export function ProductTour({ projectId }: { projectId: string | null }) {
+export function ProductTour({ projectId, userEmail }: { projectId: string | null; userEmail: string }) {
   // Off during SSR and the first paint: localStorage cannot be read on the server, and a tour
   // that flashed before hydration would spotlight elements that have not been laid out.
   const running = React.useSyncExternalStore(
     tourStore.subscribe,
-    () => tourIsRunning(tourStore.read()),
+    () => tourIsRunning(tourStore.read(userEmail)),
     () => false,
   );
   if (!running) return null;
-  return <ProductTourBody projectId={projectId} onClose={endTour} />;
+  return <ProductTourBody projectId={projectId} onClose={() => endTour(userEmail)} />;
 }
 
 function ProductTourBody({ projectId, onClose }: { projectId: string | null; onClose: () => void }) {

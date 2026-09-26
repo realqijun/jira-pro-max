@@ -85,12 +85,12 @@ export function AppShell({
         projects={projects}
         onNewProject={ctx.openNewProject}
         onToggleAssistant={ctx.toggleAssistant}
-        onStartTour={startTour}
+        onStartTour={() => startTour(user.email)}
       />
       <CreateProjectDialog open={newProject} onClose={() => setNewProject(false)} />
       {/* The tour runs over the whole shell, so it is mounted here rather than on a page: its
           steps walk from the sidebar into a Project and must survive the navigation between. */}
-      <ProductTour projectId={projects[0]?.id ?? null} />
+      <ProductTour projectId={projects[0]?.id ?? null} userEmail={user.email} />
     </ShellContext.Provider>
   );
 }
