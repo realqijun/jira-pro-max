@@ -1,4 +1,5 @@
 import type { UIMessage } from "ai";
+import { sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Ctx } from "@/server/core/context";
 import { ForbiddenError, NotFoundError } from "@/server/core/errors";
@@ -39,6 +40,27 @@ describe("assistantService conversations", () => {
     const { messages } = await assistantService.conversation(ctx, projectId);
     expect(messages.map((m) => m.id)).toEqual(["m1", "m2"]);
     expect(messages[1]?.parts).toEqual([{ type: "text", text: "Done: created 3 Tasks" }]);
+  });
+
+  it("keeps thread order for Messages written in the same save, across re-saves", async () => {
+    const own = await makeCtx();
+    const c = await assistantService.createConversation(own, null);
+    const q1 = msg("q1", "user", "create a project");
+    const r1 = msg("r1", "assistant", "");
+    const q2 = msg("q2", "user", "create it with key UDC");
+    const r2 = msg("r2", "assistant", "Created");
+    // Each turn saves the whole thread, so earlier rows are re-written while new pairs share a timestamp.
+    await assistantService.saveMessages(own, c.id, [q1, r1]);
+    await assistantService.saveMessages(own, c.id, [q1, r1, q2, r2]);
+    await assistantService.saveMessages(own, c.id, [q1, r1, q2, { ...r2, parts: [{ type: "text", text: "Done" }] }]);
+    // Rewriting one row moves its tuple on disk; read with a sequential scan so storage order shows.
+    await messagesRepo.upsertMany(own.db, [{ id: "q2", conversationId: c.id, role: "user", parts: q2.parts }]);
+    const messages = await own.db.transaction(async (tx) => {
+      await tx.execute(sql`set local enable_indexscan = off`);
+      await tx.execute(sql`set local enable_bitmapscan = off`);
+      return messagesRepo.listByConversation(tx, c.id);
+    });
+    expect(messages.map((m) => m.id)).toEqual(["q1", "r1", "q2", "r2"]);
   });
 
   it("tolerates the same Message id twice in one save (last occurrence wins)", async () => {

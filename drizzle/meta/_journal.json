@@ -162,6 +162,20 @@
       "when": 1790394498102,
       "tag": "0022_ambiguous_kate_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1790632983494,
+      "tag": "0023_message_seq",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1790632984121,
+      "tag": "0024_backfill_message_seq",
+      "breakpoints": true
     }
   ]
 }

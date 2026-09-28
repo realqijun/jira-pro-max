@@ -6,19 +6,23 @@ import { ArrowUp, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { grantToolPermissionAction } from "@/server/modules/assistant/actions";
-import { ASSISTANT_LIMIT_REACHED, ASSISTANT_NOT_CONFIGURED } from "@/shared/lib/assistant-errors";
+import {
+  ASSISTANT_ERROR_TEXT,
+  ASSISTANT_NOT_CONFIGURED,
+  TURN_ERROR_PART,
+  type TurnErrorData,
+} from "@/shared/lib/assistant-errors";
 import { cn } from "@/shared/lib/cn";
 import { Button, Panel, SectionTitle, Textarea } from "@/shared/ui";
 import { LinkedText } from "./linked-text";
 import { MarkdownText } from "./markdown-text";
 import { ToolCall } from "./tool-call";
 
-const FRIENDLY: Record<string, string> = {
-  [ASSISTANT_NOT_CONFIGURED]: "The Assistant is not configured. Set OPENAI_API_KEY to enable it.",
-  [ASSISTANT_LIMIT_REACHED]: "You have reached today's Assistant limit. It resets at midnight UTC.",
-};
-
 const isPendingCard = (part: UIMessage["parts"][number]) => isToolUIPart(part) && part.state === "approval-requested";
+const isTurnError = (part: UIMessage["parts"][number]) => part.type === TURN_ERROR_PART;
+/** A reply that died before it produced anything leaves an empty bubble; skip it. */
+const isEmpty = (m: UIMessage) => m.parts.every((p) => p.type === "step-start");
+const noticeClass = "rounded-md bg-surface-2 px-3 py-2 text-caption text-ink-subtle";
 
 type ProjectSummary = {
   project?: { name?: string; key?: string } | null;
@@ -146,7 +150,13 @@ export function ChatPanel({
     router.refresh();
     void addToolApprovalResponse({ id: approvalId, approved: true });
   };
-  const notice = !configured ? FRIENDLY[ASSISTANT_NOT_CONFIGURED] : error ? friendly(error) : null;
+  // A failed reply carries its error as a part; the notice covers failures before any reply.
+  const errorShownInThread = messages.at(-1)?.parts.some(isTurnError) ?? false;
+  const notice = !configured
+    ? ASSISTANT_ERROR_TEXT[ASSISTANT_NOT_CONFIGURED]
+    : error && !errorShownInThread
+      ? friendly(error)
+      : null;
 
   return (
     <>
@@ -160,26 +170,28 @@ export function ChatPanel({
         )}
         <CurrentState messages={messages} />
         <ol className="flex flex-col gap-3">
-          {messages.map((m) => (
-            <li key={m.id} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
-              <div
-                className={cn(
-                  "max-w-[85%] rounded-lg px-3 py-2 text-body-sm",
-                  m.role === "user" ? "bg-surface-3 text-ink" : "text-ink-muted",
-                )}
-              >
-                {m.parts.map((part, i) => (
-                  <Part
-                    key={i}
-                    part={part}
-                    isAssistant={m.role === "assistant"}
-                    onAnswer={(id, approved) => void addToolApprovalResponse({ id, approved })}
-                    onAlwaysAllow={alwaysAllow}
-                  />
-                ))}
-              </div>
-            </li>
-          ))}
+          {messages
+            .filter((m) => !isEmpty(m))
+            .map((m) => (
+              <li key={m.id} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
+                <div
+                  className={cn(
+                    "max-w-[85%] rounded-lg px-3 py-2 text-body-sm",
+                    m.role === "user" ? "bg-surface-3 text-ink" : "text-ink-muted",
+                  )}
+                >
+                  {m.parts.map((part, i) => (
+                    <Part
+                      key={i}
+                      part={part}
+                      isAssistant={m.role === "assistant"}
+                      onAnswer={(id, approved) => void addToolApprovalResponse({ id, approved })}
+                      onAlwaysAllow={alwaysAllow}
+                    />
+                  ))}
+                </div>
+              </li>
+            ))}
         </ol>
         {busy && (
           <p role="status" className="mt-3 flex items-center gap-2 text-caption text-ink-subtle">
@@ -187,7 +199,7 @@ export function ChatPanel({
           </p>
         )}
         {notice && (
-          <p role="status" className="mt-3 rounded-md bg-surface-2 px-3 py-2 text-caption text-ink-subtle">
+          <p role="status" className={cn("mt-3", noticeClass)}>
             {notice}
           </p>
         )}
@@ -235,7 +247,7 @@ export function ChatPanel({
 }
 
 function friendly(error: Error) {
-  return FRIENDLY[error.message] ?? "Something went wrong. Try again.";
+  return ASSISTANT_ERROR_TEXT[error.message] ?? "Something went wrong. Try again.";
 }
 
 function Part({
@@ -250,6 +262,12 @@ function Part({
   onAlwaysAllow: (approvalId: string, toolName: string) => Promise<void>;
 }) {
   if (part.type === "text") return isAssistant ? <MarkdownText text={part.text} /> : <LinkedText text={part.text} />;
+  if (part.type === TURN_ERROR_PART)
+    return (
+      <p role="status" className={cn("my-1", noticeClass)}>
+        {(part.data as TurnErrorData).message}
+      </p>
+    );
   if (!isToolUIPart(part)) return null;
   return <ToolCall part={part} onAnswer={onAnswer} onAlwaysAllow={onAlwaysAllow} />;
 }

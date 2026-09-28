@@ -1,4 +1,4 @@
-import { boolean, index, jsonb, pgTable, primaryKey, text, timestamp, unique } from "drizzle-orm/pg-core";
+import { bigserial, boolean, index, jsonb, pgTable, primaryKey, text, timestamp, unique } from "drizzle-orm/pg-core";
 import { user } from "@/server/auth/schema";
 import { id, timestamps } from "@/server/db/columns";
 import { messageRoleEnum } from "@/server/db/enums";
@@ -41,10 +41,16 @@ export const messages = pgTable(
     role: messageRoleEnum("role").notNull(),
     parts: jsonb("parts").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * Thread order. A turn saves several Messages in one statement, so they share `createdAt`;
+     * `seq` is assigned in insert order and kept when a Message is rewritten.
+     */
+    seq: bigserial("seq", { mode: "number" }).notNull(),
   },
   (t) => [
     primaryKey({ columns: [t.conversationId, t.id] }),
     index("messages_conversation_time_idx").on(t.conversationId, t.createdAt),
+    index("messages_conversation_seq_idx").on(t.conversationId, t.seq),
   ],
 );
 

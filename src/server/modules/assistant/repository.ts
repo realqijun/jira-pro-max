@@ -105,15 +105,16 @@ export const messagesRepo = {
       .select({ parts: messages.parts })
       .from(messages)
       .where(and(eq(messages.conversationId, conversationId), eq(messages.role, "user")))
-      .orderBy(asc(messages.createdAt))
+      .orderBy(asc(messages.seq))
       .limit(1);
     const parts = Array.isArray(row?.parts) ? (row.parts as { type?: string; text?: string }[]) : [];
     const text = parts.find((p) => p.type === "text")?.text;
     return text?.trim() || null;
   },
 
+  /** Thread order: `seq`, never `createdAt`, which ties for Messages saved in one statement. */
   listByConversation: (db: DbOrTx, conversationId: string) =>
-    db.select().from(messages).where(eq(messages.conversationId, conversationId)).orderBy(asc(messages.createdAt)),
+    db.select().from(messages).where(eq(messages.conversationId, conversationId)).orderBy(asc(messages.seq)),
 
   upsertMany: async (db: DbOrTx, rows: (typeof messages.$inferInsert)[]) => {
     // A thread can carry the same client id twice (a re-sent turn); Postgres refuses to upsert
