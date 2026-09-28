@@ -11,3 +11,6 @@ Tenancy is deliberately single-user: every Project has one owning User and nothi
 ## Consequences
 
 - Adding sharing later means introducing a `Workspace`/membership table between User and Project; all authorization checks are centralised in the service layer's `assertOwnsProject` so that is a single seam.
+- Google sign-in was added later as a Better Auth social provider, on only when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set.
+  It creates an ordinary User, so ownership and the sample Project (ADR 0013) are unchanged.
+  A Google login whose email already belongs to a password account is refused, not linked: emails are never verified here, so linking would let whoever registered an address first keep a password into its owner's account.
