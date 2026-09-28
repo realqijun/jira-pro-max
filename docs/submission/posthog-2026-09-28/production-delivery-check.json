@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-09-28T15:42:14.945Z",
+  "deployment": "https://jira-pro-max.vercel.app/",
+  "releaseSha": null,
+  "scope": "One anonymous landing pageview; no production account or domain item created",
+  "browser": {
+    "event": "$pageview",
+    "timestamp": "2026-09-28T15:41:17.338Z",
+    "path": "/",
+    "sdk_version": "1.434.2",
+    "ingestion_status": 200
+  },
+  "posthog": {
+    "status": 200,
+    "columns": ["event", "timestamp", "path"],
+    "results": [["$pageview", "2026-09-28T15:41:18.079000Z", "/"]]
+  },
+  "identity_match": "Query matched the exact browser distinct_id in memory; omitted from this artifact"
+}

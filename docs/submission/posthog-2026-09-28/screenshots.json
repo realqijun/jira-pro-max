@@ -1,0 +1,26 @@
+[
+  {
+    "file": "screenshots/01-ai-volume-and-users.png",
+    "source_filename": "Screenshot 2026-09-28 at 11.32.05\u202fPM.png",
+    "sha256": "727c96edb9dbb932259d44bf54a5b5f168926f4951bcfd2560ad458fd2b554ca",
+    "provenance": "User-supplied PostHog dashboard screenshot, preserved without edits"
+  },
+  {
+    "file": "screenshots/02-workflows-and-exceptions.png",
+    "source_filename": "Screenshot 2026-09-28 at 11.32.13\u202fPM.png",
+    "sha256": "3d071d7139bc105ad2e9c685c0bb29f1358819a5f69a4485bce1e49667c55bb1",
+    "provenance": "User-supplied PostHog dashboard screenshot, preserved without edits"
+  },
+  {
+    "file": "screenshots/03-product-activity-and-funnel.png",
+    "source_filename": "Screenshot 2026-09-28 at 11.32.25\u202fPM.png",
+    "sha256": "46c6835bd9d7c340de77bff58657a48547895123b6cace5763d2471a34d7acd0",
+    "provenance": "User-supplied PostHog dashboard screenshot, preserved without edits"
+  },
+  {
+    "file": "screenshots/04-proposal-outcomes.png",
+    "source_filename": "Screenshot 2026-09-28 at 11.32.32\u202fPM.png",
+    "sha256": "821ea751b7f1b502a6ff8f1bb1990f96fe4723d4f80bfb671f515d1fc4eafcb2",
+    "provenance": "User-supplied PostHog dashboard screenshot, preserved without edits"
+  }
+]

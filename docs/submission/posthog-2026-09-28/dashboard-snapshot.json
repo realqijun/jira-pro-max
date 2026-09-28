@@ -1,0 +1,1253 @@
+{
+  "retrievedAt": "2026-09-28T15:42:14.940Z",
+  "project_id": 618308,
+  "timezone": "UTC",
+  "test_account_filters": [
+    {
+      "key": "id",
+      "type": "cohort",
+      "value": 580980,
+      "operator": "not_in"
+    }
+  ],
+  "excluded_cohort": {
+    "id": 580980,
+    "name": "Internal / Test users",
+    "count": 0,
+    "filters": {
+      "properties": {
+        "type": "OR",
+        "values": [
+          {
+            "type": "AND",
+            "values": [
+              {
+                "key": "$internal_or_test_user",
+                "type": "person",
+                "value": [true],
+                "operator": "exact"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "dashboards": [
+    {
+      "id": 2128445,
+      "name": "AI usage & health",
+      "filters": {},
+      "insights": [
+        {
+          "id": 12159140,
+          "short_id": "ObRTuJlm",
+          "name": "AI questions volume",
+          "description": "Total number of questions sent to the AI assistant over time.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "assistant_question_sent"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": false,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:31:51.059627Z",
+          "results": [
+            {
+              "label": "assistant_question_sent",
+              "count": 54,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 11, 12, 1, 19, 0, 6],
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": 12159141,
+          "short_id": "z1KbBE8g",
+          "name": "Daily active AI users",
+          "description": "Unique users who sent at least one question to the AI assistant per day.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "assistant_question_sent",
+                  "custom_name": "Active AI users"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": false,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:31:51.063620Z",
+          "results": [
+            {
+              "label": "assistant_question_sent",
+              "count": 9,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 3, 1, 1, 0, 1],
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": 12159142,
+          "short_id": "FmPTErWD",
+          "name": "AI questions by workflow",
+          "description": "Breakdown of AI questions by workflow type to see which workflows drive the most usage.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "assistant_question_sent"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsBar",
+                "showLegend": true,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "breakdownFilter": {
+                "breakdowns": [
+                  {
+                    "type": "event",
+                    "property": "workflow"
+                  }
+                ],
+                "breakdown_type": "event",
+                "breakdown_limit": 10
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:31:51.448984Z",
+          "results": [
+            {
+              "label": "project",
+              "count": 42,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 6, 6, 1, 18, 0, 6],
+              "breakdown_value": ["project"],
+              "order": 0
+            },
+            {
+              "label": "workspace",
+              "count": 12,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 0, 1, 0, 0],
+              "breakdown_value": ["workspace"],
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": 12159143,
+          "short_id": "GolLpFh1",
+          "name": "Application exceptions",
+          "description": "Total number of unhandled exceptions over time, split by handled vs unhandled.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "$exception",
+                  "custom_name": "All exceptions"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": false,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:31:51.092068Z",
+          "results": [
+            {
+              "label": "$exception",
+              "count": 7,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 3, 2, 0, 0, 0],
+              "order": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2133285,
+      "name": "Core product activity",
+      "filters": {},
+      "insights": [
+        {
+          "id": 12200184,
+          "short_id": "UfolN6dJ",
+          "name": "Core product activity",
+          "description": "Volume of all key product events over time — projects, evidence, proposals, renders, and transcripts.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "project_created"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "evidence_created"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "render_requested"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "transcript_created"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_accepted"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_rejected"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": true,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:32:19.922431Z",
+          "results": [
+            {
+              "label": "project_created",
+              "count": 18,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 7, 0, 1, 0, 0, 0],
+              "order": 0
+            },
+            {
+              "label": "evidence_created",
+              "count": 35,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 7, 0, 11, 5, 0, 0],
+              "order": 1
+            },
+            {
+              "label": "render_requested",
+              "count": 8,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0],
+              "order": 2
+            },
+            {
+              "label": "transcript_created",
+              "count": 2,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+              "order": 3
+            },
+            {
+              "label": "proposal_accepted",
+              "count": 9,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 3, 0, 0, 2, 0, 0],
+              "order": 4
+            },
+            {
+              "label": "proposal_rejected",
+              "count": 10,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2, 3, 0, 0],
+              "order": 5
+            }
+          ]
+        },
+        {
+          "id": 12200185,
+          "short_id": "hQArBYz4",
+          "name": "Core product funnel",
+          "description": "Conversion from project creation through evidence, render, and proposal acceptance.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "FunnelsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "event": "project_created",
+                  "optionalInFunnel": false
+                },
+                {
+                  "kind": "EventsNode",
+                  "event": "evidence_created",
+                  "optionalInFunnel": false
+                },
+                {
+                  "kind": "EventsNode",
+                  "event": "render_requested",
+                  "optionalInFunnel": false
+                },
+                {
+                  "kind": "EventsNode",
+                  "event": "proposal_accepted",
+                  "optionalInFunnel": false
+                }
+              ],
+              "version": 2,
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "funnelsFilter": {
+                "layout": "vertical",
+                "exclusions": [],
+                "showLegend": false,
+                "funnelVizType": "steps",
+                "legendPosition": "bottom",
+                "funnelOrderType": "ordered",
+                "showAnnotations": true,
+                "showValuesOnSeries": false,
+                "funnelStepReference": "total",
+                "funnelWindowInterval": 14,
+                "breakdownAttributionType": "first_touch",
+                "funnelWindowIntervalUnit": "day",
+                "hideIncompleteConversionWindowPeriods": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:32:19.923763Z",
+          "results": [
+            {
+              "name": "project_created",
+              "count": 14,
+              "order": 0,
+              "average_conversion_time": null,
+              "median_conversion_time": null
+            },
+            {
+              "name": "evidence_created",
+              "count": 7,
+              "order": 1,
+              "average_conversion_time": 265.25100002970015,
+              "median_conversion_time": 22.052000045776367
+            },
+            {
+              "name": "render_requested",
+              "count": 0,
+              "order": 2,
+              "average_conversion_time": null,
+              "median_conversion_time": null
+            },
+            {
+              "name": "proposal_accepted",
+              "count": 0,
+              "order": 3,
+              "average_conversion_time": null,
+              "median_conversion_time": null
+            }
+          ]
+        },
+        {
+          "id": 12200186,
+          "short_id": "WH30lJi4",
+          "name": "Proposal acceptance rate",
+          "description": "Percentage of proposals that are accepted out of all decided proposals.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_accepted"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_rejected"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": false,
+                "formulaNodes": [
+                  {
+                    "formula": "A/(A+B)"
+                  }
+                ],
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "percentage_scaled",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:32:19.949882Z",
+          "results": [
+            {
+              "label": "Formula (A/(A+B))",
+              "count": 0.47368421052631576,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.75, 0, 0, 0.4, 0, 0
+              ],
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": 12200187,
+          "short_id": "T4fvgkjP",
+          "name": "Proposal outcomes",
+          "description": "Accepted vs rejected proposals over time.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_accepted",
+                  "custom_name": "Accepted"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "proposal_rejected",
+                  "custom_name": "Rejected"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsBar",
+                "showLegend": true,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:32:20.165105Z",
+          "results": [
+            {
+              "label": "proposal_accepted",
+              "count": 9,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 3, 0, 0, 2, 0, 0],
+              "order": 0
+            },
+            {
+              "label": "proposal_rejected",
+              "count": 10,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2, 3, 0, 0],
+              "order": 1
+            }
+          ]
+        },
+        {
+          "id": 12200188,
+          "short_id": "D0CaNsNC",
+          "name": "UX friction signals",
+          "description": "Dead clicks and rage clicks over time — indicators of UI confusion or broken interactions.",
+          "query": {
+            "kind": "InsightVizNode",
+            "source": {
+              "kind": "TrendsQuery",
+              "series": [
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "$dead_click",
+                  "custom_name": "Dead clicks"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "total",
+                  "event": "$rageclick",
+                  "custom_name": "Rage clicks"
+                }
+              ],
+              "version": 4,
+              "interval": "day",
+              "dateRange": {
+                "date_from": "-30d",
+                "explicitDate": false,
+                "excludeIncompletePeriods": false
+              },
+              "properties": [],
+              "trendsFilter": {
+                "display": "ActionsLineGraph",
+                "showLegend": true,
+                "hideWeekends": false,
+                "metricSummary": "total",
+                "legendPosition": "bottom",
+                "yAxisScaleType": "linear",
+                "showAnnotations": true,
+                "metricShowChange": true,
+                "yAxisStartAtZero": true,
+                "showMultipleYAxes": false,
+                "showLabelsOnSeries": false,
+                "showValuesOnSeries": false,
+                "smoothingIntervals": 1,
+                "showPercentStackView": false,
+                "stackBreakdownValues": false,
+                "aggregationAxisFormat": "numeric",
+                "resultCustomizationBy": "value",
+                "excludeBoxPlotOutliers": true,
+                "metricColorByDirection": false,
+                "showAlertThresholdLines": false
+              },
+              "filterTestAccounts": true
+            }
+          },
+          "last_refresh": "2026-09-28T15:32:20.936107Z",
+          "results": [
+            {
+              "label": "$dead_click",
+              "count": 56,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 40, 12, 1, 0, 0, 0],
+              "order": 0
+            },
+            {
+              "label": "$rageclick",
+              "count": 1,
+              "days": [
+                "2026-08-29",
+                "2026-08-30",
+                "2026-08-31",
+                "2026-09-01",
+                "2026-09-02",
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05",
+                "2026-09-06",
+                "2026-09-07",
+                "2026-09-08",
+                "2026-09-09",
+                "2026-09-10",
+                "2026-09-11",
+                "2026-09-12",
+                "2026-09-13",
+                "2026-09-14",
+                "2026-09-15",
+                "2026-09-16",
+                "2026-09-17",
+                "2026-09-18",
+                "2026-09-19",
+                "2026-09-20",
+                "2026-09-21",
+                "2026-09-22",
+                "2026-09-23",
+                "2026-09-24",
+                "2026-09-25",
+                "2026-09-26",
+                "2026-09-27",
+                "2026-09-28"
+              ],
+              "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "order": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
