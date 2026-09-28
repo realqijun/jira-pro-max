@@ -15,11 +15,19 @@ const nextConfig: NextConfig = {
   /** faiss-node is a native addon; it must be required, not bundled. */
   serverExternalPackages: ["faiss-node"],
   /**
-   * The sample Project's renders are read from disk at signup, so the images have to travel
-   * with the server bundle; file tracing cannot see a path built at runtime.
+   * Files the trace cannot discover by following imports, so they have to be named.
+   *
+   * The sample Project's renders are read from disk at signup, from a path built at runtime.
+   *
+   * faiss-node loads its addon through `bindings`, which tries a list of candidate paths at
+   * runtime rather than requiring the file, so the trace never sees `faiss-node.node` and the
+   * deployed function fails module evaluation on first import - taking every page that reaches
+   * the Assistant with it. The whole `Release` directory goes along because the Linux prebuild
+   * puts OpenMP and BLAS shared objects beside the addon.
    */
   outputFileTracingIncludes: {
     "/api/auth/[...all]": ["./public/samples/renders/**"],
+    "/**": ["./node_modules/faiss-node/build/Release/**/*"],
   },
 };
 
