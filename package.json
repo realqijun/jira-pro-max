@@ -72,5 +72,8 @@
     "tsx": "^4.23.13",
     "typescript": "^5",
     "vitest": "^4.1.11"
+  },
+  "allowScripts": {
+    "faiss-node@0.5.1": true
   }
 }
