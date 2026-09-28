@@ -13,7 +13,9 @@ export const proposalsRepo = {
           ? and(eq(decisionProposals.projectId, projectId), eq(decisionProposals.status, status))
           : eq(decisionProposals.projectId, projectId),
       )
-      .orderBy(desc(decisionProposals.createdAt)),
+      // One pass inserts its Proposals in one statement, so they share `createdAt`; `id` breaks the tie
+      // so review steps through them in a stable order.
+      .orderBy(desc(decisionProposals.createdAt), desc(decisionProposals.id)),
 
   findById: async (db: DbOrTx, id: string): Promise<ProposalRow | undefined> => {
     const [row] = await db.select().from(decisionProposals).where(eq(decisionProposals.id, id));

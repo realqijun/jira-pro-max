@@ -16,7 +16,7 @@ This project is created to solve a common paint point across project managers, h
 
 ## Setup and verification
 
-`cp .env.example .env`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed` (demo account only, see `.env.example`), `npm run dev`. Scripts are in `package.json`; `typecheck`, `lint`, `test` (Vitest, needs the `db_test` container), `test:e2e` (Playwright, needs a running dev server or lets the config start one). Pre-commit runs lint-staged + typecheck. CI (`.github/workflows/ci.yml`, runs on Bun) checks `format:check`, `eslint --max-warnings=0` and `typecheck` on every PR. A Devin `PostToolUse` hook (`.devin/hooks.v1.json`) runs Prettier + `eslint --fix` on each file the agent edits.
+`cp .env.example .env`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed` (demo account only, see `.env.example`), `npm run dev`. Scripts are in `package.json`; `typecheck`, `lint`, `test` (Vitest, needs the `db_test` container), `test:e2e` (Playwright, needs a running dev server or lets the config start one; the proposal flows assert exact Proposals, so a reused dev server must run with `PROPOSALS_EXTRACTOR=heuristic`). Pre-commit runs lint-staged + typecheck. CI (`.github/workflows/ci.yml`, runs on Bun) checks `format:check`, `eslint --max-warnings=0` and `typecheck` on every PR. A Devin `PostToolUse` hook (`.devin/hooks.v1.json`) runs Prettier + `eslint --fix` on each file the agent edits.
 
 ## Model behaviour is measured, not asserted
 

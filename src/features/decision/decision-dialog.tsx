@@ -1,6 +1,6 @@
 "use client";
 
-import { Crosshair, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Crosshair, Trash2 } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import {
@@ -36,6 +36,8 @@ export function DecisionDialog({
   dependencies,
   risks,
   draft,
+  review,
+  onAccepted,
 }: {
   open: boolean;
   onClose: () => void;
@@ -48,6 +50,10 @@ export function DecisionDialog({
   risks: RiskListItem[];
   /** A pending Proposal to confirm: prefills the create form and is marked accepted on save (issue #39). */
   draft?: (ProposalRow & { sourceLabels: Map<string, string> }) | null;
+  /** Position of `draft` among the pending Proposals, so the PM can step through them one at a time. */
+  review?: { index: number; total: number; onPrev?: () => void; onNext?: () => void };
+  /** Called after a `draft` is accepted instead of `onClose`, so review can move on to the next Proposal. */
+  onAccepted?: () => void;
 }) {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const d = item?.decision;
@@ -123,6 +129,21 @@ export function DecisionDialog({
               </Link>
             </div>
           )}
+          {draft && review && review.total > 1 && (
+            <div className="mb-3 flex items-center justify-between rounded-md border border-hairline bg-surface-1 px-3 py-1.5">
+              <span className="text-caption text-ink-subtle" data-testid="proposal-position">
+                Suggested decision {review.index + 1} of {review.total}
+              </span>
+              <span className="flex items-center gap-1">
+                <Button type="button" variant="ghost" size="sm" disabled={!review.onPrev} onClick={review.onPrev}>
+                  <ChevronLeft className="size-3.5" /> Previous
+                </Button>
+                <Button type="button" variant="ghost" size="sm" disabled={!review.onNext} onClick={review.onNext}>
+                  Next <ChevronRight className="size-3.5" />
+                </Button>
+              </span>
+            </div>
+          )}
           <ItemDialogTabs history={d ? { projectId: d.projectId, entityType: "decision", entityId: d.id } : null}>
             <ActionForm
               key={d?.id ?? "new"}
@@ -138,7 +159,7 @@ export function DecisionDialog({
               }
               submitLabel={d ? "Save changes" : draft ? "Accept and create decision" : "Create decision"}
               cancel={onClose}
-              onSuccess={onClose}
+              onSuccess={draft && onAccepted ? onAccepted : onClose}
               footerStart={
                 d && (
                   <Button

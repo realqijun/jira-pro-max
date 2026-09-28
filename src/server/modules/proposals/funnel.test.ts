@@ -55,7 +55,10 @@ async function projectWithOneProposal(key: string, body = SENTENCE) {
   const project = await makeProject(ctx, key);
   await evidenceService.create(ctx, { projectId: project.id, title: "Minutes", kind: "minutes", body });
   await proposalsService.runPass(ctx, project.id, { extract: heuristicExtract, trigger: "automatic" });
-  const [proposal] = await proposalsService.listPending(ctx, project.id);
+  // A pass's Proposals share `createdAt`, so pick the one quoting the first sentence rather than by position.
+  const proposal = (await proposalsService.listPending(ctx, project.id)).find((p) =>
+    body.startsWith(p.sources[0]!.excerpt),
+  );
   return { projectId: project.id, proposal: proposal! };
 }
 

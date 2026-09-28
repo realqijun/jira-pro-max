@@ -988,7 +988,7 @@ test.describe("proposals", () => {
     await page.getByRole("main").getByRole("link", { name: "Decisions", exact: true }).click();
     await expect(page).toHaveURL(/\/decisions$/);
     await page.getByTestId("propose-from-evidence").click();
-    await expect(page.getByText(/proposed from|Nothing new/)).toBeVisible();
+    await expect(page.getByText(/proposed from|already read/)).toBeVisible();
     const proposalDialog = page.getByRole("dialog", { name: "Confirm proposed decision" });
     if (expectPopup) await expect(proposalDialog).toBeVisible();
     if (await proposalDialog.isVisible()) await proposalDialog.getByRole("button", { name: "Close" }).click();
@@ -1052,7 +1052,7 @@ test.describe("proposals", () => {
     await expect(cards).toHaveCount(0);
 
     await propose(page);
-    await expect(page.getByText("Nothing new to read")).toBeVisible();
+    await expect(page.getByText("All evidence already read, no suggested decisions")).toBeVisible();
     await expect(page.getByTestId("acceptance-rate")).toHaveText(/2 of 3/);
     await expect(page.getByText(/^Freeze the legacy gateway on 1 October/)).toBeVisible();
     await shot(page, "acceptance-rate");
@@ -1231,7 +1231,7 @@ test.describe("transcripts", () => {
     await page.getByRole("main").getByRole("link", { name: "Decisions", exact: true }).click();
     await expect(page).toHaveURL(/\/decisions$/);
     await page.getByTestId("propose-from-evidence").click();
-    await expect(page.getByText(/proposed from|Nothing new/)).toBeVisible();
+    await expect(page.getByText(/proposed from|already read/)).toBeVisible();
     await page.getByRole("main").getByRole("link", { name: "Overview", exact: true }).click();
     const card = page.getByTestId("proposal-card").filter({ hasText: "freeze scope after the pilot" });
     await expect(card).toContainText("Steering meeting transcript · Marcus");

@@ -106,10 +106,12 @@ export const proposalsService = {
         textHash,
       });
     }
+    // A manual pass ends in review: it points at the newest pending Proposal, whichever pass raised it.
+    const firstPending = async () =>
+      opts.trigger === "manual" ? (await proposalsRepo.listByProject(ctx.db, projectId, "pending"))[0]?.id : undefined;
     if (!candidates.length) {
-      if (opts.trigger !== "manual") return { skipped: "nothing_new" };
-      const [pending] = await proposalsRepo.listByProject(ctx.db, projectId, "pending");
-      return { skipped: "nothing_new", proposalId: pending?.id };
+      const proposalId = await firstPending();
+      return proposalId ? { skipped: "nothing_new", proposalId } : { skipped: "nothing_new" };
     }
 
     const [people, milestones, tasks, conversation] = await Promise.all([
@@ -183,7 +185,8 @@ export const proposalsService = {
         comment: candidates.filter((c) => c.kind === "comment").length,
       },
     });
-    return inserted[0] ? { ...outcome, proposalId: inserted[0].id } : outcome;
+    const proposalId = opts.trigger === "manual" ? await firstPending() : inserted[0]?.id;
+    return proposalId ? { ...outcome, proposalId } : outcome;
   },
 
   listPending: async (ctx: Ctx, projectId: string) => {

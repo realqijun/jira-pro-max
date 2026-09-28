@@ -7,12 +7,14 @@ import { runProposalPassAction } from "@/server/modules/proposals/actions";
 import { Button } from "@/shared/ui";
 
 const SKIPPED_NOTE = {
-  nothing_new: "Nothing new to read",
   not_configured: "Assistant not configured",
   failed: "Pass failed",
 } as const;
 
-/** Runs the Proposal pass now (it also runs after new Evidence and Comments); reports the outcome inline. */
+/**
+ * Reads any Evidence and Comments the automatic pass has not read yet, then opens the pending
+ * Proposals for review one at a time; reports the outcome inline.
+ */
 export function ProposeButton({ projectId }: { projectId: string }) {
   const router = useRouter();
   const [pending, setPending] = React.useState(false);
@@ -35,11 +37,15 @@ export function ProposeButton({ projectId }: { projectId: string }) {
           const out = res.data;
           setNote(
             "skipped" in out
-              ? SKIPPED_NOTE[out.skipped]
+              ? out.skipped === "nothing_new"
+                ? out.proposalId
+                  ? "All evidence already read"
+                  : "All evidence already read, no suggested decisions"
+                : SKIPPED_NOTE[out.skipped]
               : `${out.proposed} proposed${out.discarded ? `, ${out.discarded} discarded` : ""} from ${out.sourcesPassed} source${out.sourcesPassed === 1 ? "" : "s"}`,
           );
           if ("proposalId" in out && out.proposalId) {
-            router.push(`/projects/${projectId}/decisions?proposal=${out.proposalId}`);
+            router.replace(`/projects/${projectId}/decisions?proposal=${out.proposalId}`, { scroll: false });
           } else {
             router.refresh();
           }

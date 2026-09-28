@@ -19,5 +19,7 @@ export default defineConfig({
         url: `http://localhost:${port}/login`,
         reuseExistingServer: true,
         timeout: 60_000,
+        // The proposal flows assert exact Proposals; the heuristic extractor is the deterministic one.
+        env: { PROPOSALS_EXTRACTOR: process.env.PROPOSALS_EXTRACTOR ?? "heuristic" },
       },
 });

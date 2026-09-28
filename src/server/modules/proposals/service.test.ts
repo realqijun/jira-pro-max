@@ -65,8 +65,9 @@ describe("proposalsService.runPass", () => {
     expect(await graphCounts()).toEqual(before);
 
     const pending = await proposalsService.listPending(ctx, projectId);
-    expect("proposalId" in out).toBe(true);
-    if ("proposalId" in out) expect(pending.map((p) => p.id)).toContain(out.proposalId);
+    // Review opens on the first Proposal of the list it steps through, not an arbitrary new one.
+    expect(out).toMatchObject({ proposalId: pending[0]!.id });
+    expect((await proposalsService.listPending(ctx, projectId)).map((p) => p.id)).toEqual(pending.map((p) => p.id));
     expect(pending.map((p) => p.title).sort()).toEqual([
       "Recruit through the alumni list instead of a public call",
       "Switch from weekly surveys to fortnightly interviews",
@@ -78,6 +79,20 @@ describe("proposalsService.runPass", () => {
     const retry = await proposalsService.runPass(ctx, projectId, { extract: heuristicExtract, trigger: "manual" });
     expect(retry).toMatchObject({ skipped: "nothing_new", proposalId: pending[0]!.id });
     expect(await proposalsService.listPending(ctx, projectId)).toHaveLength(2);
+  });
+
+  it("a manual pass that reads new Sources but raises nothing still points at the pending Proposals", async () => {
+    const p = await makeProject(ctx, "MNP");
+    await evidenceService.create(ctx, { projectId: p.id, title: "Minutes", kind: "minutes", body: SENTENCE });
+    await proposalsService.runPass(ctx, p.id, { extract: heuristicExtract, trigger: "automatic" });
+    const [older] = await proposalsService.listPending(ctx, p.id);
+    await evidenceService.create(ctx, { projectId: p.id, title: "Call", kind: "minutes", body: "Budget is on track." });
+
+    const out = await proposalsService.runPass(ctx, p.id, { extract: heuristicExtract, trigger: "manual" });
+    expect(out).toMatchObject({ sourcesPassed: 1, proposed: 0, proposalId: older!.id });
+    expect(await proposalsService.runPass(ctx, p.id, { extract: heuristicExtract, trigger: "automatic" })).toEqual({
+      skipped: "nothing_new",
+    });
   });
 
   it("discards output whose Source or excerpt is not traceable", async () => {
