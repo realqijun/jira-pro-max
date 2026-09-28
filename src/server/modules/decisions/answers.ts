@@ -1,7 +1,11 @@
 import type { ActivityEventRow } from "@/server/modules/activity/schema";
 import type { CommentRow } from "@/server/modules/comments/schema";
+import { citation } from "@/shared/lib/citation";
 import { decisionHref, evidenceHref, passageHref } from "@/shared/lib/hrefs";
 import type { DecisionSourceRow } from "./schema";
+
+/** Kept as part of this module's surface; the builder itself is shared with the Evidence tools. */
+export { citation };
 
 /**
  * Pure ranking and linking for "why did we" answers (issue #40). No I/O: the service loads
@@ -81,13 +85,6 @@ export function rankEvidence<T extends RankableEvidence>(rows: T[], terms: strin
     .slice(0, limit)
     .map((x) => x.e);
 }
-
-/**
- * A ready-made Markdown citation for the model to paste verbatim. Brackets and line breaks in
- * a title would break the `[label](href)` parser in the dock, so they are neutralised.
- */
-export const citation = (label: string, href: string) =>
-  `[${label.replace(/\[/g, "(").replace(/\]/g, ")").replace(/\s+/g, " ").trim() || "source"}](${href})`;
 
 export interface HrefLookups {
   comments: Map<string, Pick<CommentRow, "entityType" | "entityId">>;

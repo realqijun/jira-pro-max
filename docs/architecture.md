@@ -374,7 +374,7 @@ The default model is configured as `gpt-4o-mini`; only the OpenAI provider is im
 Limits default to eight tool-loop steps and fifty User Messages per UTC day across Conversations.
 The chat route has a sixty-second maximum duration declaration.
 Without a model key, the application still loads and chat returns a not-configured response.
-Evidence returned by `get_evidence` is capped at 20,000 text characters and labelled as untrusted source material in model-facing instructions.
+Evidence returned by `read_evidence` is capped at 20,000 text characters and labelled as untrusted source material in model-facing instructions.
 
 ### Proposals, Reflection, and deterministic reasoning
 

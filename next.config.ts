@@ -9,7 +9,11 @@ const nextConfig: NextConfig = {
       /** Evidence uploads are capped at MAX_EVIDENCE_BYTES (15 MB) plus form overhead. */
       bodySizeLimit: "16mb",
     },
+    /** Same ceiling for the proxy layer (default 10 MB), which truncates the body before the action sees it. */
+    proxyClientMaxBodySize: "16mb",
   },
+  /** faiss-node is a native addon; it must be required, not bundled. */
+  serverExternalPackages: ["faiss-node"],
   /**
    * The sample Project's renders are read from disk at signup, so the images have to travel
    * with the server bundle; file tracing cannot see a path built at runtime.

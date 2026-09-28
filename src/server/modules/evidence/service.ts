@@ -11,9 +11,12 @@ import { risksRepo } from "@/server/modules/risks/repository";
 import { tasksRepo } from "@/server/modules/tasks/repository";
 import { getStorage } from "@/server/storage";
 import { labelFor, type LinkableEntityType } from "@/shared/domain";
-import { extractText } from "./extract";
+import { assertLabelsInProject } from "@/server/modules/labels/service";
+import { pruneText } from "@/server/modules/search/prune";
+import { fileToMarkdown } from "./markitdown";
+import { fileToTextViaModel } from "./transcribe";
 import { segmentTranscript } from "./passages";
-import { evidenceLinksRepo, evidenceRepo, passagesRepo } from "./repository";
+import { evidenceLabelsRepo, evidenceLinksRepo, evidenceRepo, passagesRepo } from "./repository";
 import type { EvidenceRow } from "./schema";
 import type { CreateEvidenceInput, EvidenceLinkInput, UpdateEvidenceInput } from "./validation";
 
@@ -33,6 +36,14 @@ export interface UploadedFile {
   size: number;
   bytes: Buffer;
 }
+
+/** A text file's own bytes are the text; reading them needs no converter and no model call. */
+const textFile = (file: UploadedFile) => {
+  if (!file.type.startsWith("text/")) return null;
+  const text = file.bytes.toString("utf-8").trim();
+  if (!text) return null;
+  return text.slice(0, Number(process.env.EVIDENCE_EXTRACT_MAX_CHARS) || 100_000);
+};
 
 /** Object name is derived from the row id; only the original extension is kept from the client name. */
 function storageKeyFor(projectId: string, evidenceId: string, fileName: string) {
@@ -109,8 +120,11 @@ export const evidenceService = {
   /**
    * Either `file` or `input.body` must be present. Bytes are written to storage before the
    * transaction so a failed commit leaves at most an orphan blob, never a row pointing at nothing.
+   * Markitdown is the converter: its Markdown is the display text and, being text, is the only
+   * file output sent to LitePruner for `prunedText`. A file markitdown cannot read goes to the
+   * model as-is, and that transcription is what the index embeds.
    */
-  create: async (ctx: Ctx, input: CreateEvidenceInput, file?: UploadedFile | null) => {
+  create: async (ctx: Ctx, { labelIds = [], ...input }: CreateEvidenceInput, file?: UploadedFile | null) => {
     await assertOwnsProject(ctx.db, ctx.userId, input.projectId);
     if (!file && !input.body) throw new ValidationError("Attach a file or paste some text", { body: ["Required"] });
     if (file) {
@@ -121,10 +135,18 @@ export const evidenceService = {
     const id = randomUUID();
     const storageKey = file ? storageKeyFor(input.projectId, id, file.name) : null;
     if (file && storageKey) await getStorage().put(storageKey, file.bytes, file.type);
-    const extractedText = file ? await extractText(file) : null;
+    const markdown = file ? await fileToMarkdown(file) : null;
+    // markitdown is the converter; a file it cannot read is used directly - text bytes as
+    // themselves, anything else (scans, image-only PDFs) to the model as-is.
+    const extractedText = markdown ?? (file ? (textFile(file) ?? (await fileToTextViaModel(file))) : null);
+    // LitePruner takes text, not files: only markitdown output or a pasted body is sent. The
+    // index stores what it will embed - the pruned copy, else the original text on any failure.
+    const toPrune = input.body ?? markdown ?? "";
+    const prunedText = (await pruneText(toPrune))?.text ?? (toPrune || extractedText);
     try {
       return await mutate(ctx, async (tx, rec) => {
         await assertOwnsProject(tx, ctx.userId, input.projectId);
+        await assertLabelsInProject(tx, input.projectId, labelIds);
         const row = await evidenceRepo.insert(tx, {
           ...input,
           id,
@@ -133,8 +155,10 @@ export const evidenceService = {
           mimeType: file?.type,
           sizeBytes: file?.size,
           extractedText,
+          prunedText,
         });
         await syncPassages(tx, row);
+        await evidenceLabelsRepo.setLabels(tx, row.id, labelIds);
         rec.created("evidence", input.projectId, row.id, row.title);
         return row;
       });
@@ -147,17 +171,35 @@ export const evidenceService = {
     }
   },
 
-  update: (ctx: Ctx, { id, ...patch }: UpdateEvidenceInput) =>
-    mutate(ctx, async (tx, rec) => {
+  update: async (ctx: Ctx, { id, labelIds, ...patch }: UpdateEvidenceInput) => {
+    // Pruning is a network call and must happen outside the transaction, like extraction.
+    let prunedText: string | null | undefined;
+    if ("body" in patch) {
+      const before = await getOwned(ctx.db, ctx.userId, id);
+      const nextText = patch.body === undefined ? evidenceText(before) : (patch.body ?? before.extractedText ?? "");
+      prunedText = (await pruneText(nextText))?.text ?? (nextText || null);
+    }
+    return mutate(ctx, async (tx, rec) => {
       const before = await getOwned(tx, ctx.userId, id);
       const clean = compactPatch(patch);
       const changes = diffFields(before, clean);
-      if (!changes.length) return before;
-      const after = await evidenceRepo.update(tx, id, clean);
+      if (labelIds) {
+        await assertLabelsInProject(tx, before.projectId, labelIds);
+        const oldLabels = (await evidenceLabelsRepo.labelIds(tx, id)).sort();
+        const newLabels = [...labelIds].sort();
+        if (JSON.stringify(oldLabels) !== JSON.stringify(newLabels)) {
+          await evidenceLabelsRepo.setLabels(tx, id, labelIds);
+          changes.push({ field: "labelIds", oldValue: oldLabels, newValue: newLabels });
+        }
+      }
+      const sets = { ...clean, ...(prunedText !== undefined ? { prunedText } : {}) };
+      if (!changes.length && !Object.keys(sets).length) return before;
+      const after = Object.keys(sets).length ? await evidenceRepo.update(tx, id, sets) : before;
       if (changes.some((c) => c.field === "kind" || c.field === "body")) await syncPassages(tx, after);
-      rec.updated("evidence", before.projectId, id, after.title, changes);
+      if (changes.length) rec.updated("evidence", before.projectId, id, after.title, changes);
       return after;
-    }),
+    });
+  },
 
   /** Row goes first; the blob is removed only once the delete has committed. */
   delete: async (ctx: Ctx, id: string) => {
@@ -240,5 +282,11 @@ export const evidenceService = {
   listLinkTargets: async (ctx: Ctx, projectId: string) => {
     await assertOwnsProject(ctx.db, ctx.userId, projectId);
     return evidenceLinksRepo.listTargets(ctx.db, projectId);
+  },
+
+  /** (evidenceId, labelId) pairs across the Project, for the Evidence page's Label display. */
+  labelPairs: async (ctx: Ctx, projectId: string) => {
+    await assertOwnsProject(ctx.db, ctx.userId, projectId);
+    return evidenceLabelsRepo.forProject(ctx.db, projectId);
   },
 };

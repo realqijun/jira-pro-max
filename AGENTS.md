@@ -40,4 +40,4 @@ This project is created to solve a common paint point across project managers, h
 
 ## Where the AI layer plugs in
 
-Subscribe with `eventBus.subscribe("*" | "task.updated" | …)` in `src/server/events/bus.ts`; read through the module repositories; store extracted text in `evidence.extractedText` (nullable, reserved). `src/server/modules/workspace/queries.ts` is the deterministic read model the Health Briefing should enrich rather than replace.
+Subscribe with `eventBus.subscribe("*" | "task.updated" | …)` in `src/server/events/bus.ts`; read through the module repositories; store extracted text in `evidence.extractedText` (nullable, reserved). `src/server/modules/search/` is the reference subscriber: it turns `evidence.*` events into chunked embeddings (OpenAI, optional LitePruner compression of `evidence.prunedText`, per-Project FAISS - ADR 0014). `src/server/modules/workspace/queries.ts` is the deterministic read model the Health Briefing should enrich rather than replace.

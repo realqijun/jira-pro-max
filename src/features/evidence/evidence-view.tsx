@@ -29,6 +29,7 @@ import type { LinkTarget } from "@/server/modules/evidence/repository";
 import { EVIDENCE_KIND_COLOR, LinkedEvidenceCount } from "@/entities/evidence/evidence-chip";
 import { LinkedItemChip, keyTextFor } from "@/entities/evidence/linked-item-chip";
 import { LinkedItems } from "@/features/evidence/linked-items";
+import { LabelPicker } from "@/features/label/label-picker";
 
 const fmtBytes = (n: number) =>
   n > 1_000_000 ? `${(n / 1_000_000).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1000))} KB`;
@@ -38,6 +39,7 @@ export function EvidenceView({
   items,
   targets,
   passages,
+  evidenceLabels,
 }: {
   refs: ProjectRefs;
   items: EvidenceRow[];
@@ -45,8 +47,14 @@ export function EvidenceView({
   passages: EvidencePassageRow[];
   /** Every linkable Task/Risk/Milestone in the project, for the "Link item" picker. */
   targets: LinkTarget[];
+  /** (evidenceId, labelId) pairs: which Labels each item carries. */
+  evidenceLabels: { evidenceId: string; labelId: string }[];
 }) {
   const linksFor = (evidenceId: string) => refs.evidenceLinks.filter((l) => l.evidenceId === evidenceId);
+  const labelsFor = (evidenceId: string) => {
+    const ids = new Set(evidenceLabels.filter((p) => p.evidenceId === evidenceId).map((p) => p.labelId));
+    return refs.labels.filter((l) => ids.has(l.id));
+  };
   const router = useRouter();
   const params = useSearchParams();
   const base = `/projects/${refs.project.id}/evidence`;
@@ -117,6 +125,11 @@ export function EvidenceView({
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <Badge color={EVIDENCE_KIND_COLOR[selected.kind]}>{labelFor(selected.kind)}</Badge>
+                  {labelsFor(selected.id).map((l) => (
+                    <Badge key={l.id} color={l.color}>
+                      {l.name}
+                    </Badge>
+                  ))}
                   {selected.sourceDate && (
                     <span className="text-caption text-ink-subtle">
                       Source date {fmtDate(selected.sourceDate, "d MMM yyyy")}
@@ -220,6 +233,7 @@ export function EvidenceView({
             inputClassName="min-h-32 font-mono text-mono"
           />
           <TextField name="notes" label="Notes" placeholder="Anything the reader should know about this artifact" />
+          <LabelPicker labels={refs.labels} selected={[]} />
         </ActionForm>
       </Dialog>
 
@@ -250,6 +264,7 @@ export function EvidenceView({
               inputClassName="min-h-32 font-mono text-mono"
             />
             <TextField name="notes" label="Notes" defaultValue={selected.notes ?? ""} />
+            <LabelPicker labels={refs.labels} selected={labelsFor(selected.id).map((l) => l.id)} />
           </ActionForm>
         </Dialog>
       )}

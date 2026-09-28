@@ -1,6 +1,7 @@
 import { date, index, integer, pgTable, primaryKey, text, timestamp, unique } from "drizzle-orm/pg-core";
 import { id, timestamps } from "@/server/db/columns";
 import { entityTypeEnum, evidenceKindEnum } from "@/server/db/enums";
+import { labels } from "@/server/modules/labels/schema";
 import { projects } from "@/server/modules/projects/schema";
 
 /**
@@ -25,6 +26,8 @@ export const evidence = pgTable(
     mimeType: text("mime_type"),
     sizeBytes: integer("size_bytes"),
     extractedText: text("extracted_text"),
+    /** LitePruner-compressed copy of the indexable text; what chunks and embeddings derive from. */
+    prunedText: text("pruned_text"),
     ...timestamps,
   },
   (t) => [index("evidence_project_idx").on(t.projectId)],
@@ -85,3 +88,20 @@ export const evidenceLinks = pgTable(
 
 export type EvidenceLinkRow = typeof evidenceLinks.$inferSelect;
 export type NewEvidenceLinkRow = typeof evidenceLinks.$inferInsert;
+
+/** Many-to-many between Evidence and the Project's Labels (same Labels that tag Tasks). */
+export const evidenceLabels = pgTable(
+  "evidence_labels",
+  {
+    evidenceId: text("evidence_id")
+      .notNull()
+      .references(() => evidence.id, { onDelete: "cascade" }),
+    labelId: text("label_id")
+      .notNull()
+      .references(() => labels.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.evidenceId, t.labelId] })],
+);
+
+export type EvidenceLabelRow = typeof evidenceLabels.$inferSelect;
+export type NewEvidenceLabelRow = typeof evidenceLabels.$inferInsert;

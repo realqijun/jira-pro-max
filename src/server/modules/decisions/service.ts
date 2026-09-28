@@ -373,6 +373,7 @@ export const decisionsService = {
             number: r.decision.number,
             title: r.decision.title,
             href: decisionHref(projectId, r.decision.id),
+            cite: citation(`D-${r.decision.number} ${r.decision.title}`, decisionHref(projectId, r.decision.id)),
           }
         : null;
     };

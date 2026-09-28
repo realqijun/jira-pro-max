@@ -51,3 +51,4 @@ next-env.d.ts
 # course materials (not source)
 /*.pdf
 /*.docx
+.venv/

@@ -184,10 +184,10 @@ The registry currently contains 27 tools.
 | Comments and dependencies | `add_comment`, `add_dependency`, `remove_dependency`                                     |
 | People and Teams          | `list_people`, `create_person`, `list_teams`                                             |
 | Labels                    | `list_labels`, `create_label`                                                            |
-| Evidence                  | `list_evidence`, `get_evidence`, `link_evidence`                                         |
+| Evidence                  | `list_evidence`, `read_evidence`, `link_evidence`                                        |
 | Decision answers          | `search_decisions`                                                                       |
 
-`get_evidence` limits model-visible source text to 20,000 characters per call and explicitly labels it as source material rather than instructions.
+`read_evidence` limits model-visible source text to 20,000 characters per call and explicitly labels it as source material rather than instructions.
 
 Source: [tool registry](../src/server/modules/assistant/tools.ts).
 
@@ -418,7 +418,7 @@ Evidence marked as a transcript is split into ordered Passages with optional spe
 Proposal extraction prefers transcript Evidence and can attach a citation to the exact Passage containing the quoted excerpt.
 If passages are later replaced or deleted, Decision citations can degrade to the containing Evidence item rather than becoming unusable.
 
-The Assistant's `get_evidence` tool exposes at most 20,000 characters in one result and reports whether the text was truncated.
+The Assistant's `read_evidence` tool exposes at most 20,000 characters in one result and reports whether the text was truncated.
 This is separate from the larger ingestion cap and limits how much untrusted source material enters one model tool result.
 
 Sources: [Evidence extraction](../src/server/modules/evidence/extract.ts), [Evidence passages](../src/server/modules/evidence/passages.ts), [Evidence service](../src/server/modules/evidence/service.ts), [tool registry](../src/server/modules/assistant/tools.ts), [proposal service](../src/server/modules/proposals/service.ts).

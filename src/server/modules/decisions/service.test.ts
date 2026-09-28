@@ -571,6 +571,9 @@ describe("search (#40)", () => {
     ]);
     expect(a.sources.every((s) => s.href.startsWith("/"))).toBe(true);
     expect(a.supersededBy).toBeNull();
+    // The model is told to copy `cite` rather than build a link, so every citable row carries one.
+    expect(a.cite).toBe(`[D-${a.number} ${a.title}](${a.href})`);
+    expect(a.sources.map((s) => s.cite)).toEqual(a.sources.map((s) => `[${s.label}](${s.href})`));
   });
 
   it("names the superseding Decision and returns nearest Evidence when nothing matches", async () => {
@@ -603,6 +606,9 @@ describe("search (#40)", () => {
       supersededBy: { id: newer.id, number: newer.number, title: "Use Adyen" },
     });
     expect(out.decisions[0]!.supersededBy!.href).toBe(`/projects/${p.id}/decisions?decision=${newer.id}`);
+    expect(out.decisions[0]!.supersededBy!.cite).toBe(
+      `[D-${newer.number} Use Adyen](/projects/${p.id}/decisions?decision=${newer.id})`,
+    );
 
     const none = await decisionsService.search(ctx, {
       projectId: p.id,
@@ -616,6 +622,7 @@ describe("search (#40)", () => {
         title: "Vendor evaluation",
         kind: "plan",
         href: `/projects/${p.id}/evidence?item=${ev.id}#evidence-${ev.id}`,
+        cite: `[Vendor evaluation](/projects/${p.id}/evidence?item=${ev.id}#evidence-${ev.id})`,
       },
     ]);
     expect(

@@ -48,7 +48,13 @@ export const PROJECT_TOOL_GROUPS: ToolGroup[] = [
       { name: "remove_dependency", label: "Remove dependency" },
     ],
   },
-  { name: "Evidence", tools: [{ name: "link_evidence", label: "Link Evidence" }] },
+  {
+    name: "Evidence",
+    tools: [
+      { name: "link_evidence", label: "Link Evidence" },
+      { name: "set_evidence_labels", label: "Tag Evidence" },
+    ],
+  },
   { name: "Project", tools: [{ name: "update_project", label: "Update Project" }] },
 ];
 

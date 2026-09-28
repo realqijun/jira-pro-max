@@ -1,23 +1,51 @@
 import Link from "next/link";
 import * as React from "react";
+import { PROJECT_SECTIONS } from "@/shared/lib/project-sections";
 
 export type TextChunk = { type: "text"; text: string } | { type: "link"; label: string; href: string };
 
 const LINK = /\[([^\]\n]+)\]\(([^)\s]+)\)/g;
 
-/** Project routes only: no scheme, no protocol-relative `//`, no other app pages, so a model cannot send the User elsewhere. */
-export const isInternalHref = (href: string) => href.startsWith("/projects/");
+/** Project sections a citation can land on (plus the graph, which is a page but not a tab). */
+export const CITATION_KINDS = new Set<string>([...PROJECT_SECTIONS.map((s) => s.slug).filter(Boolean), "graph"]);
 
 /**
- * Models sometimes "absolutise" a relative href with an invented host. Keep only the in-app
- * part (path, query, hash) of a relative or http(s) URL whose normalised path (so `/projects/../login`
- * cannot slip through) is a Project route; anything else is null.
+ * Ids are database-generated (`gen_random_uuid()` into a `text` column), so an identifier shape
+ * is asserted rather than a UUID. This is what rejects a copied ellipsis such as
+ * `/projects/.../evidence?item=<id>`, which is a structurally valid route to a Project named `...`.
+ */
+const PROJECT_ID = /^[A-Za-z0-9_-]{8,}$/;
+
+/**
+ * A pathname that is a real Project route: `/projects/<id>` or `/projects/<id>/<section>`, with
+ * the section from the closed set the app actually serves. Nothing deeper exists, so a longer
+ * path is not one of ours. Sanitisation cannot rescue a wrong path, so the boundary only accepts
+ * shapes it recognises.
+ */
+export function isInternalHref(pathname: string) {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length < 2 || segments.length > 3) return false;
+  const [root, projectId, section] = segments;
+  if (root !== "projects" || !PROJECT_ID.test(projectId!)) return false;
+  return section === undefined || CITATION_KINDS.has(section);
+}
+
+/**
+ * Models sometimes "absolutise" a relative href with an invented host, and sometimes paste a
+ * placeholder path. Keep only the in-app part (path, query, hash) of a relative or http(s) URL
+ * whose normalised path (so `/projects/../login` cannot slip through) is a Project route;
+ * anything else is null.
  */
 export function internalHref(href: string): string | null {
-  if (!isInternalHref(href) && !/^https?:\/\//i.test(href)) return null;
+  if (!href.startsWith("/projects/") && !/^https?:\/\//i.test(href)) return null;
   try {
     const u = new URL(href, "http://app.local");
-    return isInternalHref(u.pathname) ? `${u.pathname}${u.search}${u.hash}` : null;
+    // Prefixing `https://` to a relative citation makes its first segment the host, so
+    // `https://projects/<id>/evidence` parses with host `projects` and loses that segment.
+    // Putting it back is the same repair as stripping an invented host, and the recovered path
+    // is validated like any other.
+    const pathname = u.hostname === "projects" ? `/projects${u.pathname}` : u.pathname;
+    return isInternalHref(pathname) ? `${pathname}${u.search}${u.hash}` : null;
   } catch {
     return null;
   }

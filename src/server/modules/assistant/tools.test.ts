@@ -61,7 +61,6 @@ describe("assistant tool registry", () => {
       "create_task",
       "delete_milestone",
       "delete_task",
-      "get_evidence",
       "get_project_summary",
       "get_task",
       "link_evidence",
@@ -70,8 +69,11 @@ describe("assistant tool registry", () => {
       "list_people",
       "list_tasks",
       "list_teams",
+      "read_evidence",
       "remove_dependency",
       "search_decisions",
+      "search_evidence",
+      "set_evidence_labels",
       "set_task_labels",
       "update_milestone",
       "update_project",
@@ -226,11 +228,22 @@ describe("assistant tools over the rest of the Project", () => {
     expect(list.find((e) => e.id === noText.id)?.hasText).toBe(false);
     expect(list.some((e) => "extractedText" in e)).toBe(false);
 
-    const got = (await run("get_evidence", { id: withText.id })) as { extractedText: string };
+    const got = (await run("read_evidence", { id: withText.id })) as { extractedText: string };
     expect(got.extractedText).toBe("Scope: two phases.");
-    const none = (await run("get_evidence", { id: noText.id })) as { extractedText: null; note: string };
+    const byTitle = (await run("read_evidence", { projectId, title: "kickoff" })) as { id: string };
+    expect(byTitle.id).toBe(withText.id);
+    const none = (await run("read_evidence", { id: noText.id })) as { extractedText: null; note: string };
     expect(none.extractedText).toBeNull();
     expect(none.note).toMatch(/unavailable/);
+
+    const label = (await run("create_label", { projectId, name: "contract" })) as { id: string };
+    await run("set_evidence_labels", { id: withText.id, labelIds: [label.id] });
+    const tagged = (await run("list_evidence", { projectId })) as { id: string; labelIds: string[] }[];
+    expect(tagged.find((e) => e.id === withText.id)?.labelIds).toEqual([label.id]);
+    const hits = (await run("search_evidence", { projectId, labels: ["contract"] })) as {
+      matches: { evidenceId: string }[];
+    };
+    expect(hits.matches.map((m) => m.evidenceId)).toEqual([withText.id]);
 
     const task = (await run("create_task", { projectId, title: "Read minutes" })) as { id: string };
     await run("link_evidence", { projectId, evidenceId: withText.id, entityType: "task", entityId: task.id });
@@ -239,6 +252,61 @@ describe("assistant tools over the rest of the Project", () => {
 
     const summary = (await run("get_project_summary", { projectId })) as { evidence: { id: string }[] };
     expect(summary.evidence.map((e) => e.id)).toEqual(expect.arrayContaining([withText.id, noText.id]));
+  });
+
+  // The model cannot build a Project route from an id alone, so every Evidence surface hands it
+  // a link to paste. get_project_summary matters most: its list is in the system prompt each turn.
+  it("hands every Evidence surface a pasteable citation", async () => {
+    type Meta = { id?: string; evidenceId?: string; title: string; href: string; cite: string };
+    const cited = (await makeProject(ctx, "CIT")).id;
+    const minutes = await evidenceService.create(ctx, {
+      projectId: cited,
+      title: "Kickoff notes",
+      kind: "minutes",
+      body: "Scope agreed in two phases.",
+    });
+    await evidenceService.create(ctx, {
+      projectId: cited,
+      title: "Vendor notes",
+      kind: "other",
+      body: "The vendor confirmed the integration window.",
+    });
+    const check = (e: Meta) => {
+      const id = e.id ?? e.evidenceId;
+      expect(e.href).toBe(`/projects/${cited}/evidence?item=${id}#evidence-${id}`);
+      expect(e.cite).toBe(`[${e.title}](${e.href})`);
+    };
+
+    const list = (await run("list_evidence", { projectId: cited })) as Meta[];
+    expect(list).toHaveLength(2);
+    list.forEach(check);
+
+    const summary = (await run("get_project_summary", { projectId: cited })) as { evidence: Meta[] };
+    expect(summary.evidence).toHaveLength(2);
+    summary.evidence.forEach(check);
+
+    const hits = (await run("search_evidence", { projectId: cited })) as { matches: Meta[] };
+    expect(hits.matches).toHaveLength(2);
+    hits.matches.forEach(check);
+
+    check((await run("read_evidence", { id: minutes.id })) as Meta);
+    // Both titles end in "notes", so the title lookup is ambiguous and takes the other branch.
+    const ambiguous = (await run("read_evidence", { projectId: cited, title: "notes" })) as {
+      error: string;
+      matches: Meta[];
+    };
+    expect(ambiguous.error).toMatch(/more than one/i);
+    expect(ambiguous.matches).toHaveLength(2);
+    ambiguous.matches.forEach(check);
+
+    // A write tool answers with the same shape, so the model never loses the citation mid-turn.
+    const label = (await run("create_label", { projectId: cited, name: "vendor" })) as { id: string };
+    const labelled = (await run("set_evidence_labels", { id: minutes.id, labelIds: [label.id] })) as Meta & {
+      labelIds: string[];
+    };
+    check(labelled);
+    expect(labelled.labelIds).toEqual([label.id]);
+    await projectsService.delete(ctx, cited);
   });
 
   it("rejects foreign ids on every new tool", async () => {

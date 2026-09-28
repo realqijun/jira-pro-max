@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import type { DbOrTx } from "@/server/db/client";
 import { milestones } from "@/server/modules/milestones/schema";
 import { risks } from "@/server/modules/risks/schema";
@@ -6,6 +6,7 @@ import { tasks } from "@/server/modules/tasks/schema";
 import type { LinkableEntityType } from "@/shared/domain";
 import {
   evidence,
+  evidenceLabels,
   evidenceLinks,
   evidencePassages,
   type EvidenceLinkRow,
@@ -43,6 +44,9 @@ export const evidenceRepo = {
     const [row] = await db.select().from(evidence).where(eq(evidence.id, id));
     return row;
   },
+
+  findByIds: (db: DbOrTx, ids: string[]): Promise<EvidenceRow[]> =>
+    ids.length ? db.select().from(evidence).where(inArray(evidence.id, ids)) : Promise.resolve([]),
 
   insert: async (db: DbOrTx, values: NewEvidenceRow) => {
     const [row] = await db.insert(evidence).values(values).returning();
@@ -216,3 +220,41 @@ export const evidenceLinksRepo = {
 
 export type ProjectEvidenceLink = Awaited<ReturnType<typeof evidenceLinksRepo.listForProject>>[number];
 export type EvidenceSummary = Awaited<ReturnType<typeof evidenceLinksRepo.listSummaries>>[number];
+
+/** Evidence ↔ Label pairs. Ownership rides on the Evidence row's `projectId`, as with links. */
+export const evidenceLabelsRepo = {
+  /** Every (evidenceId, labelId) pair in the Project, for the Evidence page and tool summaries. */
+  forProject: (db: DbOrTx, projectId: string) =>
+    db
+      .select({ evidenceId: evidenceLabels.evidenceId, labelId: evidenceLabels.labelId })
+      .from(evidenceLabels)
+      .innerJoin(evidence, eq(evidence.id, evidenceLabels.evidenceId))
+      .where(eq(evidence.projectId, projectId)),
+
+  labelIds: async (db: DbOrTx, evidenceId: string): Promise<string[]> =>
+    (
+      await db
+        .select({ id: evidenceLabels.labelId })
+        .from(evidenceLabels)
+        .where(eq(evidenceLabels.evidenceId, evidenceId))
+    ).map((r) => r.id),
+
+  /** Replace the Evidence item's Label set; caller asserts the ids belong to the Project. */
+  setLabels: async (db: DbOrTx, evidenceId: string, labelIds: string[]) => {
+    await db.delete(evidenceLabels).where(eq(evidenceLabels.evidenceId, evidenceId));
+    if (labelIds.length) await db.insert(evidenceLabels).values(labelIds.map((labelId) => ({ evidenceId, labelId })));
+  },
+
+  /** Ids of Evidence carrying ALL of the given Labels; empty input yields an empty set. */
+  evidenceIdsWithAllLabels: async (db: DbOrTx, projectId: string, labelIds: string[]): Promise<Set<string>> => {
+    if (!labelIds.length) return new Set();
+    const rows = await db
+      .select({ evidenceId: evidenceLabels.evidenceId })
+      .from(evidenceLabels)
+      .innerJoin(evidence, eq(evidence.id, evidenceLabels.evidenceId))
+      .where(and(eq(evidence.projectId, projectId), inArray(evidenceLabels.labelId, labelIds)))
+      .groupBy(evidenceLabels.evidenceId)
+      .having(sql`count(distinct ${evidenceLabels.labelId}) = ${labelIds.length}`);
+    return new Set(rows.map((r) => r.evidenceId));
+  },
+};

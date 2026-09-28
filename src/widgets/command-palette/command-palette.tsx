@@ -1,6 +1,7 @@
 "use client";
 
 import { Command } from "cmdk";
+import type { LucideIcon } from "lucide-react";
 import {
   AlertTriangle,
   CalendarDays,
@@ -25,20 +26,24 @@ import { StatusBadge } from "@/entities/status/status-badge";
 import type { ProjectRow } from "@/server/modules/projects/schema";
 import { searchTasksAction } from "@/server/modules/tasks/actions";
 import type { TaskSearchResult } from "@/server/modules/tasks/search";
+import { PROJECT_SECTIONS as SECTIONS, type ProjectSectionSlug } from "@/shared/lib/project-sections";
 
-export const PROJECT_SECTIONS = [
-  { slug: "", label: "Overview", icon: LayoutDashboard },
-  { slug: "tasks", label: "Tasks", icon: ListTodo },
-  { slug: "timeline", label: "Timeline", icon: CalendarRange },
-  { slug: "calendar", label: "Calendar", icon: CalendarDays },
-  { slug: "risks", label: "Risks", icon: AlertTriangle },
-  { slug: "decisions", label: "Decisions", icon: GitBranch },
-  { slug: "evidence", label: "Evidence", icon: FileText },
-  { slug: "renders", label: "Renders", icon: ImageIcon },
-  { slug: "people", label: "People", icon: Users },
-  { slug: "messages", label: "Messages", icon: MessagesSquare },
-  { slug: "settings", label: "Settings", icon: Settings },
-] as const;
+const SECTION_ICONS: Record<ProjectSectionSlug, LucideIcon> = {
+  "": LayoutDashboard,
+  tasks: ListTodo,
+  timeline: CalendarRange,
+  calendar: CalendarDays,
+  risks: AlertTriangle,
+  decisions: GitBranch,
+  evidence: FileText,
+  renders: ImageIcon,
+  people: Users,
+  messages: MessagesSquare,
+  settings: Settings,
+};
+
+/** The shared section vocabulary with this app shell's icons attached. */
+export const PROJECT_SECTIONS = SECTIONS.map((s) => ({ ...s, icon: SECTION_ICONS[s.slug] }));
 
 const GO_TO = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

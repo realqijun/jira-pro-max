@@ -41,7 +41,7 @@ A named group of People within one Project (e.g. "Team B", "Vendor Acme") that c
 _Avoid_: Group, squad, department
 
 **Label**:
-A per-Project free-form tag applied to Tasks for filtering.
+A per-Project free-form tag applied to Tasks and Evidence for filtering.
 _Avoid_: Tag, category
 
 **User**:
@@ -66,7 +66,7 @@ The list of all Risks in a Project.
 ### Evidence
 
 **Evidence**:
-A source artifact attached to a Project (plan, minutes, transcript, status update, export) from which project facts may be derived. A transcript is stored as ordered Passages as well as its full text.
+A source artifact attached to a Project (plan, minutes, transcript, status update, export) from which project facts may be derived. A transcript is stored as ordered Passages as well as its full text. The full text is `extractedText`; `prunedText` holds the compressed copy for the AI layer when a text compressor responds, else the original text.
 _Avoid_: Document, file, attachment, upload
 
 **Passage**:

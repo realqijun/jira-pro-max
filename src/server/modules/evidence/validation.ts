@@ -2,6 +2,12 @@ import { z } from "zod";
 import { optionalDate, optionalText, requiredText } from "@/server/core/validation";
 import { EVIDENCE_KINDS, LINKABLE_ENTITY_TYPES } from "@/shared/domain";
 
+/** Absent = leave unchanged; "" = clear all; string | string[] = set. Same contract as Task labels. */
+const labelIds = z.preprocess(
+  (v) => (v === undefined || v === null ? undefined : v === "" ? [] : Array.isArray(v) ? v : [v]),
+  z.array(z.string()).optional(),
+);
+
 export const createEvidenceSchema = z.object({
   projectId: z.string(),
   title: requiredText("Title", 200),
@@ -9,6 +15,7 @@ export const createEvidenceSchema = z.object({
   sourceDate: optionalDate,
   notes: optionalText,
   body: optionalText,
+  labelIds,
 });
 
 export const updateEvidenceSchema = z.object({
@@ -18,6 +25,7 @@ export const updateEvidenceSchema = z.object({
   sourceDate: optionalDate,
   notes: optionalText,
   body: optionalText,
+  labelIds,
 });
 
 export const evidenceLinkSchema = z.object({

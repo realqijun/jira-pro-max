@@ -1,0 +1,1 @@
+ALTER TABLE "evidence_chunks" ADD COLUMN "model" text;

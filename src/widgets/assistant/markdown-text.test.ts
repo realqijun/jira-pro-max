@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MarkdownText, citationKind } from "./markdown-text";
 
+const P = "8f1c2b4a-9d3e-4c5f-8a7b-6d5e4f3c2b1a";
+
 describe("MarkdownText", () => {
   it("renders common Assistant Markdown", () => {
     const html = renderToStaticMarkup(
@@ -18,14 +20,23 @@ describe("MarkdownText", () => {
   it("keeps raw HTML inert and only links to Project routes", () => {
     const html = renderToStaticMarkup(
       createElement(MarkdownText, {
-        text: "<script>alert('no')</script>\n\n[Task](/projects/p/tasks?task=t) [Outside](https://example.com)",
+        text: `<script>alert('no')</script>\n\n[Task](/projects/${P}/tasks?task=t) [Outside](https://example.com)`,
       }),
     );
 
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
-    expect(html).toContain('href="/projects/p/tasks?task=t"');
+    expect(html).toContain(`href="/projects/${P}/tasks?task=t"`);
     expect(html).not.toContain('href="https://example.com"');
+  });
+
+  it("renders a placeholder Project id as plain text instead of a link", () => {
+    const html = renderToStaticMarkup(
+      createElement(MarkdownText, { text: "[Kickoff minutes](/projects/.../evidence?item=e1)" }),
+    );
+
+    expect(html).not.toContain("<a");
+    expect(html).toContain("Kickoff minutes");
   });
 });
 

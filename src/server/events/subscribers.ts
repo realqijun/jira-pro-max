@@ -9,8 +9,11 @@
 const globalForSubscribers = globalThis as unknown as { __subscribersReady?: Promise<void> };
 
 export function ensureSubscribers(): Promise<void> {
-  globalForSubscribers.__subscribersReady ??= import("@/server/modules/impact/subscriber")
-    .then((m) => m.registerImpactDetector())
+  globalForSubscribers.__subscribersReady ??= Promise.all([
+    import("@/server/modules/impact/subscriber").then((m) => m.registerImpactDetector()),
+    import("@/server/modules/search/subscriber").then((m) => m.registerEvidenceIndexer()),
+  ])
+    .then(() => undefined)
     .catch((e) => {
       console.error("[events] subscriber registration failed", e);
       globalForSubscribers.__subscribersReady = undefined;

@@ -5,8 +5,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { captureEvent } from "@/shared/analytics/browser";
-import { PROJECT_SECTIONS } from "@/widgets/command-palette/command-palette";
-import { internalHref } from "./linked-text";
+import { CITATION_KINDS, internalHref } from "./linked-text";
 
 /**
  * Markdown emitted by the Assistant. ReactMarkdown treats raw HTML as text unless the
@@ -70,10 +69,11 @@ function SafeLink({ href, children }: ComponentPropsWithoutRef<"a">) {
   );
 }
 
-/** Project sections a citation can land on (plus the graph, which has no tab); anything else reports as `other`. */
-const CITATION_KINDS = new Set<string>([...PROJECT_SECTIONS.map((s) => s.slug).filter(Boolean), "graph"]);
-
-/** Which Project section a citation opens, from a closed set so model text never becomes a property value. */
+/**
+ * Which Project section a citation opens, from a closed set so model text never becomes a
+ * property value. `other` is unreachable for a rendered link - `internalHref` rejects an
+ * unknown section - and stays as the fallback for any caller that has not been through it.
+ */
 export function citationKind(href: string) {
   const section = new URL(href, "http://app.local").pathname.split("/").filter(Boolean)[2];
   if (!section) return "overview";

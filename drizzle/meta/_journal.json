@@ -141,6 +141,27 @@
       "when": 1790342940002,
       "tag": "0019_add_ai_config_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1790394498100,
+      "tag": "0020_serious_randall_flagg",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1790394498101,
+      "tag": "0021_outgoing_venom",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1790394498102,
+      "tag": "0022_ambiguous_kate_bishop",
+      "breakpoints": true
     }
   ]
 }

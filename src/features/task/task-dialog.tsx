@@ -8,11 +8,11 @@ import type { TaskListItem } from "@/server/modules/tasks/repository";
 import { createTaskAction, deleteTaskAction, updateTaskAction } from "@/server/modules/tasks/actions";
 import { PRIORITIES } from "@/shared/domain";
 import { ActionForm, Button, Dialog, FormRow, SelectField, TextField, TextareaField, enumOptions } from "@/shared/ui";
-import { useFieldError } from "@/shared/ui/action-form";
 import { CommentThread } from "@/features/comment/comment-thread";
 import { DependencyEditor } from "@/features/dependency/dependency-editor";
 import { LinkedEvidence } from "@/features/evidence/linked-evidence";
 import { ItemDialogTabs } from "@/features/history/item-dialog-tabs";
+import { LabelPicker } from "@/features/label/label-picker";
 
 export function TaskDialog({
   open,
@@ -166,51 +166,5 @@ export function TaskDialog({
         </ItemDialogTabs>
       )}
     </Dialog>
-  );
-}
-
-function LabelPicker({ labels, selected }: { labels: ProjectRefs["labels"]; selected: string[] }) {
-  const [picked, setPicked] = React.useState<Set<string>>(new Set(selected));
-  const error = useFieldError("labelIds");
-  if (!labels.length) return null;
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-caption font-medium text-ink-subtle">Labels</span>
-      <div className="flex flex-wrap gap-1.5">
-        {labels.map((l) => {
-          const on = picked.has(l.id);
-          return (
-            <button
-              key={l.id}
-              type="button"
-              onClick={() =>
-                setPicked((s) => {
-                  const n = new Set(s);
-                  if (n.has(l.id)) n.delete(l.id);
-                  else n.add(l.id);
-                  return n;
-                })
-              }
-              className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-caption transition-colors"
-              style={{
-                borderColor: on ? l.color : "var(--color-hairline)",
-                color: on ? "var(--color-ink)" : "var(--color-ink-subtle)",
-                background: on ? `${l.color}22` : "transparent",
-              }}
-            >
-              <span className="size-1.5 rounded-full" style={{ background: l.color }} />
-              {l.name}
-            </button>
-          );
-        })}
-      </div>
-      {/* Always submit the key so clearing all labels works; the schema treats "" as an empty list. */}
-      {picked.size === 0 ? (
-        <input type="hidden" name="labelIds" value="" />
-      ) : (
-        [...picked].map((id) => <input key={id} type="hidden" name="labelIds" value={id} />)
-      )}
-      {error && <span className="text-caption text-tag-red">{error}</span>}
-    </div>
   );
 }
