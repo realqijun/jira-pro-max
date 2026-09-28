@@ -1,0 +1,34 @@
+[
+  {
+    "id": "50376545-4f1c-43e1-b91a-177b51e35481",
+    "evidenceId": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+    "ordinal": 0,
+    "model": "gemini:gemini-embedding-001",
+    "dimensions": 1536,
+    "text": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+  },
+  {
+    "id": "1638cbe8-0405-4284-9085-493bd90ed2ac",
+    "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+    "ordinal": 0,
+    "model": "gemini:gemini-embedding-001",
+    "dimensions": 1536,
+    "text": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before the security review window; asked whether a second reviewer can be found.\n- Decision: proceed with Option B (mock settlement endpoint) so frontend work is not blocked.\n- Action: Alice to circulate revised estimate by Wednesday."
+  },
+  {
+    "id": "c48104a6-58d4-4096-9e2f-448e38e00fb4",
+    "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+    "ordinal": 0,
+    "model": "gemini:gemini-embedding-001",
+    "dimensions": 1536,
+    "text": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+  },
+  {
+    "id": "5c527268-c610-4c3c-9f33-4c18ffcc877d",
+    "evidenceId": "ab9875cd-3611-4063-9081-99d969699420",
+    "ordinal": 0,
+    "model": "gemini:gemini-embedding-001",
+    "dimensions": 1536,
+    "text": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+  }
+]

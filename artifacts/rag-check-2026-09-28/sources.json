@@ -1,0 +1,103 @@
+{
+  "capturedAt": "2026-09-28T02:51:37.221Z",
+  "project": {
+    "id": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+    "ownerId": "kHrQjWSEzZXJjuTJR9Wpp2gwEG83gBkU",
+    "name": "Payments Platform Relaunch",
+    "key": "PAY",
+    "description": "Replace the legacy payments gateway with the new API, integrate with the merchant portal, and launch to all SG merchants.",
+    "status": "active",
+    "health": "amber",
+    "startDate": "2026-08-17",
+    "targetDate": "2026-11-03",
+    "createdAt": "2026-09-28T02:43:29.141Z",
+    "updatedAt": "2026-09-28T02:43:29.149Z"
+  },
+  "evidence": [
+    {
+      "id": "ab9875cd-3611-4063-9081-99d969699420",
+      "projectId": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+      "title": "Status update — week 37",
+      "kind": "status_update",
+      "sourceDate": "2026-09-27",
+      "notes": null,
+      "body": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme.",
+      "storageKey": null,
+      "fileName": null,
+      "mimeType": null,
+      "sizeBytes": null,
+      "extractedText": null,
+      "prunedText": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme.",
+      "createdAt": "2026-09-28T02:43:29.422Z",
+      "updatedAt": "2026-09-28T02:43:29.422Z"
+    },
+    {
+      "id": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+      "projectId": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+      "title": "Project plan v4 (export)",
+      "kind": "plan",
+      "sourceDate": "2026-09-26",
+      "notes": null,
+      "body": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO",
+      "storageKey": null,
+      "fileName": null,
+      "mimeType": null,
+      "sizeBytes": null,
+      "extractedText": null,
+      "prunedText": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO",
+      "createdAt": "2026-09-28T02:43:29.428Z",
+      "updatedAt": "2026-09-28T02:43:29.428Z"
+    },
+    {
+      "id": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+      "projectId": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+      "title": "Weekly sync minutes",
+      "kind": "minutes",
+      "sourceDate": "2026-09-25",
+      "notes": null,
+      "body": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before the security review window; asked whether a second reviewer can be found.\n- Decision: proceed with Option B (mock settlement endpoint) so frontend work is not blocked.\n- Action: Alice to circulate revised estimate by Wednesday.",
+      "storageKey": null,
+      "fileName": null,
+      "mimeType": null,
+      "sizeBytes": null,
+      "extractedText": null,
+      "prunedText": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before the security review window; asked whether a second reviewer can be found.\n- Decision: proceed with Option B (mock settlement endpoint) so frontend work is not blocked.\n- Action: Alice to circulate revised estimate by Wednesday.",
+      "createdAt": "2026-09-28T02:43:29.415Z",
+      "updatedAt": "2026-09-28T02:43:29.415Z"
+    },
+    {
+      "id": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+      "projectId": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+      "title": "Acme progress report",
+      "kind": "other",
+      "sourceDate": "2026-09-24",
+      "notes": "Vendor claims 90% complete; internal acceptance evidence supports ~65%.",
+      "body": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials.",
+      "storageKey": null,
+      "fileName": null,
+      "mimeType": null,
+      "sizeBytes": null,
+      "extractedText": null,
+      "prunedText": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials.",
+      "createdAt": "2026-09-28T02:43:29.433Z",
+      "updatedAt": "2026-09-28T02:43:29.433Z"
+    }
+  ],
+  "fixtureChanges": {
+    "labels": [
+      {
+        "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+        "labels": ["vendor", "security"]
+      },
+      {
+        "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+        "labels": ["vendor"]
+      }
+    ],
+    "link": {
+      "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+      "taskId": "7e5d96c8-c850-4aa6-96aa-066d9d27ce5b",
+      "title": "Provision IAM service account for auth testing"
+    }
+  }
+}

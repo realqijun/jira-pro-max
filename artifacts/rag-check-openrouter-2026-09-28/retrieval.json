@@ -1,0 +1,190 @@
+[
+  {
+    "id": "paraphrase",
+    "input": {
+      "query": "external partner blocked by identity access approval",
+      "limit": 4
+    },
+    "ms": 710,
+    "result": {
+      "matches": [
+        {
+          "evidenceId": "ab9875cd-3611-4063-9081-99d969699420",
+          "title": "Status update — week 37",
+          "kind": "status_update",
+          "sourceDate": "2026-09-27",
+          "fileName": null,
+          "score": 0.306,
+          "snippet": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+        },
+        {
+          "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+          "title": "Weekly sync minutes",
+          "kind": "minutes",
+          "sourceDate": "2026-09-25",
+          "fileName": null,
+          "score": 0.306,
+          "snippet": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before "
+        },
+        {
+          "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+          "title": "Acme progress report",
+          "kind": "other",
+          "sourceDate": "2026-09-24",
+          "fileName": null,
+          "score": 0.296,
+          "snippet": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+        },
+        {
+          "evidenceId": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+          "title": "Project plan v4 (export)",
+          "kind": "plan",
+          "sourceDate": "2026-09-26",
+          "fileName": null,
+          "score": 0.276,
+          "snippet": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+        }
+      ]
+    }
+  },
+  {
+    "id": "reviewer-capacity",
+    "input": {
+      "query": "staffing shortage before the security assessment",
+      "limit": 4
+    },
+    "ms": 600,
+    "result": {
+      "matches": [
+        {
+          "evidenceId": "ab9875cd-3611-4063-9081-99d969699420",
+          "title": "Status update — week 37",
+          "kind": "status_update",
+          "sourceDate": "2026-09-27",
+          "fileName": null,
+          "score": 0.352,
+          "snippet": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+        },
+        {
+          "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+          "title": "Weekly sync minutes",
+          "kind": "minutes",
+          "sourceDate": "2026-09-25",
+          "fileName": null,
+          "score": 0.348,
+          "snippet": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before "
+        },
+        {
+          "evidenceId": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+          "title": "Project plan v4 (export)",
+          "kind": "plan",
+          "sourceDate": "2026-09-26",
+          "fileName": null,
+          "score": 0.339,
+          "snippet": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+        },
+        {
+          "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+          "title": "Acme progress report",
+          "kind": "other",
+          "sourceDate": "2026-09-24",
+          "fileName": null,
+          "score": 0.275,
+          "snippet": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+        }
+      ]
+    }
+  },
+  {
+    "id": "all-labels",
+    "input": {
+      "query": "identity access",
+      "labels": ["vendor", "security"],
+      "limit": 4
+    },
+    "ms": 514,
+    "result": {
+      "matches": [
+        {
+          "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+          "title": "Weekly sync minutes",
+          "kind": "minutes",
+          "sourceDate": "2026-09-25",
+          "fileName": null,
+          "score": 0.234,
+          "snippet": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before "
+        }
+      ]
+    }
+  },
+  {
+    "id": "linked-task",
+    "input": {
+      "linkedTo": {
+        "entityType": "task",
+        "entity": "Provision IAM service account for auth testing"
+      },
+      "limit": 4
+    },
+    "ms": 30,
+    "result": {
+      "matches": [
+        {
+          "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+          "title": "Weekly sync minutes",
+          "kind": "minutes",
+          "sourceDate": "2026-09-25",
+          "fileName": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "absent-topic",
+    "input": {
+      "query": "approved 2027 quantum satellite procurement budget in SGD",
+      "limit": 4
+    },
+    "ms": 657,
+    "result": {
+      "matches": [
+        {
+          "evidenceId": "ab9875cd-3611-4063-9081-99d969699420",
+          "title": "Status update — week 37",
+          "kind": "status_update",
+          "sourceDate": "2026-09-27",
+          "fileName": null,
+          "score": 0.331,
+          "snippet": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+        },
+        {
+          "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+          "title": "Acme progress report",
+          "kind": "other",
+          "sourceDate": "2026-09-24",
+          "fileName": null,
+          "score": 0.304,
+          "snippet": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+        },
+        {
+          "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+          "title": "Weekly sync minutes",
+          "kind": "minutes",
+          "sourceDate": "2026-09-25",
+          "fileName": null,
+          "score": 0.247,
+          "snippet": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before "
+        },
+        {
+          "evidenceId": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+          "title": "Project plan v4 (export)",
+          "kind": "plan",
+          "sourceDate": "2026-09-26",
+          "fileName": null,
+          "score": 0.239,
+          "snippet": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+        }
+      ]
+    }
+  }
+]

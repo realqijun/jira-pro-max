@@ -1,0 +1,48 @@
+{
+  "01-access-blocker": {
+    "verdict": "Pass",
+    "notes": "Identifies the IAM credentials wait as the blocker and sponsor support as the escalation. Both claims are supported by the Evidence it read: the Marcus quote is in Weekly sync minutes, the escalation ask is in Status update - week 37. Both citations are app-relative and resolve."
+  },
+  "02-reviewer-capacity": {
+    "verdict": "Pass; ranking still weak",
+    "notes": "Answer is exactly right: Ben has roughly 4 hours and asked whether a second reviewer can be found. Gemini could not complete this case at all. Retrieval remains imperfect: the correct source ranked second (0.348) behind Status update - week 37 (0.352), a 0.004 margin. The model read only the correct source."
+  },
+  "03-conflicting-dates": {
+    "verdict": "Pass on content; formatting and citation defects",
+    "notes": "The previously unverified conflict case now resolves correctly. Acme progress report (2026-09-24) forecasts 2026-10-05 against a planned finish of 2026-09-26; Weekly sync minutes (2026-09-25) says ready by 2026-09-30. The model gave both source dates, flagged the disagreement and did not declare a winner. Two defects: it emitted Markdown headings, bold and numbered lists that the system prompt forbids, and it absolutised both citation hrefs with an invented www.example.com host. internalHref strips the host, so these two links still work."
+  },
+  "04-no-evidence": {
+    "verdict": "Pass on grounding; dead citation",
+    "notes": "Correctly refuses to invent a budget after reading all four sources. Two problems. It emitted the literal Markdown link [Status update - week 37](href), copying the placeholder from the fourth WHY rule; internalHref rejects it, so the citation renders as plain unlinked text. It also asserted 'no recorded decision' without calling search_decisions. Search returned four Evidence items with positive scores because there is still no relevance threshold."
+  },
+  "05-all-labels": {
+    "verdict": "Filter passed; answer verified",
+    "notes": "The AND filter returned only Weekly sync minutes; Acme progress report carries vendor alone and was excluded. The generated summary, unverified in the Gemini run, is accurate. Citation was absolutised with an invented example.com host but survives sanitisation."
+  },
+  "06-linked-task": {
+    "verdict": "Filter passed; answer verified",
+    "notes": "linkedTo resolved the named Task in 30 ms with no embedding call and returned only the linked Evidence. The generated report, unverified in the Gemini run, is accurate. Citation absolutised with an invented host but survives sanitisation."
+  },
+  "c1-citation-no-template": {
+    "verdict": "Fail: dead citations, and answered without reading sources",
+    "notes": "Control case with production-realistic phrasing and no URL template in the user prompt. All three citations were emitted as bare https://example.com with no path, so internalHref returns null and every citation renders as unlinked text: the User cannot reach any source. The model also answered from search snippets alone, never calling read_evidence, and emitted forbidden numbered lists and bold."
+  },
+  "c2-why-no-decisions": {
+    "verdict": "Pass, and isolates the root cause",
+    "notes": "This is the decisive comparison. search_decisions returns each nearestEvidence item with an href and a ready-made cite string, and the model reproduced all three as correct app-relative paths including the #evidence- anchor. Same model, same turn budget, correct citations: the difference is that the tool supplied the href. search_evidence and read_evidence return no href, so the model invents one."
+  },
+  "c3-plain-text": {
+    "verdict": "Fail: broken navigation and forbidden formatting",
+    "notes": "The model pasted the illustrative placeholder from the second WHY rule verbatim, emitting /projects/.../evidence?item=<real uuid>. The path starts with /projects/ so internalHref accepts it, and clicking navigates to a Project literally named '...'. The sanitiser cannot catch this class. The answer also used a bulleted Sources list, which the prompt forbids."
+  },
+  "totals": {
+    "generationCases": 9,
+    "completed": 9,
+    "factuallyCorrect": 9,
+    "citations": 16,
+    "citationsWorking": 10,
+    "citationsDead": 4,
+    "citationsBrokenNavigation": 2,
+    "answersViolatingPlainTextRule": 3
+  }
+}

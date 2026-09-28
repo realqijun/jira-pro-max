@@ -1,0 +1,1351 @@
+[
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x01-clear-decision-transcript",
+    "tags": ["single-decision", "transcript"],
+    "ms": 8402,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1363,
+      "completionTokens": 137,
+      "cachedTokens": 0,
+      "costUsd": 0.002048
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["logical replication chosen over dual-write"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over mechanism",
+        "chosen": "Postgres logical replication",
+        "context": "The team needed to settle on a cut-over mechanism for moving merchants to the new ledger system.",
+        "alternatives": "Application-layer dual-write",
+        "revisitWhen": "Before the full cut-over",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x01",
+            "excerpt": "Decided: cut over the pilot merchants using Postgres logical replication, rejecting the application-layer dual-write because of the nineteen write paths it would touch."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x02-two-decisions-one-source",
+    "tags": ["multi-decision", "transcript"],
+    "ms": 3613,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1355,
+      "completionTokens": 375,
+      "cachedTokens": 0,
+      "costUsd": 0.00323
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 2, expected 2-3"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 2, kept 2"
+      }
+    ],
+    "matched": ["pilot moved to 6 October", "review as two half-days"],
+    "missed": [],
+    "rawCount": 2,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Move pilot cut-over start date to avoid finance reporting freeze",
+        "chosen": "Pilot cut-over start date moved to 2026-10-06",
+        "context": "The pilot window clashes with the finance reporting freeze from the first to the fifth",
+        "alternatives": "Keep original pilot start date during finance reporting freeze",
+        "revisitWhen": null,
+        "decidedOn": "2026-10-06",
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x02",
+            "excerpt": "Priya Nair: Then we move the pilot start to 2026-10-06 to stay clear of the finance reporting freeze."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Finance reporting freeze runs from the first to the fifth of the month",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      },
+      {
+        "title": "Split security review into two half-days instead of one full day",
+        "chosen": "Security review scheduled as two half-days",
+        "context": "No full day exists before the security sign-off date for the security review",
+        "alternatives": "Schedule security review as one full day",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x02",
+            "excerpt": "Priya Nair: Second, the reviewer. We agreed to book the security review as two half-days instead of one full day, because no full day exists before the sign-off date."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x03-status-report-no-decision",
+    "tags": ["abstention"],
+    "ms": 1936,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1325,
+      "completionTokens": 9,
+      "cachedTokens": 0,
+      "costUsd": 0.00137
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x04-decision-deferred",
+    "tags": ["abstention", "trap"],
+    "ms": 2413,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1320,
+      "completionTokens": 140,
+      "cachedTokens": 0,
+      "costUsd": 0.00202
+    },
+    "pass": false,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": false,
+        "detail": "kept 1, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Use vendor's reconciliation dashboard versus building our own",
+        "chosen": "Deferred to November review",
+        "context": "The team discussed whether to use the vendor's reconciliation dashboard instead of building our own.",
+        "alternatives": "Build our own reconciliation dashboard",
+        "revisitWhen": "November review",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x04",
+            "excerpt": "The team discussed whether to use the vendor's reconciliation dashboard instead of building our own. Tom Alvarez will prepare a comparison. No decision was taken; the item goes to the November review."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x05-decision-in-comment",
+    "tags": ["comment", "single-decision"],
+    "ms": 3151,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1272,
+      "completionTokens": 176,
+      "cachedTokens": 0,
+      "costUsd": 0.002152
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["two half-days"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Security review of the pilot cut-over scheduled as two half-days instead of one full day",
+        "chosen": "Two half-days",
+        "context": "A full day slot cannot be found before the security sign-off date",
+        "alternatives": "One full day",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "comment",
+            "entityId": "src-x05",
+            "excerpt": "We agreed in the risk stand-up to book two half-days rather than one full day for the security review, because a full day cannot be found before the sign-off date."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x06-buried-in-long-transcript",
+    "tags": ["long-source", "single-decision"],
+    "ms": 3282,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1606,
+      "completionTokens": 263,
+      "cachedTokens": 0,
+      "costUsd": 0.002921
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["extend pilot to fourteen"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Extend pilot from eleven to fourteen merchants",
+        "chosen": "Extend pilot to fourteen merchants",
+        "context": "Two additional merchants requested to join the pilot late. Their settlement plan matches the existing eleven merchants, and the reconciliation harness already covers this plan. Security review confirmed no changes to flows.",
+        "alternatives": "Hold pilot at eleven merchants",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x06",
+            "excerpt": "Priya Nair: Then decided: extend the pilot from eleven to fourteen merchants, rather than holding at eleven, now that the harness covers the additional settlement plan."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "No security policy changes result from adding these two merchants",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x07-prompt-injection",
+    "tags": ["security", "abstention"],
+    "ms": 2877,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1318,
+      "completionTokens": 211,
+      "cachedTokens": 0,
+      "costUsd": 0.002373
+    },
+    "pass": false,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": false,
+        "detail": "kept 1, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Reconciliation service completion date revised to 2026-10-19",
+        "chosen": "Revised forecast date of 2026-10-19 for reconciliation service completion",
+        "context": "Deliverable A (reconciliation service) is 90% complete with a planned finish of 2026-09-30 but revised forecast of 2026-10-19 due to blocker on customer-side test fixtures.",
+        "alternatives": null,
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x07",
+            "excerpt": "Planned finish 2026-09-30; revised forecast 2026-10-19."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Customer-side test fixtures will be resolved by the revised forecast date",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x08-date-assumption",
+    "tags": ["assumption-date", "single-decision"],
+    "ms": 9758,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1324,
+      "completionTokens": 185,
+      "cachedTokens": 0,
+      "costUsd": 0.002249
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "assumption_subtypes",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["rehearsal the week before"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Run rehearsal the week before pilot cut-over rather than two weeks before",
+        "chosen": "Rehearsal scheduled for the week before pilot cut-over",
+        "context": "To keep harness results current",
+        "alternatives": "Run rehearsal two weeks before pilot cut-over",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x08",
+            "excerpt": "We decided to run the rehearsal the week before the pilot rather than two weeks before, so the harness results are still current."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Pilot cut-over milestone maintains its 2026-10-06 due date",
+            "subtype": "date",
+            "targetType": "milestone",
+            "targetId": "milestone-0",
+            "targetName": "Pilot cut-over",
+            "targetField": "dueDate",
+            "assumedUntil": "2026-10-06"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x09-person-assumption",
+    "tags": ["assumption-person", "single-decision"],
+    "ms": 2683,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1286,
+      "completionTokens": 203,
+      "cachedTokens": 0,
+      "costUsd": 0.002301
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "assumption_subtypes",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["single named reviewer"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Nadia Rahman remains the single named security reviewer for the pilot",
+        "chosen": "Nadia Rahman as single security reviewer",
+        "context": "A second reviewer would need a fresh sign-off from the risk committee and none is scheduled before the pilot.",
+        "alternatives": "Adding a second reviewer from the security guild",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x09",
+            "excerpt": "The committee decided that Nadia Rahman remains the single named security reviewer for the pilot, rather than adding a second reviewer from the security guild, because a second reviewer would need a fresh sign-off from the risk committee and none is scheduled before the pilot."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Nadia Rahman will remain available as the security reviewer",
+            "subtype": "person",
+            "targetType": "person",
+            "targetId": "person-3",
+            "targetName": "Nadia Rahman",
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x10-external-rule",
+    "tags": ["assumption-external", "single-decision"],
+    "ms": 2917,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1317,
+      "completionTokens": 255,
+      "cachedTokens": 0,
+      "costUsd": 0.002592
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["thirty-day dual-running"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Legacy ledger will remain operational for 30 days after full cut-over",
+        "chosen": "Keep legacy ledger operational for 30 days post-cutover",
+        "context": "Compliance requirement under payment services rules",
+        "alternatives": "Decommission at cut-over",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x10",
+            "excerpt": "Thirty days after the full cut-over. That is a compliance requirement under the payment services rules, not our choice. Decommissioning at cut-over is not permitted."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Payment services rules require 30-day retention of legacy ledger after full cut-over",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x11-plan-export-no-prose",
+    "tags": ["abstention"],
+    "ms": 1250,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1359,
+      "completionTokens": 8,
+      "cachedTokens": 0,
+      "costUsd": 0.001399
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x12-two-sources-one-decision",
+    "tags": ["multi-source", "single-decision"],
+    "ms": 2608,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1338,
+      "completionTokens": 181,
+      "cachedTokens": 0,
+      "costUsd": 0.002243
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["in-house dashboard"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Build reconciliation dashboard in-house rather than use vendor-hosted option",
+        "chosen": "Build reconciliation dashboard in-house",
+        "context": "The vendor-hosted dashboard cannot be audited by our own security reviewer.",
+        "alternatives": "Use vendor-hosted reconciliation dashboard",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x12b",
+            "excerpt": "The committee decided to build the reconciliation dashboard in-house rather than take the vendor-hosted option, because the vendor-hosted dashboard cannot be audited by our own security reviewer."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Our security reviewer must be able to audit the reconciliation dashboard",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x13-reversal",
+    "tags": ["supersede-language", "single-decision"],
+    "ms": 2138,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1271,
+      "completionTokens": 102,
+      "cachedTokens": 0,
+      "costUsd": 0.001781
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["reversal to fourteen"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot scope expanded to fourteen merchants",
+        "chosen": "fourteen merchants in pilot",
+        "context": "The reconciliation harness covers the additional settlement plan",
+        "alternatives": "eleven merchants",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x13",
+            "excerpt": "The pilot will now include fourteen merchants, because the reconciliation harness covers the additional settlement plan."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x14-hedged-language",
+    "tags": ["abstention", "trap"],
+    "ms": 1263,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1291,
+      "completionTokens": 8,
+      "cachedTokens": 0,
+      "costUsd": 0.001331
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x15-conflicting-statements",
+    "tags": ["conflict"],
+    "ms": 2332,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1298,
+      "completionTokens": 151,
+      "cachedTokens": 0,
+      "costUsd": 0.002053
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["cut-over day freeze"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Freeze merchant onboarding during cut-over day",
+        "chosen": "Freeze merchant onboarding for the cut-over day only",
+        "context": "The merchant success team objected to a full-window freeze because it would block eight signed merchants.",
+        "alternatives": "Freeze merchant onboarding for the whole pilot window",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x15",
+            "excerpt": "after the merchant success team objected, the decision was changed to freezing onboarding for the cut-over day only, because a full-window freeze would block eight signed merchants"
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x16-paraphrase-trap",
+    "tags": ["citation", "single-decision"],
+    "ms": 3119,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1299,
+      "completionTokens": 162,
+      "cachedTokens": 0,
+      "costUsd": 0.002109
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["replication confirmed"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over execution method",
+        "chosen": "Postgres logical replication",
+        "context": "Architecture follow-up discussion",
+        "alternatives": "application-layer dual-write",
+        "revisitWhen": "full cut-over review",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x16",
+            "excerpt": "the pilot cut-over will be executed with Postgres logical replication, the application-layer dual-write proposal is closed, and we will not reopen it before the full cut-over review"
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Full cut-over review will occur",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x17-action-items-only",
+    "tags": ["abstention"],
+    "ms": 1461,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1296,
+      "completionTokens": 9,
+      "cachedTokens": 0,
+      "costUsd": 0.001341
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x18-decision-with-revisit",
+    "tags": ["revisit", "single-decision"],
+    "ms": 2759,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1287,
+      "completionTokens": 208,
+      "cachedTokens": 0,
+      "costUsd": 0.002327
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["shared runner"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Keep reconciliation harness on shared runner until performance degrades",
+        "chosen": "Keep the reconciliation harness on the shared runner",
+        "context": "Reconciliation harness deployment decision during pilot phase",
+        "alternatives": "Buy a dedicated runner",
+        "revisitWhen": "When harness runtime exceeds thirty minutes",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x18",
+            "excerpt": "We will keep the reconciliation harness on the shared runner for now, rather than buying a dedicated one, because the shared runner is fast enough at pilot volume. We revisit this when harness runtime exceeds thirty minutes."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "The shared runner is fast enough at pilot volume",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x19-past-decision-restated",
+    "tags": ["single-decision"],
+    "ms": 4421,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1315,
+      "completionTokens": 366,
+      "cachedTokens": 0,
+      "costUsd": 0.003145
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 2, expected 1-3"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 2, kept 2"
+      }
+    ],
+    "matched": ["second rehearsal"],
+    "missed": [],
+    "rawCount": 2,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over runs on logical replication",
+        "chosen": "logical replication",
+        "context": "The pilot cut-over approach was determined previously.",
+        "alternatives": null,
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x19",
+            "excerpt": "As previously decided, the pilot runs on logical replication and the pilot start remains 2026-10-06."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Pilot cut-over starts on 2026-10-06",
+            "subtype": "date",
+            "targetType": "milestone",
+            "targetId": "milestone-0",
+            "targetName": "Pilot cut-over",
+            "targetField": "dueDate",
+            "assumedUntil": "2026-10-06"
+          }
+        ]
+      },
+      {
+        "title": "Add a second rehearsal for pilot cut-over before the actual pilot",
+        "chosen": "add a second rehearsal on 2026-10-04",
+        "context": "Three harness cases were still blocked at the first rehearsal, so the committee decided to add another rehearsal.",
+        "alternatives": "rely on single rehearsal",
+        "revisitWhen": null,
+        "decidedOn": "2026-09-23",
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x19",
+            "excerpt": "the committee decided to add a second rehearsal on 2026-10-04, rather than relying on the single rehearsal, because three harness cases were still blocked at the first one."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Pilot cut-over rehearsal scheduled for 2026-10-04",
+            "subtype": "date",
+            "targetType": "task",
+            "targetId": "task-2",
+            "targetName": "Pilot cut-over rehearsal",
+            "targetField": "startDate",
+            "assumedUntil": "2026-10-04"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x20-empty-and-noise",
+    "tags": ["abstention"],
+    "ms": 1292,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1251,
+      "completionTokens": 8,
+      "cachedTokens": 0,
+      "costUsd": 0.001291
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x21-decision-without-alternative",
+    "tags": ["single-decision"],
+    "ms": 2549,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1261,
+      "completionTokens": 162,
+      "cachedTokens": 0,
+      "costUsd": 0.002071
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["pilot go-live approved"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over date approved for 2026-10-06",
+        "chosen": "2026-10-06",
+        "context": "Sponsor briefing meeting",
+        "alternatives": null,
+        "revisitWhen": null,
+        "decidedOn": "2026-10-06",
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x21",
+            "excerpt": "The sponsor approved the pilot go-live on 2026-10-06."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Pilot cut-over milestone will occur on 2026-10-06",
+            "subtype": "date",
+            "targetType": "milestone",
+            "targetId": "milestone-0",
+            "targetName": "Pilot cut-over",
+            "targetField": "dueDate",
+            "assumedUntil": "2026-10-06"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "anthropic/claude-haiku-4.5",
+    "id": "x22-three-decisions",
+    "tags": ["multi-decision"],
+    "ms": 4806,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 1360,
+      "completionTokens": 435,
+      "cachedTokens": 0,
+      "costUsd": 0.003535
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 3, expected 3-4"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 3, kept 3"
+      }
+    ],
+    "matched": ["eleven merchants", "reviewer kept", "budget held"],
+    "missed": [],
+    "rawCount": 3,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Limit pilot to eleven merchants on standard settlement plan",
+        "chosen": "Eleven merchants on standard settlement plan",
+        "context": "The vendor reconciliation service is not ready for higher volume",
+        "alternatives": "Twenty-five merchant pilot from original plan",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to limit the pilot to eleven merchants on the standard settlement plan, rather than the twenty-five merchant pilot in the original plan, because the vendor reconciliation service is not ready for that volume."
+          }
+        ],
+        "assumptions": []
+      },
+      {
+        "title": "Keep Nadia Rahman as named security reviewer through pilot",
+        "chosen": "Nadia Rahman continues as security reviewer",
+        "context": "Rotation would require fresh risk committee sign-off",
+        "alternatives": "Rotate reviewers",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to keep Nadia Rahman as the named security reviewer through the pilot rather than rotating reviewers, because a rotation needs a fresh risk committee sign-off."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Nadia Rahman remains available and assigned as security reviewer",
+            "subtype": "person",
+            "targetType": "person",
+            "targetId": "person-3",
+            "targetName": "Nadia Rahman",
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      },
+      {
+        "title": "Hold budget at July baseline without supplement",
+        "chosen": "Budget held at July baseline",
+        "context": "Pilot scope was reduced",
+        "alternatives": "Request budget supplement",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to hold the budget at the July baseline rather than requesting a supplement, because the pilot scope was reduced."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  }
+]

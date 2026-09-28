@@ -1,5 +1,14 @@
-import { describe, expect, it } from "vitest";
-import { heuristicExtract, sentencesOf } from "./extract";
+import { APICallError } from "ai";
+import { MockLanguageModelV4 } from "ai/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Ctx } from "@/server/core/context";
+import { heuristicExtract, modelExtract, sentencesOf } from "./extract";
+
+const model = vi.hoisted(() => ({ current: null as unknown }));
+vi.mock("@/server/modules/assistant/model", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/server/modules/assistant/model")>()),
+  getModelForUser: async () => model.current,
+}));
 
 const source = (text: string) => ({ kind: "evidence" as const, entityId: "e1", title: "Notes", text });
 const ctx = { people: [], milestones: [], tasks: [], conversation: "" };
@@ -40,5 +49,66 @@ describe("heuristicExtract", () => {
       "A second sentence here!",
       "Third one?",
     ]);
+  });
+});
+
+describe("modelExtract temperature", () => {
+  const userCtx = { userId: "u1" } as Ctx;
+  const ok = {
+    content: [{ type: "text" as const, text: JSON.stringify({ proposals: [] }) }],
+    finishReason: { unified: "stop" as const, raw: "stop" },
+    usage: {
+      inputTokens: { total: 10, noCache: 10, cacheRead: 0, cacheWrite: 0 },
+      outputTokens: { total: 5, text: 5, reasoning: 0 },
+    },
+    warnings: [],
+  };
+  const rejected = (body: string) =>
+    new APICallError({
+      message: "Bad Request",
+      url: "https://gateway.example/v1/chat/completions",
+      requestBodyValues: {},
+      statusCode: 400,
+      responseBody: body,
+      isRetryable: false,
+    });
+  const run = (settings?: Parameters<typeof modelExtract>[1]) =>
+    modelExtract(userCtx, settings)({ sources: [source("We decided to ship.")], context: ctx });
+
+  beforeEach(() => {
+    model.current = null;
+  });
+
+  it("samples at 0 by default and leaves temperature unset when asked for the provider default", async () => {
+    const m = new MockLanguageModelV4({ doGenerate: ok });
+    model.current = m;
+    await run();
+    await run({ temperature: null });
+    expect(m.doGenerateCalls.map((c) => c.temperature)).toEqual([0, undefined]);
+  });
+
+  it("retries once without temperature when the endpoint rejects it", async () => {
+    const temps: Array<number | undefined> = [];
+    model.current = new MockLanguageModelV4({
+      doGenerate: async (opts) => {
+        temps.push(opts.temperature);
+        if (opts.temperature !== undefined)
+          throw rejected('{"error":"Unsupported parameter: temperature is not supported with this model"}');
+        return ok;
+      },
+    });
+    await expect(run()).resolves.toEqual({ proposals: [] });
+    expect(temps).toEqual([0, undefined]);
+  });
+
+  it("does not retry other 400s", async () => {
+    const m = new MockLanguageModelV4({
+      doGenerate: async () => {
+        throw rejected('{"error":"context length exceeded"}');
+      },
+    });
+    model.current = m;
+    await expect(run()).rejects.toThrow();
+    expect(m.doGenerateCalls).toHaveLength(1);
   });
 });

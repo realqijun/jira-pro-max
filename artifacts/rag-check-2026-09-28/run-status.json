@@ -1,0 +1,15 @@
+{
+  "finished": true,
+  "generationCompleted": 2,
+  "generationCases": 6,
+  "reasonForStoppingRetries": "Repeated Gemini overload and quota errors after bounded retries on two available models. Stopped the further 3.5 conflicting-dates retry before a final answer. Earlier failed attempts exist for all four incomplete cases.",
+  "resultsSelection": "Completed answers where available; otherwise the latest fully recorded failed attempt for each case. All earlier attempts and partial steps are preserved.",
+  "applicationSourceChanged": false,
+  "browserOrHttpRouteTested": false,
+  "temporaryKeyRemoved": true,
+  "verification": {
+    "artifactCredentialMatches": 0,
+    "jsonAndJsonlParse": "passed",
+    "completedAnswerCitationIds": "all resolve to source snapshot"
+  }
+}

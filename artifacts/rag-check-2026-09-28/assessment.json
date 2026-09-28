@@ -1,0 +1,26 @@
+{
+  "01-access-blocker": {
+    "verdict": "Pass on fixture",
+    "notes": "The answer identifies customer/IAM credentials as the blocker and sponsor support as the escalation. All three cited Evidence IDs occur in read_evidence outputs and their texts support the claims. No invented resolution is asserted."
+  },
+  "02-reviewer-capacity": {
+    "verdict": "Generation blocked; ranking weak",
+    "notes": "The direct paraphrase query returned Weekly sync minutes in third place, with score 0.590, behind less relevant Evidence. That source says Ben has roughly four hours and asked for a second reviewer. The full answer could not be evaluated because Gemini returned provider errors."
+  },
+  "03-conflicting-dates": {
+    "verdict": "Generation blocked",
+    "notes": "The source snapshot contains a clear test oracle: Weekly sync minutes dated 2026-09-25 forecast 2026-09-30, while Acme progress report dated 2026-09-24 forecasts 2026-10-05. No completed model answer was obtained; conflict handling remains unverified. A further 3.5 retry was stopped after repeated provider failures."
+  },
+  "04-no-evidence": {
+    "verdict": "Pass on fixture; retrieval caveat",
+    "notes": "The answer correctly declines to invent a satellite procurement budget. Search still returned ordinary Evidence with positive scores because there is no relevance threshold. The model read three returned sources before answering. This is an answer-grounding success, not evidence that unrelated searches return empty results."
+  },
+  "05-all-labels": {
+    "verdict": "Filter passed; generation blocked",
+    "notes": "The direct query with BOTH vendor and security returned only Weekly sync minutes. Acme progress report has only vendor and was excluded. The final generated summary remains unverified because of provider errors."
+  },
+  "06-linked-task": {
+    "verdict": "Filter passed; generation blocked",
+    "notes": "The direct linkedTo call resolved the named Task and returned only Weekly sync minutes. The initial model attempt also called search_evidence with the linkedTo filter and read that source, but generation failed before a final answer."
+  }
+}

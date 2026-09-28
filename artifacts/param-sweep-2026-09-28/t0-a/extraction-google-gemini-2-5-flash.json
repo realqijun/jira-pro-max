@@ -1,0 +1,1223 @@
+[
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x01-clear-decision-transcript",
+    "tags": ["single-decision", "transcript"],
+    "ms": 2920,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 432,
+      "completionTokens": 196,
+      "cachedTokens": 0,
+      "costUsd": 0.0006196
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["logical replication chosen over dual-write"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over mechanism",
+        "chosen": "Postgres logical replication for pilot merchants.",
+        "context": "The cut-over mechanism for the pilot merchants needed to be settled.",
+        "alternatives": "Application-layer dual-write.",
+        "revisitWhen": "before the full cut-over",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x01",
+            "excerpt": "Priya Nair: Decided: cut over the pilot merchants using Postgres logical replication, rejecting the application-layer dual-write because of the nineteen write paths it would touch. We revisit before the full cut-over."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x02-two-decisions-one-source",
+    "tags": ["multi-decision", "transcript"],
+    "ms": 2563,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 435,
+      "completionTokens": 483,
+      "cachedTokens": 0,
+      "costUsd": 0.001338
+    },
+    "pass": false,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": false,
+        "detail": "kept 1, expected 2-3"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": false,
+        "detail": "review as two half-days"
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 2, kept 1"
+      }
+    ],
+    "matched": ["pilot moved to 6 October"],
+    "missed": ["review as two half-days"],
+    "rawCount": 2,
+    "discarded": 1,
+    "kept": [
+      {
+        "title": "Pilot cut-over start date",
+        "chosen": "Move the pilot start to 2026-10-06.",
+        "context": "The pilot window clashes with the finance reporting freeze from the first to the fifth.",
+        "alternatives": "Keep the pilot start date as is, clashing with the finance reporting freeze.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x02",
+            "excerpt": "Priya Nair: Then we move the pilot start to 2026-10-06 to stay clear of the finance reporting freeze."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "The finance reporting freeze is from the first to the fifth.",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x03-status-report-no-decision",
+    "tags": ["abstention"],
+    "ms": 847,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 411,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.0001483
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x04-decision-deferred",
+    "tags": ["abstention", "trap"],
+    "ms": 853,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 395,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.0001435
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x05-decision-in-comment",
+    "tags": ["comment", "single-decision"],
+    "ms": 1639,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 359,
+      "completionTokens": 242,
+      "cachedTokens": 0,
+      "costUsd": 0.0007127
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["two half-days"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Security review scheduling",
+        "chosen": "Book two half-days for the security review.",
+        "context": null,
+        "alternatives": "Book one full day for the security review.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "comment",
+            "entityId": "src-x05",
+            "excerpt": "We agreed in the risk stand-up to book two half-days rather than one full day for the security review, because a full day cannot be found before the sign-off date."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x06-buried-in-long-transcript",
+    "tags": ["long-source", "single-decision"],
+    "ms": 1580,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 638,
+      "completionTokens": 216,
+      "cachedTokens": 0,
+      "costUsd": 0.0007314
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["extend pilot to fourteen"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Extend pilot to fourteen merchants",
+        "chosen": "Extend the pilot from eleven to fourteen merchants.",
+        "context": "Two merchants asked to join the pilot late. Their settlement plan is the same as the eleven we have. The harness covers that plan now. From a security point of view nothing changes; same plan, same flows.",
+        "alternatives": "Holding at eleven merchants.",
+        "revisitWhen": null,
+        "decidedOn": "2024-07-18",
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x06",
+            "excerpt": "Priya Nair: Then decided: extend the pilot from eleven to fourteen merchants, rather than holding at eleven, now that the harness covers the additional settlement plan."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x07-prompt-injection",
+    "tags": ["security", "abstention"],
+    "ms": 795,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 410,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.000148
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x08-date-assumption",
+    "tags": ["assumption-date", "single-decision"],
+    "ms": 1836,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 404,
+      "completionTokens": 284,
+      "cachedTokens": 0,
+      "costUsd": 0.0008312
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "assumption_subtypes",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["rehearsal the week before"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over rehearsal scheduling",
+        "chosen": "Run the rehearsal the week before the pilot.",
+        "context": "The Pilot cut-over rehearsal needs to be close enough to the Pilot cut-over so that the harness results are still current.",
+        "alternatives": "Run the rehearsal two weeks before the pilot.",
+        "revisitWhen": "If the Pilot cut-over milestone's due date moves.",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x08",
+            "excerpt": "We decided to run the rehearsal the week before the pilot rather than two weeks before, so the harness results are still current."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "The Pilot cut-over milestone keeps its 2026-10-06 due date.",
+            "subtype": "date",
+            "targetType": "milestone",
+            "targetId": "milestone-0",
+            "targetName": "Pilot cut-over",
+            "targetField": "dueDate",
+            "assumedUntil": "2026-10-06"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x09-person-assumption",
+    "tags": ["assumption-person", "single-decision"],
+    "ms": 1314,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 373,
+      "completionTokens": 192,
+      "cachedTokens": 0,
+      "costUsd": 0.0005919
+    },
+    "pass": false,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "assumption_subtypes",
+        "pass": false,
+        "detail": "person"
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["single named reviewer"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Security reviewer for pilot cut-over",
+        "chosen": "Nadia Rahman remains the single named security reviewer for the pilot.",
+        "context": null,
+        "alternatives": "Adding a second reviewer from the security guild.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x09",
+            "excerpt": "The committee decided that Nadia Rahman remains the single named security reviewer for the pilot, rather than adding a second reviewer from the security guild, because a second reviewer would need a fresh sign-off from the risk committee and none is scheduled before the pilot."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x10-external-rule",
+    "tags": ["assumption-external", "single-decision"],
+    "ms": 1667,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 394,
+      "completionTokens": 261,
+      "cachedTokens": 0,
+      "costUsd": 0.0007707
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["thirty-day dual-running"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Legacy ledger decommissioning",
+        "chosen": "The legacy ledger will remain operational for thirty days after the full cut-over.",
+        "context": "The project involves a full cut-over to a new ledger system.",
+        "alternatives": "Decommissioning the legacy ledger immediately at cut-over.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x10",
+            "excerpt": "Priya Nair: Thirty days after the full cut-over. That is a compliance requirement under the payment services rules, not our choice. Decommissioning at cut-over is not permitted."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "The legacy ledger must remain up for thirty days after the full cut-over.",
+            "subtype": "external_rule",
+            "targetType": null,
+            "targetId": null,
+            "targetName": null,
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x11-plan-export-no-prose",
+    "tags": ["abstention"],
+    "ms": 815,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 464,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.0001642
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x12-two-sources-one-decision",
+    "tags": ["multi-source", "single-decision"],
+    "ms": 1270,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 421,
+      "completionTokens": 166,
+      "cachedTokens": 0,
+      "costUsd": 0.0005413
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["in-house dashboard"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Reconciliation dashboard hosting",
+        "chosen": "build the reconciliation dashboard in-house",
+        "context": null,
+        "alternatives": "vendor-hosted option",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x12b",
+            "excerpt": "The committee decided to build the reconciliation dashboard in-house rather than take the vendor-hosted option, because the vendor-hosted dashboard cannot be audited by our own security reviewer."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x13-reversal",
+    "tags": ["supersede-language", "single-decision"],
+    "ms": 1477,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 358,
+      "completionTokens": 176,
+      "cachedTokens": 0,
+      "costUsd": 0.0005474
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["reversal to fourteen"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot merchant count",
+        "chosen": "The pilot will now include fourteen merchants.",
+        "context": "The committee reversed its September decision to limit the pilot to eleven merchants.",
+        "alternatives": "Limit the pilot to eleven merchants.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x13",
+            "excerpt": "The committee reversed its September decision to limit the pilot to eleven merchants. The pilot will now include fourteen merchants, because the reconciliation harness covers the additional settlement plan."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x14-hedged-language",
+    "tags": ["abstention", "trap"],
+    "ms": 988,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 370,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.000136
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x15-conflicting-statements",
+    "tags": ["conflict"],
+    "ms": 1381,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 381,
+      "completionTokens": 196,
+      "cachedTokens": 0,
+      "costUsd": 0.0006043
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-2"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["cut-over day freeze"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Merchant onboarding freeze during pilot",
+        "chosen": "Freezing onboarding for the cut-over day only",
+        "context": null,
+        "alternatives": "Freezing merchant onboarding for the whole pilot window",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x15",
+            "excerpt": "Morning session: the team decided to freeze merchant onboarding for the whole pilot window. Afternoon session: after the merchant success team objected, the decision was changed to freezing onboarding for the cut-over day only, because a full-window freeze would block eight signed merchants."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x16-paraphrase-trap",
+    "tags": ["citation", "single-decision"],
+    "ms": 1345,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 380,
+      "completionTokens": 174,
+      "cachedTokens": 0,
+      "costUsd": 0.000549
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["replication confirmed"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot cut-over replication strategy",
+        "chosen": "Postgres logical replication",
+        "context": null,
+        "alternatives": "application-layer dual-write",
+        "revisitWhen": "full cut-over review",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x16",
+            "excerpt": "the pilot cut-over will be executed with Postgres logical replication, the application-layer dual-write proposal is closed, and we will not reopen it before the full cut-over review."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x17-action-items-only",
+    "tags": ["abstention"],
+    "ms": 847,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 381,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.0001393
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x18-decision-with-revisit",
+    "tags": ["revisit", "single-decision"],
+    "ms": 1457,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 367,
+      "completionTokens": 188,
+      "cachedTokens": 0,
+      "costUsd": 0.0005801
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["shared runner"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Reconciliation harness runner",
+        "chosen": "The reconciliation harness will use the shared runner.",
+        "context": "The reconciliation harness needs a runner.",
+        "alternatives": "Buying a dedicated runner for the reconciliation harness.",
+        "revisitWhen": "harness runtime exceeds thirty minutes",
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x18",
+            "excerpt": "We will keep the reconciliation harness on the shared runner for now, rather than buying a dedicated one, because the shared runner is fast enough at pilot volume. We revisit this when harness runtime exceeds thirty minutes."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x19-past-decision-restated",
+    "tags": ["single-decision"],
+    "ms": 3011,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 408,
+      "completionTokens": 658,
+      "cachedTokens": 0,
+      "costUsd": 0.0017674
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 2, expected 1-3"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 3, kept 2"
+      }
+    ],
+    "matched": ["second rehearsal"],
+    "missed": [],
+    "rawCount": 3,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot runs on logical replication",
+        "chosen": "The pilot runs on logical replication.",
+        "context": null,
+        "alternatives": null,
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x19",
+            "excerpt": "As previously decided, the pilot runs on logical replication and the pilot start remains 2026-10-06."
+          }
+        ],
+        "assumptions": []
+      },
+      {
+        "title": "Add a second rehearsal for the pilot cut-over",
+        "chosen": "Add a second rehearsal on 2026-10-04.",
+        "context": "Three harness cases were still blocked at the first rehearsal.",
+        "alternatives": "Relying on the single rehearsal.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x19",
+            "excerpt": "New this week: the committee decided to add a second rehearsal on 2026-10-04, rather than relying on the single rehearsal, because three harness cases were still blocked at the first one."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "The second rehearsal for the pilot cut-over is on 2026-10-04.",
+            "subtype": "date",
+            "targetType": "task",
+            "targetId": "task-2",
+            "targetName": "Pilot cut-over rehearsal",
+            "targetField": "dueDate",
+            "assumedUntil": "2026-10-04"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x20-empty-and-noise",
+    "tags": ["abstention"],
+    "ms": 752,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 336,
+      "completionTokens": 10,
+      "cachedTokens": 0,
+      "costUsd": 0.0001258
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 0, expected 0-0"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 0, kept 0"
+      }
+    ],
+    "matched": [],
+    "missed": [],
+    "rawCount": 0,
+    "discarded": 0,
+    "kept": []
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x21-decision-without-alternative",
+    "tags": ["single-decision"],
+    "ms": 1285,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 353,
+      "completionTokens": 168,
+      "cachedTokens": 0,
+      "costUsd": 0.0005259
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 1, expected 1-1"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 1, kept 1"
+      }
+    ],
+    "matched": ["pilot go-live approved"],
+    "missed": [],
+    "rawCount": 1,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot go-live date",
+        "chosen": "2026-10-06",
+        "context": null,
+        "alternatives": "No alternative dates were considered at this meeting.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x21",
+            "excerpt": "The sponsor approved the pilot go-live on 2026-10-06. No alternative dates were considered at this meeting."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  },
+  {
+    "model": "google/gemini-2.5-flash",
+    "id": "x22-three-decisions",
+    "tags": ["multi-decision"],
+    "ms": 2525,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 443,
+      "completionTokens": 532,
+      "cachedTokens": 0,
+      "costUsd": 0.0014629
+    },
+    "pass": true,
+    "checks": [
+      {
+        "name": "count_in_range",
+        "pass": true,
+        "detail": "kept 3, expected 3-4"
+      },
+      {
+        "name": "expected_decisions_found",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_content",
+        "pass": true
+      },
+      {
+        "name": "citations_survived_tracing",
+        "pass": true,
+        "detail": "raw 3, kept 3"
+      }
+    ],
+    "matched": ["eleven merchants", "reviewer kept", "budget held"],
+    "missed": [],
+    "rawCount": 3,
+    "discarded": 0,
+    "kept": [
+      {
+        "title": "Pilot scope",
+        "chosen": "Limit the pilot to eleven merchants on the standard settlement plan.",
+        "context": null,
+        "alternatives": "The original plan of a twenty-five merchant pilot.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to limit the pilot to eleven merchants on the standard settlement plan, rather than the twenty-five merchant pilot in the original plan, because the vendor reconciliation service is not ready for that volume."
+          }
+        ],
+        "assumptions": []
+      },
+      {
+        "title": "Security reviewer for pilot",
+        "chosen": "Keep Nadia Rahman as the named security reviewer through the pilot.",
+        "context": null,
+        "alternatives": "Rotating reviewers.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to keep Nadia Rahman as the named security reviewer through the pilot rather than rotating reviewers, because a rotation needs a fresh risk committee sign-off."
+          }
+        ],
+        "assumptions": [
+          {
+            "statement": "Nadia Rahman will remain available as the security reviewer through the pilot.",
+            "subtype": "person",
+            "targetType": "person",
+            "targetId": "person-3",
+            "targetName": "Nadia Rahman",
+            "targetField": null,
+            "assumedUntil": null
+          }
+        ]
+      },
+      {
+        "title": "Project budget",
+        "chosen": "Hold the budget at the July baseline.",
+        "context": null,
+        "alternatives": "Request a supplement.",
+        "revisitWhen": null,
+        "decidedOn": null,
+        "sources": [
+          {
+            "kind": "evidence",
+            "entityId": "src-x22",
+            "excerpt": "The committee decided to hold the budget at the July baseline rather than requesting a supplement, because the pilot scope was reduced."
+          }
+        ],
+        "assumptions": []
+      }
+    ]
+  }
+]

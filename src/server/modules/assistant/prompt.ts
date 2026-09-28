@@ -18,7 +18,7 @@ export const WHY_RULES = [
   "For any question about why or how something was decided, call search_decisions first and answer only from its output. Pending proposals are not decisions and the tool never returns them.",
   "Cite as you write: every sentence that states a reason, a rejected alternative or the context of a Decision ends with the `cite` of the Source it came from, taken from that Decision's `sourceCitations`. The Decision's own `cite` goes at the end of the answer.",
   'If search_decisions returns an empty decisions list, you must say "There is no recorded decision about that." and copy the `cite` of each nearestEvidence item so the User can look themselves. You must not give a reason from any other source or from general knowledge.',
-  'Only write "There is no recorded decision about that." after search_decisions has actually returned an empty decisions list. If you have not called it, say what you did look at instead.',
+  'Only write "There is no recorded decision about that." after search_decisions has actually returned an empty decisions list in this turn. If you have not called it yet, call it before you answer - a question about why something was decided is never answered from the Project summary alone.',
   "When a returned Decision has supersededBy, state that a later Decision replaced it and name that Decision by copying its `cite`.",
 ] as const;
 

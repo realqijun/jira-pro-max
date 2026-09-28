@@ -1,0 +1,41 @@
+{
+  "database": "pm_rag_check_20260928",
+  "createdFor": "This RAG evaluation",
+  "source": "npm run db:seed using repository scripts/seed.ts, in a new empty database",
+  "projects": [
+    {
+      "id": "ca805f30-0938-40ce-9d05-e19a7bf00a4d",
+      "name": "Payments Platform Relaunch",
+      "key": "PAY"
+    },
+    {
+      "id": "aef2f735-6949-4d62-b92d-893843c9eb4a",
+      "name": "Data Warehouse Migration",
+      "key": "DWH"
+    },
+    {
+      "id": "d4068eb5-b833-4a2e-9aa0-a3df25e74e46",
+      "name": "Bedok Community Centre",
+      "key": "BCC"
+    }
+  ],
+  "evidence": [
+    {
+      "title": "Weekly sync minutes",
+      "body": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before the security review window; asked whether a second reviewer can be found.\n- Decision: proceed with Option B (mock settlement endpoint) so frontend work is not blocked.\n- Action: Alice to circulate revised estimate by Wednesday."
+    },
+    {
+      "title": "Status update — week 37",
+      "body": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+    },
+    {
+      "title": "Project plan v4 (export)",
+      "body": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+    },
+    {
+      "title": "Acme progress report",
+      "body": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+    }
+  ],
+  "containsRealUserData": false
+}

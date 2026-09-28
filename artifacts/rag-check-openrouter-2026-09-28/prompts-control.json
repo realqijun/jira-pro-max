@@ -1,0 +1,17 @@
+[
+  {
+    "id": "c1-citation-no-template",
+    "expected": "Production-realistic phrasing: the User gives no URL template. Citation hrefs must be app-relative paths that resolve, not invented absolute URLs.",
+    "prompt": "What is blocking delivery on this Project right now? Search and read the Evidence, then answer with your sources cited."
+  },
+  {
+    "id": "c2-why-no-decisions",
+    "expected": "No Decisions exist in this Project, so search_decisions must be called first and the answer must say there is no recorded decision, listing nearestEvidence as working links.",
+    "prompt": "Why did we decide to use a mock settlement endpoint instead of waiting for the real one?"
+  },
+  {
+    "id": "c3-plain-text",
+    "expected": "The system prompt forbids Markdown headers, bold and lists. A comparison answer must still be plain text with citation links only.",
+    "prompt": "Compare what the weekly minutes and the vendor report each say about when the settlement service will be done, and cite both sources."
+  }
+]

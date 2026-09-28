@@ -1,0 +1,234 @@
+[
+  {
+    "id": "c1-citation-no-template",
+    "expected": "Production-realistic phrasing: the User gives no URL template. Citation hrefs must be app-relative paths that resolve, not invented absolute URLs.",
+    "prompt": "What is blocking delivery on this Project right now? Search and read the Evidence, then answer with your sources cited.",
+    "ms": 4829,
+    "answer": "Currently, there are a few blockers affecting delivery on the project:\n\n1. The completion of the settlement service has been delayed, with a new forecast of readiness by 2026-10-05 due to customer credentials issues. This was highlighted in the \"Acme progress report\", which noted that Deliverable A is 90% complete and is blocked by this credential issue ([Acme progress report](https://example.com)).\n\n2. Jason reported that the integration testing is at risk of being delayed unless there are no further infrastructure blocks. The revised API completion is expected by 2026-10-01. This information was discussed in the \"Weekly sync minutes\", where it was stated that UAT is still targeted for 2026-10-07, but team dependency on the staging API is a concern ([Weekly sync minutes](https://example.com)).\n\n3. A status update reported that the schedule for API completion has shifted from 2026-09-26 to 2026-10-01, indicating that downstream testing is now starting late and that the start for UAT is under review. This update highlighted a risk concerning vendor access being raised to high priority, reflecting the urgency around credential issues with Acme ([Status update — week 37](https://example.com)).\n\nThese issues point to the need for escalating requests for IAM credentials with Acme to resolve these blockers.",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 20705,
+      "inputTokenDetails": {
+        "noCacheTokens": 1633,
+        "cacheReadTokens": 19072
+      },
+      "outputTokens": 297,
+      "outputTokenDetails": {
+        "textTokens": 297,
+        "reasoningTokens": 0
+      },
+      "totalTokens": 21002
+    },
+    "steps": [
+      {
+        "text": "",
+        "calls": [
+          {
+            "tool": "search_evidence",
+            "input": {
+              "query": "blocking"
+            }
+          }
+        ],
+        "results": [
+          {
+            "tool": "search_evidence",
+            "output": {
+              "matches": [
+                {
+                  "evidenceId": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+                  "title": "Acme progress report",
+                  "kind": "other",
+                  "sourceDate": "2026-09-24",
+                  "fileName": null,
+                  "score": 0.307,
+                  "snippet": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials."
+                },
+                {
+                  "evidenceId": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+                  "title": "Weekly sync minutes",
+                  "kind": "minutes",
+                  "sourceDate": "2026-09-25",
+                  "fileName": null,
+                  "score": 0.222,
+                  "snippet": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before "
+                },
+                {
+                  "evidenceId": "ab9875cd-3611-4063-9081-99d969699420",
+                  "title": "Status update — week 37",
+                  "kind": "status_update",
+                  "sourceDate": "2026-09-27",
+                  "fileName": null,
+                  "score": 0.211,
+                  "snippet": "Overall: AMBER\nSchedule: API completion moved 2026-09-26 → 2026-10-01 (Team B). Downstream: integration testing starts late; UAT start under review.\nScope: unchanged.\nBudget: no new data since 2026-09-07.\nRisks: R-1 (vendor access) raised to High. R-2 monitoring.\nAsks: sponsor support escalating IAM credentials with Acme."
+                },
+                {
+                  "evidenceId": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+                  "title": "Project plan v4 (export)",
+                  "kind": "plan",
+                  "sourceDate": "2026-09-26",
+                  "fileName": null,
+                  "score": 0.199,
+                  "snippet": "id,name,start,finish,owner\n1,Implement v2 payment endpoints,2026-09-12,2026-10-01,Team B\n2,Authentication flow integration tests,2026-09-29,2026-10-04,Frontend\n3,End-to-end integration test suite,2026-10-01,2026-10-06,Team C\n4,Security architecture review,2026-10-04,2026-10-10,Ben\n5,Run merchant pilot UAT,2026-10-07,2026-10-21,Team C\n6,Launch,2026-11-03,2026-11-03,PMO"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "Currently, there are a few blockers affecting delivery on the project:\n\n1. The completion of the settlement service has been delayed, with a new forecast of readiness by 2026-10-05 due to customer credentials issues. This was highlighted in the \"Acme progress report\", which noted that Deliverable A is 90% complete and is blocked by this credential issue ([Acme progress report](https://example.com)).\n\n2. Jason reported that the integration testing is at risk of being delayed unless there are no further infrastructure blocks. The revised API completion is expected by 2026-10-01. This information was discussed in the \"Weekly sync minutes\", where it was stated that UAT is still targeted for 2026-10-07, but team dependency on the staging API is a concern ([Weekly sync minutes](https://example.com)).\n\n3. A status update reported that the schedule for API completion has shifted from 2026-09-26 to 2026-10-01, indicating that downstream testing is now starting late and that the start for UAT is under review. This update highlighted a risk concerning vendor access being raised to high priority, reflecting the urgency around credential issues with Acme ([Status update — week 37](https://example.com)).\n\nThese issues point to the need for escalating requests for IAM credentials with Acme to resolve these blockers.",
+        "calls": [],
+        "results": []
+      }
+    ]
+  },
+  {
+    "id": "c2-why-no-decisions",
+    "expected": "No Decisions exist in this Project, so search_decisions must be called first and the answer must say there is no recorded decision, listing nearestEvidence as working links.",
+    "prompt": "Why did we decide to use a mock settlement endpoint instead of waiting for the real one?",
+    "ms": 3443,
+    "answer": "There is no recorded decision about that. You can review the following evidence for more context: [Weekly sync minutes](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc#evidence-0c9e7a09-ce2b-4473-98f3-56105ccad4fc), [Project plan v4 (export)](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=05eccf63-cec1-4196-9d59-aac3f9110d66#evidence-05eccf63-cec1-4196-9d59-aac3f9110d66), [Acme progress report](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3#evidence-32cb617a-1055-4c05-81d9-530f1f4af9b3).",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 20685,
+      "inputTokenDetails": {
+        "noCacheTokens": 1613,
+        "cacheReadTokens": 19072
+      },
+      "outputTokens": 305,
+      "outputTokenDetails": {
+        "textTokens": 305,
+        "reasoningTokens": 0
+      },
+      "totalTokens": 20990
+    },
+    "steps": [
+      {
+        "text": "",
+        "calls": [
+          {
+            "tool": "search_decisions",
+            "input": {
+              "query": "mock settlement endpoint",
+              "limit": 5
+            }
+          }
+        ],
+        "results": [
+          {
+            "tool": "search_decisions",
+            "output": {
+              "decisions": [],
+              "nearestEvidence": [
+                {
+                  "id": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+                  "title": "Weekly sync minutes",
+                  "kind": "minutes",
+                  "href": "/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc#evidence-0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+                  "cite": "[Weekly sync minutes](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc#evidence-0c9e7a09-ce2b-4473-98f3-56105ccad4fc)"
+                },
+                {
+                  "id": "05eccf63-cec1-4196-9d59-aac3f9110d66",
+                  "title": "Project plan v4 (export)",
+                  "kind": "plan",
+                  "href": "/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=05eccf63-cec1-4196-9d59-aac3f9110d66#evidence-05eccf63-cec1-4196-9d59-aac3f9110d66",
+                  "cite": "[Project plan v4 (export)](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=05eccf63-cec1-4196-9d59-aac3f9110d66#evidence-05eccf63-cec1-4196-9d59-aac3f9110d66)"
+                },
+                {
+                  "id": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+                  "title": "Acme progress report",
+                  "kind": "other",
+                  "href": "/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3#evidence-32cb617a-1055-4c05-81d9-530f1f4af9b3",
+                  "cite": "[Acme progress report](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3#evidence-32cb617a-1055-4c05-81d9-530f1f4af9b3)"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "text": "There is no recorded decision about that. You can review the following evidence for more context: [Weekly sync minutes](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc#evidence-0c9e7a09-ce2b-4473-98f3-56105ccad4fc), [Project plan v4 (export)](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=05eccf63-cec1-4196-9d59-aac3f9110d66#evidence-05eccf63-cec1-4196-9d59-aac3f9110d66), [Acme progress report](/projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3#evidence-32cb617a-1055-4c05-81d9-530f1f4af9b3).",
+        "calls": [],
+        "results": []
+      }
+    ]
+  },
+  {
+    "id": "c3-plain-text",
+    "expected": "The system prompt forbids Markdown headers, bold and lists. A comparison answer must still be plain text with citation links only.",
+    "prompt": "Compare what the weekly minutes and the vendor report each say about when the settlement service will be done, and cite both sources.",
+    "ms": 4077,
+    "answer": "The weekly sync minutes state that the settlement service will be ready by 2026-09-30 according to Marcus from Acme, who noted they are still waiting for IAM credentials which has caused delays. In contrast, the Acme progress report claims that the settlement service is 90% complete, with a planned finish of 2026-09-26, but now forecasts completion by 2026-10-05 due to a blockage with customer credentials.\n\nSources:\n- Weekly sync minutes: \"Marcus: settlement service will be ready by 2026-09-30.\" [Weekly sync minutes](/projects/.../evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc)\n- Acme progress report: \"Planned finish 2026-09-26; new forecast 2026-10-05.\" [Acme progress report](/projects/.../evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3)",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 20590,
+      "inputTokenDetails": {
+        "noCacheTokens": 1518,
+        "cacheReadTokens": 19072
+      },
+      "outputTokens": 319,
+      "outputTokenDetails": {
+        "textTokens": 319,
+        "reasoningTokens": 0
+      },
+      "totalTokens": 20909
+    },
+    "steps": [
+      {
+        "text": "",
+        "calls": [
+          {
+            "tool": "read_evidence",
+            "input": {
+              "id": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc"
+            }
+          },
+          {
+            "tool": "read_evidence",
+            "input": {
+              "id": "32cb617a-1055-4c05-81d9-530f1f4af9b3"
+            }
+          }
+        ],
+        "results": [
+          {
+            "tool": "read_evidence",
+            "output": {
+              "id": "0c9e7a09-ce2b-4473-98f3-56105ccad4fc",
+              "title": "Weekly sync minutes",
+              "kind": "minutes",
+              "sourceDate": "2026-09-25",
+              "fileName": null,
+              "hasText": true,
+              "labelIds": ["884b812a-e633-4969-95c1-4b19575b2a58", "90060888-e094-4ddb-9cf1-350201d1bd38"],
+              "notes": null,
+              "extractedText": "Attendees: Jason, Sarah, Alice, Ben, Marcus (Acme)\n\n- Jason: integration should probably land early next week unless infra blocks us. Revised API completion to 2026-10-01.\n- Sarah: Team C cannot start integration testing until the API is on staging. UAT still targeted for 2026-10-07.\n- Marcus: settlement service will be ready by 2026-09-30. Still waiting on our side for the IAM credentials request — \"we've stopped hearing back from the identity team\".\n- Ben: has roughly 4 hours available before the security review window; asked whether a second reviewer can be found.\n- Decision: proceed with Option B (mock settlement endpoint) so frontend work is not blocked.\n- Action: Alice to circulate revised estimate by Wednesday.",
+              "truncated": false
+            }
+          },
+          {
+            "tool": "read_evidence",
+            "output": {
+              "id": "32cb617a-1055-4c05-81d9-530f1f4af9b3",
+              "title": "Acme progress report",
+              "kind": "other",
+              "sourceDate": "2026-09-24",
+              "fileName": null,
+              "hasText": true,
+              "labelIds": ["884b812a-e633-4969-95c1-4b19575b2a58"],
+              "notes": "Vendor claims 90% complete; internal acceptance evidence supports ~65%.",
+              "extractedText": "Deliverable A (settlement service): 90% complete.\nPlanned finish 2026-09-26; new forecast 2026-10-05.\nBlocker: customer credentials.",
+              "truncated": false
+            }
+          }
+        ]
+      },
+      {
+        "text": "The weekly sync minutes state that the settlement service will be ready by 2026-09-30 according to Marcus from Acme, who noted they are still waiting for IAM credentials which has caused delays. In contrast, the Acme progress report claims that the settlement service is 90% complete, with a planned finish of 2026-09-26, but now forecasts completion by 2026-10-05 due to a blockage with customer credentials.\n\nSources:\n- Weekly sync minutes: \"Marcus: settlement service will be ready by 2026-09-30.\" [Weekly sync minutes](/projects/.../evidence?item=0c9e7a09-ce2b-4473-98f3-56105ccad4fc)\n- Acme progress report: \"Planned finish 2026-09-26; new forecast 2026-10-05.\" [Acme progress report](/projects/.../evidence?item=32cb617a-1055-4c05-81d9-530f1f4af9b3)",
+        "calls": [],
+        "results": []
+      }
+    ]
+  }
+]

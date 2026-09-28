@@ -1,0 +1,50 @@
+{
+  "openai/gpt-4o-mini": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.7272727272727273,
+      "medianMs": 2386,
+      "usd": 0.013620299999999998
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 0.65,
+      "medianMs": 3476,
+      "usd": 0.03112117
+    },
+    "overallPassRate": 0.6904761904761905,
+    "totalUsd": 0.044741469999999985
+  },
+  "google/gemini-2.5-flash": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.9545454545454546,
+      "medianMs": 1524,
+      "usd": 0.013306400000000001
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 0.95,
+      "medianMs": 2540,
+      "usd": 0.061951400000000004
+    },
+    "overallPassRate": 0.9523809523809523,
+    "totalUsd": 0.0752578
+  },
+  "anthropic/claude-haiku-4.5": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.9090909090909091,
+      "medianMs": 2721,
+      "usd": 0.04788200000000001
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 1,
+      "medianMs": 4950,
+      "usd": 0.4916282400000001
+    },
+    "overallPassRate": 0.9523809523809523,
+    "totalUsd": 0.53951024
+  }
+}

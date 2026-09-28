@@ -1,0 +1,594 @@
+{
+  "bakeoff": {
+    "openai/gpt-4o-mini": {
+      "extraction": {
+        "cases": 22,
+        "passed": 16,
+        "passPct": 72.7,
+        "medianMs": 2386,
+        "promptTokens": 13694,
+        "completionTokens": 19277,
+        "cachedPct": 0,
+        "costUsd": 0.013620299999999998,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": [
+          "x02-two-decisions-one-source",
+          "x03-status-report-no-decision",
+          "x07-prompt-injection",
+          "x09-person-assumption",
+          "x16-paraphrase-trap",
+          "x19-past-decision-restated"
+        ]
+      },
+      "why": {
+        "cases": 20,
+        "passed": 13,
+        "passPct": 65,
+        "medianMs": 3476,
+        "promptTokens": 367972,
+        "completionTokens": 3702,
+        "cachedPct": 95.3,
+        "costUsd": 0.03112117,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": [
+          "w03-superseded",
+          "w07-why-thirty-days",
+          "w10-conflicting-vendor-dates",
+          "w14-why-rehearsal-timing",
+          "w15-assumptions-of-pilot-date",
+          "w19-why-dual-write-rejected",
+          "w20-preconditions"
+        ]
+      }
+    },
+    "google/gemini-2.5-flash": {
+      "extraction": {
+        "cases": 22,
+        "passed": 21,
+        "passPct": 95.5,
+        "medianMs": 1524,
+        "promptTokens": 8913,
+        "completionTokens": 4253,
+        "cachedPct": 0,
+        "costUsd": 0.013306400000000001,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x02-two-decisions-one-source"]
+      },
+      "why": {
+        "cases": 20,
+        "passed": 19,
+        "passPct": 95,
+        "medianMs": 2540,
+        "promptTokens": 471152,
+        "completionTokens": 4577,
+        "cachedPct": 71.4,
+        "costUsd": 0.061951400000000004,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": ["w06-why-two-half-days"]
+      }
+    },
+    "anthropic/claude-haiku-4.5": {
+      "extraction": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 2721,
+        "promptTokens": 29112,
+        "completionTokens": 3754,
+        "cachedPct": 0,
+        "costUsd": 0.04788200000000001,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x04-decision-deferred", "x07-prompt-injection"]
+      },
+      "why": {
+        "cases": 20,
+        "passed": 20,
+        "passPct": 100,
+        "medianMs": 4950,
+        "promptTokens": 462950,
+        "completionTokens": 5738,
+        "cachedPct": 0,
+        "costUsd": 0.4916282400000001,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": []
+      }
+    }
+  },
+  "promptIteration": {
+    "openai/gpt-4o-mini": {
+      "baseline": {
+        "cases": 22,
+        "passed": 16,
+        "passPct": 72.7,
+        "medianMs": 2386,
+        "promptTokens": 13694,
+        "completionTokens": 19277,
+        "cachedPct": 0,
+        "costUsd": 0.013620299999999998,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": [
+          "x02-two-decisions-one-source",
+          "x03-status-report-no-decision",
+          "x07-prompt-injection",
+          "x09-person-assumption",
+          "x16-paraphrase-trap",
+          "x19-past-decision-restated"
+        ]
+      },
+      "one-proposal-per-decision": {
+        "cases": 22,
+        "passed": 17,
+        "passPct": 77.3,
+        "medianMs": 3025,
+        "promptTokens": 14618,
+        "completionTokens": 4087,
+        "cachedPct": 0,
+        "costUsd": 0.0046449,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": [
+          "x03-status-report-no-decision",
+          "x07-prompt-injection",
+          "x11-plan-export-no-prose",
+          "x16-paraphrase-trap",
+          "x17-action-items-only"
+        ]
+      },
+      "precision-guard": {
+        "cases": 22,
+        "passed": 18,
+        "passPct": 81.8,
+        "medianMs": 3361,
+        "promptTokens": 15784,
+        "completionTokens": 3389,
+        "cachedPct": 0,
+        "costUsd": 0.004400999999999999,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": [
+          "x03-status-report-no-decision",
+          "x07-prompt-injection",
+          "x09-person-assumption",
+          "x16-paraphrase-trap"
+        ]
+      },
+      "negative-definition": {
+        "cases": 22,
+        "passed": 19,
+        "passPct": 86.4,
+        "medianMs": 2815,
+        "promptTokens": 16422,
+        "completionTokens": 2967,
+        "cachedPct": 0,
+        "costUsd": 0.0042435,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x07-prompt-injection", "x09-person-assumption", "x16-paraphrase-trap"]
+      },
+      "approvals-are-decisions": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 2728,
+        "promptTokens": 16626,
+        "completionTokens": 2987,
+        "cachedPct": 0,
+        "costUsd": 0.0042861,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x07-prompt-injection", "x16-paraphrase-trap"]
+      }
+    },
+    "google/gemini-2.5-flash": {
+      "baseline": {
+        "cases": 22,
+        "passed": 21,
+        "passPct": 95.5,
+        "medianMs": 1524,
+        "promptTokens": 8913,
+        "completionTokens": 4253,
+        "cachedPct": 0,
+        "costUsd": 0.013306400000000001,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x02-two-decisions-one-source"]
+      },
+      "one-proposal-per-decision": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 1607,
+        "promptTokens": 9859,
+        "completionTokens": 4753,
+        "cachedPct": 0,
+        "costUsd": 0.014840200000000003,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x02-two-decisions-one-source", "x03-status-report-no-decision"]
+      },
+      "precision-guard": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 1662,
+        "promptTokens": 11047,
+        "completionTokens": 4576,
+        "cachedPct": 0,
+        "costUsd": 0.014754100000000003,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x03-status-report-no-decision", "x09-person-assumption"]
+      },
+      "negative-definition": {
+        "cases": 22,
+        "passed": 19,
+        "passPct": 86.4,
+        "medianMs": 1541,
+        "promptTokens": 11795,
+        "completionTokens": 3784,
+        "cachedPct": 0,
+        "costUsd": 0.0129985,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x02-two-decisions-one-source", "x09-person-assumption", "x21-decision-without-alternative"]
+      },
+      "approvals-are-decisions": {
+        "cases": 22,
+        "passed": 21,
+        "passPct": 95.5,
+        "medianMs": 1556,
+        "promptTokens": 11480,
+        "completionTokens": 3759,
+        "cachedPct": 0,
+        "costUsd": 0.0128415,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x09-person-assumption"]
+      }
+    }
+  },
+  "answersBeforeAfter": {
+    "openai/gpt-4o-mini": {
+      "before": {
+        "cases": 20,
+        "passed": 13,
+        "passPct": 65,
+        "medianMs": 3476,
+        "promptTokens": 367972,
+        "completionTokens": 3702,
+        "cachedPct": 95.3,
+        "costUsd": 0.03112117,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": [
+          "w03-superseded",
+          "w07-why-thirty-days",
+          "w10-conflicting-vendor-dates",
+          "w14-why-rehearsal-timing",
+          "w15-assumptions-of-pilot-date",
+          "w19-why-dual-write-rejected",
+          "w20-preconditions"
+        ]
+      },
+      "after": {
+        "cases": 20,
+        "passed": 13,
+        "passPct": 65,
+        "medianMs": 3681,
+        "promptTokens": 376668,
+        "completionTokens": 3777,
+        "cachedPct": 85.5,
+        "costUsd": 0.034602289999999994,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": [
+          "w03-superseded",
+          "w10-conflicting-vendor-dates",
+          "w11-injection-resistance",
+          "w14-why-rehearsal-timing",
+          "w15-assumptions-of-pilot-date",
+          "w16-revisit-condition",
+          "w20-preconditions"
+        ]
+      }
+    },
+    "google/gemini-2.5-flash": {
+      "before": {
+        "cases": 20,
+        "passed": 19,
+        "passPct": 95,
+        "medianMs": 2540,
+        "promptTokens": 471152,
+        "completionTokens": 4577,
+        "cachedPct": 71.4,
+        "costUsd": 0.061951400000000004,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": ["w06-why-two-half-days"]
+      },
+      "after": {
+        "cases": 20,
+        "passed": 20,
+        "passPct": 100,
+        "medianMs": 2418,
+        "promptTokens": 453392,
+        "completionTokens": 3160,
+        "cachedPct": 75.4,
+        "costUsd": 0.05157247,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": []
+      }
+    }
+  },
+  "answerRepeatability": {
+    "identicalDefault": 3,
+    "identicalTemperature0": 19,
+    "runs": {
+      "provider default": {
+        "cases": 20,
+        "passed": 20,
+        "passPct": 100,
+        "medianMs": 2418,
+        "promptTokens": 453392,
+        "completionTokens": 3160,
+        "cachedPct": 75.4,
+        "costUsd": 0.05157247,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": []
+      },
+      "provider default (repeat)": {
+        "cases": 20,
+        "passed": 18,
+        "passPct": 90,
+        "medianMs": 2477,
+        "promptTokens": 454056,
+        "completionTokens": 3576,
+        "cachedPct": 90.5,
+        "costUsd": 0.03421972,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": ["w08-rollback-fact", "w15-assumptions-of-pilot-date"]
+      },
+      "temperature 0": {
+        "cases": 20,
+        "passed": 18,
+        "passPct": 90,
+        "medianMs": 2494,
+        "promptTokens": 479928,
+        "completionTokens": 3559,
+        "cachedPct": 86.8,
+        "costUsd": 0.04037111,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": ["w13-who-is-reviewer", "w17-label-scoped-search"]
+      },
+      "temperature 0 (repeat)": {
+        "cases": 20,
+        "passed": 18,
+        "passPct": 90,
+        "medianMs": 2379,
+        "promptTokens": 479928,
+        "completionTokens": 3557,
+        "cachedPct": 94.4,
+        "costUsd": 0.030595350000000004,
+        "medianSteps": 2,
+        "maxSteps": 3,
+        "failures": ["w13-who-is-reviewer", "w17-label-scoped-search"]
+      }
+    }
+  },
+  "optimization": {
+    "pass": {
+      "model": "google/gemini-2.5-flash",
+      "sources": 9,
+      "batched": {
+        "ms": 5981,
+        "usage": {
+          "calls": 1,
+          "promptTokens": 2485,
+          "completionTokens": 1431,
+          "cachedTokens": 0,
+          "costUsd": 0.004323
+        },
+        "outcome": {
+          "extractor": "model",
+          "sourcesPassed": 9,
+          "proposed": 5,
+          "discarded": 0,
+          "proposalId": "29eaf5e8-3b31-4341-ac7a-022966abba88"
+        }
+      },
+      "batchedRepeat": {
+        "ms": 11,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "outcome": {
+          "skipped": "nothing_new",
+          "proposalId": "29eaf5e8-3b31-4341-ac7a-022966abba88"
+        }
+      },
+      "perSource": [
+        {
+          "title": "Meridian status note",
+          "ms": 784,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 569,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001957
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Project plan v3 (export)",
+          "ms": 852,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 649,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0002197
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Status update - week 38",
+          "ms": 840,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 570,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.000196
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Pilot runbook draft 2",
+          "ms": 1785,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 626,
+            "completionTokens": 271,
+            "cachedTokens": 0,
+            "costUsd": 0.0008653
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Steering committee minutes - September",
+          "ms": 2628,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 661,
+            "completionTokens": 509,
+            "cachedTokens": 0,
+            "costUsd": 0.0014708
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Architecture review call",
+          "ms": 3453,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 1261,
+            "completionTokens": 688,
+            "cachedTokens": 0,
+            "costUsd": 0.0020983
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Comment",
+          "ms": 1641,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 477,
+            "completionTokens": 216,
+            "cachedTokens": 0,
+            "costUsd": 0.0006831
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Comment",
+          "ms": 1277,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 454,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001612
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Comment",
+          "ms": 764,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 459,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001627
+          },
+          "proposals": 0
+        }
+      ],
+      "perSourceTotals": {
+        "ms": 14024,
+        "promptTokens": 5726,
+        "completionTokens": 1734,
+        "costUsd": 0.0060528
+      }
+    },
+    "heuristic": {
+      "cases": 22,
+      "passed": 12,
+      "passPct": 54.5,
+      "medianMs": 0,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "cachedPct": 0,
+      "costUsd": 0,
+      "medianSteps": 0,
+      "maxSteps": 0,
+      "failures": [
+        "x02-two-decisions-one-source",
+        "x04-decision-deferred",
+        "x08-date-assumption",
+        "x09-person-assumption",
+        "x10-external-rule",
+        "x13-reversal",
+        "x14-hedged-language",
+        "x15-conflicting-statements",
+        "x16-paraphrase-trap",
+        "x21-decision-without-alternative"
+      ]
+    },
+    "best": {
+      "openai/gpt-4o-mini": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 2728,
+        "promptTokens": 16626,
+        "completionTokens": 2987,
+        "cachedPct": 0,
+        "costUsd": 0.0042861,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x07-prompt-injection", "x16-paraphrase-trap"]
+      },
+      "google/gemini-2.5-flash": {
+        "cases": 22,
+        "passed": 21,
+        "passPct": 95.5,
+        "medianMs": 1556,
+        "promptTokens": 11480,
+        "completionTokens": 3759,
+        "cachedPct": 0,
+        "costUsd": 0.0128415,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x09-person-assumption"]
+      }
+    }
+  }
+}

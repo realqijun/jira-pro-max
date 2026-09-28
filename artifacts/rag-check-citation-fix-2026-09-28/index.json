@@ -1,0 +1,73 @@
+{
+  "embeddingModelId": "openai:openai/text-embedding-3-small",
+  "before": [
+    {
+      "title": "Status update — week 37",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Project plan v4 (export)",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Weekly sync minutes",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Acme progress report",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    }
+  ],
+  "after": [
+    {
+      "title": "Status update — week 37",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Project plan v4 (export)",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Weekly sync minutes",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "title": "Acme progress report",
+      "chunked": true,
+      "model": "openai:openai/text-embedding-3-small"
+    }
+  ],
+  "chunks": [
+    {
+      "ordinal": 0,
+      "chars": 370,
+      "dims": 1536,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "ordinal": 0,
+      "chars": 727,
+      "dims": 1536,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "ordinal": 0,
+      "chars": 132,
+      "dims": 1536,
+      "model": "openai:openai/text-embedding-3-small"
+    },
+    {
+      "ordinal": 0,
+      "chars": 323,
+      "dims": 1536,
+      "model": "openai:openai/text-embedding-3-small"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "01-access-blocker",
+    "expected": "Find IAM/customer credentials blocker, cite supporting Evidence, do not invent resolution.",
+    "prompt": "Search Evidence for the external partner being held up by identity access approval. Call search_evidence, then read_evidence for the relevant sources. What is blocking delivery and what escalation is requested? Answer only from the Evidence you read, with clickable source links using /projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=<evidenceId>. Do not change anything."
+  },
+  {
+    "id": "02-reviewer-capacity",
+    "expected": "Weekly sync minutes: Ben has roughly 4 hours and asks for a second reviewer.",
+    "prompt": "Search Evidence for a staffing shortage before the security assessment, then read the relevant Evidence. Who has limited time, how much time do they have, and what help did they ask for? Cite the Evidence using /projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=<evidenceId>. Do not change anything."
+  },
+  {
+    "id": "03-conflicting-dates",
+    "expected": "Compare settlement date in weekly minutes with Acme forecast, identify disagreement and source dates, avoid asserting one verified date.",
+    "prompt": "Use search_evidence to find settlement service completion forecasts, then read all relevant sources with read_evidence. Compare the weekly minutes with the vendor progress report. Give their exact forecast dates and source dates. Are they consistent? Do not silently choose one as confirmed. Cite both Evidence sources using /projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=<evidenceId>. Do not change anything."
+  },
+  {
+    "id": "04-no-evidence",
+    "expected": "No approved quantum satellite procurement budget exists in sources; say unavailable without inventing a number.",
+    "prompt": "Use search_evidence and read_evidence to check: what is our approved 2027 quantum satellite procurement budget in SGD? Only state a number if the Evidence explicitly supports it. If no source supports an answer, say so. Do not change anything."
+  },
+  {
+    "id": "05-all-labels",
+    "expected": "Only Weekly sync minutes carries both vendor and security; search must include both labels.",
+    "prompt": "Call search_evidence with labels [\"vendor\", \"security\"] and query \"identity access\". Read matching Evidence and summarize only the access blocker in Evidence carrying BOTH Labels. Cite the source using /projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=<evidenceId>. Do not change anything."
+  },
+  {
+    "id": "06-linked-task",
+    "expected": "linkedTo task filter resolves named Task and returns only linked Weekly sync minutes.",
+    "prompt": "Use search_evidence with linkedTo entityType \"task\" and entity \"Provision IAM service account for auth testing\". Read the returned Evidence and report what it says about the identity credentials blocker. Cite the source using /projects/ca805f30-0938-40ce-9d05-e19a7bf00a4d/evidence?item=<evidenceId>. Do not change anything."
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "openai/gpt-4o-mini": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.7727272727272727,
+      "medianMs": 3025,
+      "usd": 0.0046449
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 0.6,
+      "medianMs": 3300,
+      "usd": 0.033800550000000006
+    },
+    "overallPassRate": 0.6904761904761905,
+    "totalUsd": 0.038445450000000006
+  },
+  "google/gemini-2.5-flash": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.9090909090909091,
+      "medianMs": 1607,
+      "usd": 0.014840200000000003
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 0.85,
+      "medianMs": 2578,
+      "usd": 0.06146382000000001
+    },
+    "overallPassRate": 0.8809523809523809,
+    "totalUsd": 0.07630401999999999
+  }
+}

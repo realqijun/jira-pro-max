@@ -1,0 +1,18 @@
+{
+  "google/gemini-2.5-flash": {
+    "extraction": {
+      "cases": 0,
+      "passRate": 0,
+      "medianMs": 0,
+      "usd": 0
+    },
+    "why": {
+      "cases": 20,
+      "passRate": 0.9,
+      "medianMs": 2379,
+      "usd": 0.030595350000000004
+    },
+    "overallPassRate": 0.9,
+    "totalUsd": 0.030595350000000004
+  }
+}

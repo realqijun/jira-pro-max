@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-09-28T10:43:15.204Z",
+  "label": "answer-loop sampling t0-a",
+  "database": "postgres://***@localhost:5433/pm_eval_20260928",
+  "gateway": "https://openrouter.ai/api/v1",
+  "models": ["google/gemini-2.5-flash"],
+  "temperature": 0,
+  "maxSteps": 8,
+  "embeddingModel": "openai:text-embedding-3-small",
+  "toolNames": ["get_project_summary", "list_evidence", "search_evidence", "read_evidence", "search_decisions"],
+  "suite": "why",
+  "projectId": "2415ccf7-9c11-4023-b933-f5ab9db037d3",
+  "systemPromptChars": 19146,
+  "scope": "Production extractor prompt, traceability filter, tool registry with Project scope binding and Project system prompt, driven directly; not the HTTP chat route or the browser."
+}

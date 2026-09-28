@@ -1,0 +1,155 @@
+{
+  "google/gemini-2.5-flash": {
+    "pass": {
+      "model": "google/gemini-2.5-flash",
+      "sources": 9,
+      "batched": {
+        "ms": 5981,
+        "usage": {
+          "calls": 1,
+          "promptTokens": 2485,
+          "completionTokens": 1431,
+          "cachedTokens": 0,
+          "costUsd": 0.004323
+        },
+        "outcome": {
+          "extractor": "model",
+          "sourcesPassed": 9,
+          "proposed": 5,
+          "discarded": 0,
+          "proposalId": "29eaf5e8-3b31-4341-ac7a-022966abba88"
+        }
+      },
+      "batchedRepeat": {
+        "ms": 11,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "outcome": {
+          "skipped": "nothing_new",
+          "proposalId": "29eaf5e8-3b31-4341-ac7a-022966abba88"
+        }
+      },
+      "perSource": [
+        {
+          "title": "Meridian status note",
+          "ms": 784,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 569,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001957
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Project plan v3 (export)",
+          "ms": 852,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 649,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0002197
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Status update - week 38",
+          "ms": 840,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 570,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.000196
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Pilot runbook draft 2",
+          "ms": 1785,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 626,
+            "completionTokens": 271,
+            "cachedTokens": 0,
+            "costUsd": 0.0008653
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Steering committee minutes - September",
+          "ms": 2628,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 661,
+            "completionTokens": 509,
+            "cachedTokens": 0,
+            "costUsd": 0.0014708
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Architecture review call",
+          "ms": 3453,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 1261,
+            "completionTokens": 688,
+            "cachedTokens": 0,
+            "costUsd": 0.0020983
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Comment",
+          "ms": 1641,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 477,
+            "completionTokens": 216,
+            "cachedTokens": 0,
+            "costUsd": 0.0006831
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Comment",
+          "ms": 1277,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 454,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001612
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Comment",
+          "ms": 764,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 459,
+            "completionTokens": 10,
+            "cachedTokens": 0,
+            "costUsd": 0.0001627
+          },
+          "proposals": 0
+        }
+      ],
+      "perSourceTotals": {
+        "ms": 14024,
+        "promptTokens": 5726,
+        "completionTokens": 1734,
+        "costUsd": 0.0060528
+      }
+    }
+  }
+}
