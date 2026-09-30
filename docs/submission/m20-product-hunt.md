@@ -67,6 +67,6 @@ Using the M19 events, split by `ref=producthunt`:
 
 ## Prepared replies to likely questions
 
-- **"How is this different from Notion AI or ClickUp Brain?"** Those answer from everything they can see. PrismPM answers "why" only from Decisions a person confirmed, cites them, and says when nothing exists. It's a record, not a guess.
+- **"How is this different from Notion AI or Jira's Rovo?"** Those answer from everything they can see. PrismPM answers "why" only from Decisions a person confirmed, cites them, and says when nothing exists. It's a record, not a guess.
 - **"Is my data used to train models?"** No. Bring your own model key if you prefer, and the image service only ever sees text you approved.
 - **"What if the AI extracts something wrong?"** Nothing enters the project until you accept it, and every Proposal quotes its source so checking takes seconds.

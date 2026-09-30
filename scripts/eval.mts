@@ -363,7 +363,8 @@ async function runPassExperiment(ctx: Ctx, fixture: Fixture, model: string, take
     take();
     const started = Date.now();
     const value = await run();
-    return { value, ms: Date.now() - started, usage: totals(take()) };
+    const calls = take();
+    return { value, ms: Date.now() - started, usage: totals(calls), calls };
   };
 
   const first = await timed(() => proposalsService.runPass(ctx, fixture.projectId, { trigger: "manual" }));
@@ -394,8 +395,9 @@ async function runPassExperiment(ctx: Ctx, fixture: Fixture, model: string, take
   const result = {
     model,
     sources: sources.length,
-    batched: { ms: first.ms, usage: first.usage, outcome: first.value },
-    batchedRepeat: { ms: second.ms, usage: second.usage, outcome: second.value },
+    // `calls` keeps each model call of the pass, so the Decision and item calls can be priced apart.
+    batched: { ms: first.ms, usage: first.usage, calls: first.calls, outcome: first.value },
+    batchedRepeat: { ms: second.ms, usage: second.usage, calls: second.calls, outcome: second.value },
     perSource,
     perSourceTotals: {
       ms: perSource.reduce((a, r) => a + r.ms, 0),

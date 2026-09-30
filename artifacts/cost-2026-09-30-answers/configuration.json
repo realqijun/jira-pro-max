@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-09-30T11:05:36.131Z",
+  "database": "postgres://***@localhost:5433/pm_eval_20260928",
+  "gateway": "https://api.openai.com/v1",
+  "models": ["gpt-4o-mini"],
+  "temperature": {
+    "extraction": 0,
+    "answers": "provider default"
+  },
+  "maxSteps": 8,
+  "embeddingModel": "openai:text-embedding-3-small",
+  "toolNames": ["get_project_summary", "list_evidence", "search_evidence", "read_evidence", "search_decisions"],
+  "suite": "why",
+  "projectId": "a4842009-a9ac-4953-ae7b-f33baa0d53ed",
+  "systemPromptChars": 19146,
+  "scope": "Production extractor prompt, traceability filter, tool registry with Project scope binding and Project system prompt, driven directly; not the HTTP chat route or the browser."
+}

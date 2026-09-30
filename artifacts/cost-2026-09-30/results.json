@@ -1,0 +1,186 @@
+{
+  "gpt-4o-mini": {
+    "pass": {
+      "model": "gpt-4o-mini",
+      "sources": 9,
+      "batched": {
+        "ms": 5302,
+        "usage": {
+          "calls": 2,
+          "promptTokens": 4853,
+          "completionTokens": 577,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "calls": [
+          {
+            "endpoint": "/v1/responses",
+            "model": "gpt-4o-mini-2024-07-18",
+            "promptTokens": 2415,
+            "completionTokens": 220,
+            "cachedTokens": 0,
+            "ms": 3911,
+            "costUsd": null
+          },
+          {
+            "endpoint": "/v1/responses",
+            "model": "gpt-4o-mini-2024-07-18",
+            "promptTokens": 2438,
+            "completionTokens": 357,
+            "cachedTokens": 0,
+            "ms": 5246,
+            "costUsd": null
+          }
+        ],
+        "outcome": {
+          "extractor": "model",
+          "sourcesPassed": 9,
+          "proposed": 2,
+          "discarded": 0,
+          "proposalId": "7f35a2eb-7a9d-467a-8618-4bc161ddb9eb",
+          "items": {
+            "extractor": "model",
+            "sourcesPassed": 9,
+            "tasks": 1,
+            "milestones": 0,
+            "discarded": 1
+          }
+        }
+      },
+      "batchedRepeat": {
+        "ms": 10,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "calls": [],
+        "outcome": {
+          "skipped": "nothing_new",
+          "proposalId": "7f35a2eb-7a9d-467a-8618-4bc161ddb9eb",
+          "items": {
+            "skipped": "nothing_new"
+          }
+        }
+      },
+      "perSource": [
+        {
+          "title": "Meridian status note",
+          "ms": 4285,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 755,
+            "completionTokens": 118,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Project plan v3 (export)",
+          "ms": 1603,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 805,
+            "completionTokens": 6,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Status update - week 38",
+          "ms": 963,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 761,
+            "completionTokens": 6,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Pilot runbook draft 2",
+          "ms": 1329,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 825,
+            "completionTokens": 6,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Steering committee minutes - September",
+          "ms": 5786,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 854,
+            "completionTokens": 343,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Architecture review call",
+          "ms": 3564,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 1383,
+            "completionTokens": 342,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 2
+        },
+        {
+          "title": "Comment",
+          "ms": 3322,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 679,
+            "completionTokens": 153,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 1
+        },
+        {
+          "title": "Comment",
+          "ms": 954,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 659,
+            "completionTokens": 6,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 0
+        },
+        {
+          "title": "Comment",
+          "ms": 1828,
+          "usage": {
+            "calls": 1,
+            "promptTokens": 667,
+            "completionTokens": 6,
+            "cachedTokens": 0,
+            "costUsd": 0
+          },
+          "proposals": 0
+        }
+      ],
+      "perSourceTotals": {
+        "ms": 23634,
+        "promptTokens": 7388,
+        "completionTokens": 986,
+        "costUsd": 0
+      }
+    }
+  }
+}

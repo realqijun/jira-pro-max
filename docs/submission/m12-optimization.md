@@ -18,22 +18,35 @@ The saving is the system prompt plus the People, Milestone and Task context, whi
 The trade is real and was measured too: the batched call returned 5 Proposals where the nine separate calls returned 6, so one Decision was lost in the longer context.
 At this Project size the latency win matters more, because the pass runs inside `after()` on someone's save.
 
-Since #114 the pass makes a second call for Tasks and Milestones.
-That is a deliberate cost increase, traded for keeping the measured Decision prompt untouched (ADR 0015).
-It was kept small: the item prompt leaves out the recent Conversation, and over the 12 item cases it used about 8,600 prompt and 960 completion tokens in total, roughly US$0.002 at `gpt-4o-mini` list price ([M11 addendum](m11-item-evals.md)).
-Each side keeps its own content-hash bookkeeping, so the second call also costs nothing on a repeat pass.
+### The pass on current main: two calls
+
+The table above was measured on 28 September with `gemini-2.5-flash`, when a pass made one call.
+Since #114 the pass also makes a second, independent call for Tasks and Milestones, so that figure is no longer the full cost of the pipeline.
+It was re-measured on current `main` on 30 September, on the same 9-source fixture, with `gpt-4o-mini` (the deployed model) through OpenAI, three runs, each call attributed by its system prompt ([artifacts/cost-2026-09-30](../../artifacts/cost-2026-09-30/README.md)).
+
+| Call                          | Prompt tokens | Completion tokens | Cost (list price) |
+| ----------------------------- | ------------- | ----------------- | ----------------- |
+| Decision extraction           | 2,430         | 355               | $0.00058          |
+| Task and Milestone extraction | 2,410         | 205               | $0.00049          |
+| **Whole pass, both calls**    | **4,840**     | **560**           | **$0.00106**      |
+
+The two calls run in parallel, so the whole pass took 4.0 to 5.3 s, about as long as the slower call.
+The second call is a deliberate cost increase, traded for keeping the measured Decision prompt untouched (ADR 0015): it adds 84% to a pass, not 100%, because the item prompt leaves out the Conversation and writes fewer tokens.
+Batching still pays: the same 9 sources sent one at a time through the Decision extractor alone took 9 calls, 7,388 prompt tokens and 23.6 s ($0.0017), more than both batched calls together.
 
 ## 2. Idempotency by content hash: the second pass is free
 
 Every Evidence save and Comment create schedules a pass.
 `proposal_pass_sources` stores a SHA-1 of each source's text, so a pass only reads what changed.
 
-| Pass                    | Model calls | Wall clock | Cost     |
-| ----------------------- | ----------- | ---------- | -------- |
-| First                   | 1           | 5,981 ms   | $0.00432 |
-| Second, nothing changed | 0           | 11 ms      | $0.00000 |
+| Pass                                                         | Model calls | Wall clock       | Cost     |
+| ------------------------------------------------------------ | ----------- | ---------------- | -------- |
+| First, 28 September (Decision call only, `gemini-2.5-flash`) | 1           | 5,981 ms         | $0.00432 |
+| Second, nothing changed                                      | 0           | 11 ms            | $0.00000 |
+| First, 30 September (both calls, `gpt-4o-mini`)              | 2           | 3,957 - 5,302 ms | $0.00106 |
+| Second, nothing changed                                      | 0           | 10 - 22 ms       | $0.00000 |
 
-Without this, cost would scale with saves instead of with new text: a PM editing one Evidence item five times would pay five full passes over the whole Project.
+Each side of the pass keeps its own hash rows, so both calls are skipped. Without this, cost would scale with saves instead of with new text: a PM editing one Evidence item five times would pay five full passes over the whole Project.
 Proposal fingerprints (source kind, source id, normalised excerpt) do the same job one level down, so the same passage is never proposed twice.
 
 ## 3. Prompt caching, and the trim we did not do
@@ -73,7 +86,7 @@ Reflection is moved off the response path entirely with `after()`, and a Reflect
 
 No case used more than 3 of the 8 permitted steps, so lowering the cap saves nothing on this workload.
 It stays as protection against a loop, and no budget was spent tuning a number that is not binding.
-The `ASSISTANT_DAILY_TURN_CAP` of 50 turns is the actual spend bound: at the measured $0.0018 per answer turn, one User costs at most about $0.09 a day.
+The `ASSISTANT_DAILY_TURN_CAP` of 50 turns is the actual spend bound: on the deployed `gpt-4o-mini`, measured on 30 September at $0.0025 a turn on average and $0.0047 at most, one User costs at most about $0.13 to $0.23 a day (about $0.09 at the $0.0018 measured for `gemini-2.5-flash` on 28 September).
 
 ## 6. A zero-cost fallback that is honestly half as good
 
@@ -107,7 +120,7 @@ Beyond reproducibility ([M9](m9-model-bakeoff.md)), one provider-default repeat 
 
 | Technique                        | Where                                          | Measured effect                                                                                                                        |
 | -------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Batched pass                     | `proposals/service.ts`                         | -57% tokens, -57% latency, -29% cost per pass                                                                                          |
+| Batched pass                     | `proposals/service.ts`                         | -57% tokens, -57% latency, -29% cost per pass; current two-call pass $0.00106 for 9 sources                                            |
 | Content-hash idempotency         | `proposal_pass_sources`, Proposal fingerprints | Repeat pass: 5,981 ms and $0.0043 becomes 11 ms and $0                                                                                 |
 | Stable-prefix prompt order       | `assistant/prompt.ts`                          | 95.3% of prompt tokens served from cache (`gpt-4o-mini`)                                                                               |
 | Model choice as cache choice     | deployment config                              | 8x cost difference between two models of similar quality                                                                               |

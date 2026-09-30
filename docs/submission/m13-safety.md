@@ -99,14 +99,14 @@ Closing that needs connecting to the checked address directly, which is not done
 
 **Threat:** a scripted client, or a loop the model will not leave.
 
-| Bound                      | Value                        | Effect                                                                                                                                 |
-| -------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `ASSISTANT_DAILY_TURN_CAP` | 50 User messages per UTC day | The chat route returns HTTP 429 and records `assistant_limit_reached`. At the measured $0.0018 per turn, about $0.09 per User per day. |
-| `ASSISTANT_MAX_STEPS`      | 8 steps per turn             | Real answers used at most 3 ([M12](m12-optimization.md)); the cap stops a loop, not an answer.                                         |
-| `maxDuration`              | 60 s per request             | The platform ends a hung turn.                                                                                                         |
-| Evidence per tool call     | 20,000 characters            | One huge upload cannot fill the context window of every turn that reads it.                                                            |
-| Proposal pass              | SHA-1 per source             | Re-saving the same text costs nothing, so edits cannot be used to multiply model calls.                                                |
-| Renders                    | Per-Project cap              | Enforced in the service and held under concurrent requests, so the image provider cannot be flooded from one Project.                  |
+| Bound                      | Value                        | Effect                                                                                                                                                                                           |
+| -------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ASSISTANT_DAILY_TURN_CAP` | 50 User messages per UTC day | The chat route returns HTTP 429 and records `assistant_limit_reached`. At the measured $0.0025 mean and $0.0047 worst turn on the deployed `gpt-4o-mini`, about $0.13 to $0.23 per User per day. |
+| `ASSISTANT_MAX_STEPS`      | 8 steps per turn             | Real answers used at most 3 ([M12](m12-optimization.md)); the cap stops a loop, not an answer.                                                                                                   |
+| `maxDuration`              | 60 s per request             | The platform ends a hung turn.                                                                                                                                                                   |
+| Evidence per tool call     | 20,000 characters            | One huge upload cannot fill the context window of every turn that reads it.                                                                                                                      |
+| Proposal pass              | SHA-1 per source             | Re-saving the same text costs nothing, so edits cannot be used to multiply model calls.                                                                                                          |
+| Renders                    | Per-Project cap              | Enforced in the service and held under concurrent requests, so the image provider cannot be flooded from one Project.                                                                            |
 
 ### 8. Project text leaking to a third-party image service
 

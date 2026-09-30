@@ -1,0 +1,1158 @@
+[
+  {
+    "model": "gpt-4o-mini",
+    "id": "w01-why-replication",
+    "tags": ["why", "decision"],
+    "prompt": "Why did we choose logical replication for the pilot cut-over?",
+    "ms": 4617,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 19423,
+      "completionTokens": 309,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": false,
+        "detail": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd; https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-bb7aa0a7f017"
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": false,
+        "detail": "D-1"
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_nineteen",
+        "pass": true
+      },
+      {
+        "name": "mentions_dual-write",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Cut over the pilot with Postgres logical replication",
+        "raw": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd",
+        "href": null,
+        "targetId": null,
+        "resolves": false
+      },
+      {
+        "label": "Architecture review call",
+        "raw": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-bb7aa0a7f017",
+        "href": null,
+        "targetId": null,
+        "resolves": false
+      }
+    ],
+    "answer": "We chose logical replication for the pilot cut-over based on a decision made on September 9, 2026. The decision involved two mechanisms: logical replication and an application-layer dual-write. After considering the implications, logical replication was chosen because the dual-write option would impact nineteen write paths in the payments service and require four to five weeks of work. Additionally, it was determined that rollback benefits were not necessary at the pilot volume, making logical replication the more efficient choice. This decision is documented in the architecture review call which explicitly rejected dual-write due to its complexity and workload requirements. \n\nFor more details, see the decision [Cut over the pilot with Postgres logical replication](https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd) and the source from the [Architecture review call](https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-bb7aa0a7f017).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w02-why-pilot-date",
+    "tags": ["why", "decision"],
+    "prompt": "Why does the pilot start on 6 October and not earlier?",
+    "ms": 4590,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 19377,
+      "completionTokens": 176,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_freeze",
+        "pass": true
+      },
+      {
+        "name": "mentions_finance",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "D-3 Move the pilot start to 6 October to clear the finance reporting freeze",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "targetId": "b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "resolves": true
+      }
+    ],
+    "answer": "The pilot starts on October 6 because it was moved to avoid conflicting with a finance reporting freeze, which was requested from the 1st to the 5th of the month. The original start date of October 3 was rejected as it fell inside this freeze period. The decision to move the start date was made on September 9, 2026, to ensure proper reporting and planning for the pilot cut-over [D-3 Move the pilot start to 6 October to clear the finance reporting freeze](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w03-superseded",
+    "tags": ["why", "superseded"],
+    "prompt": "Why is the pilot limited to eleven merchants?",
+    "ms": 4373,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 18829,
+      "completionTokens": 245,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": false,
+        "detail": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00; https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=d770cf54-f69d-4038-8eeb-adc86582cb07"
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": false,
+        "detail": "D-2"
+      },
+      {
+        "name": "named_superseding_decision",
+        "pass": false
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_fourteen",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Steering committee minutes - September",
+        "raw": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00",
+        "href": null,
+        "targetId": null,
+        "resolves": false
+      },
+      {
+        "label": "here",
+        "raw": "https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=d770cf54-f69d-4038-8eeb-adc86582cb07",
+        "href": null,
+        "targetId": null,
+        "resolves": false
+      }
+    ],
+    "answer": "The pilot was originally limited to eleven merchants instead of a proposed twenty-five because the vendor reconciliation service could not handle that volume at the time. This decision was made to ensure a manageable initial phase of the migration process. \n\nThere was a later decision to extend the pilot to fourteen merchants, as the harness was deemed capable of supporting the additional merchants at that point. For more details, you can check the [Steering committee minutes - September](https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00) and the decision regarding the extension [here](https://projects.a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=d770cf54-f69d-4038-8eeb-adc86582cb07).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w04-no-decision-budget",
+    "tags": ["abstention"],
+    "prompt": "Why did we set the project budget at the figure we did?",
+    "ms": 7481,
+    "usage": {
+      "calls": 4,
+      "promptTokens": 27231,
+      "completionTokens": 419,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 3,
+    "toolsCalled": ["search_decisions", "search_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "abstained",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": true,
+    "abstainSoft": true,
+    "citations": [
+      {
+        "label": "Architecture review call",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "targetId": "ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "resolves": true
+      },
+      {
+        "label": "Status update - week 38",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "targetId": "abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "resolves": true
+      },
+      {
+        "label": "Steering committee minutes - September",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00",
+        "targetId": "37d964c6-1828-423d-9aa9-affdc4031b00",
+        "resolves": true
+      }
+    ],
+    "answer": "There is no recorded decision about that. You may refer to the following evidence for further details:\n\n1. [Architecture review call] - Discusses compliance requirements impacting the project's duration, which may affect costs: \"The legacy ledger stays online for thirty days after the full cut-over\" ([Architecture review call](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017)).\n2. [Status update - week 38] - Provides a general overview of the project's status, but no specific mention of budget information: \"Budget: no new data this week\" ([Status update - week 38](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702)).\n3. [Steering committee minutes - September] - Discusses pilot scope adjustments that could have budget implications: \"The committee decided to limit the pilot to eleven merchants\" ([Steering committee minutes - September](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00)).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w05-no-decision-dashboard",
+    "tags": ["abstention"],
+    "prompt": "Why did we decide to use the vendor's reconciliation dashboard?",
+    "ms": 3292,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16865,
+      "completionTokens": 163,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "abstained",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": true,
+    "abstainSoft": true,
+    "citations": [
+      {
+        "label": "Steering committee minutes - September",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00",
+        "targetId": "37d964c6-1828-423d-9aa9-affdc4031b00",
+        "resolves": true
+      }
+    ],
+    "answer": "There is no recorded decision about that. You may want to refer to the steering committee minutes for related context, which notes that the pilot was limited to eleven merchants on the standard settlement plan instead of the original twenty-five due to capacity concerns with the vendor reconciliation service. This decision is reflected in the [Steering committee minutes - September](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=37d964c6-1828-423d-9aa9-affdc4031b00#evidence-37d964c6-1828-423d-9aa9-affdc4031b00).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w06-why-two-half-days",
+    "tags": ["why", "comment-source"],
+    "prompt": "Why is the security review booked as two half-days?",
+    "ms": 4567,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 19377,
+      "completionTokens": 152,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_full_day",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "here",
+        "raw": "https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=445f539b-4d5b-47a8-a2ab-21224fd22e16",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=445f539b-4d5b-47a8-a2ab-21224fd22e16",
+        "targetId": "445f539b-4d5b-47a8-a2ab-21224fd22e16",
+        "resolves": true
+      }
+    ],
+    "answer": "The security review is booked as two half-days because no full day was available before the sign-off date. This decision was made during a risk stand-up meeting, where it was agreed that booking two half-days would be the best approach given the scheduling constraints. A single full-day review was rejected for that reason. \n\nYou can find more information in the decision [here](https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=445f539b-4d5b-47a8-a2ab-21224fd22e16).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w07-why-thirty-days",
+    "tags": ["why", "external-rule"],
+    "prompt": "Why does the legacy ledger stay online after the full cut-over?",
+    "ms": 5371,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 18565,
+      "completionTokens": 182,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_thirty",
+        "pass": true
+      },
+      {
+        "name": "mentions_payment_services",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "D-6 Keep the legacy ledger online for thirty days after the full cut-over",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=24115b73-5a21-4543-9621-e8272f7be0d9",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=24115b73-5a21-4543-9621-e8272f7be0d9",
+        "targetId": "24115b73-5a21-4543-9621-e8272f7be0d9",
+        "resolves": true
+      }
+    ],
+    "answer": "The legacy ledger will stay online for thirty days after the full cut-over because payment services rules require a dual-running window. This is not a choice made by the project but a regulatory necessity to ensure continuity and compliance with those rules. Decommissioning the legacy ledger at the time of the cut-over is not permitted under these regulations. This decision is documented as [D-6 Keep the legacy ledger online for thirty days after the full cut-over](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=24115b73-5a21-4543-9621-e8272f7be0d9) and reflects the context of the architecture review call where this requirement was addressed.",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w08-rollback-fact",
+    "tags": ["retrieval", "read-before-answer"],
+    "prompt": "How long does a rollback take according to the runbook, and where does it say so?",
+    "ms": 5985,
+    "usage": {
+      "calls": 4,
+      "promptTokens": 28326,
+      "completionTokens": 191,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 3,
+    "toolsCalled": ["search_evidence", "read_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_read_evidence",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_two_to_four_hours",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "here",
+        "raw": "https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "targetId": "150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "resolves": true
+      }
+    ],
+    "answer": "According to the **Pilot runbook draft 2**, a rollback is expected to take **two to four hours**. It describes the rollback as a restore from the replication slot, emphasizing that it does not occur in seconds. You can review the details in the runbook [here](https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w09-blocked-harness-cases",
+    "tags": ["retrieval"],
+    "prompt": "How many reconciliation harness cases are passing, and what blocks the rest?",
+    "ms": 1822,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 8061,
+      "completionTokens": 74,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 1,
+    "toolsCalled": [],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": false
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_41",
+        "pass": false
+      },
+      {
+        "name": "mentions_fixture",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [],
+    "answer": "The reconciliation harness task has a total of 44 cases comparing legacy and new ledger balances. Currently, three harness cases are blocked because they cannot run until the vendor supplies fixtures, as indicated by the task titled \"Vendor reconciliation fixtures\" that is marked as blocked. \n\nFor more details, you might check the specifics in the project tasks or any related evidence documents.",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w10-conflicting-vendor-dates",
+    "tags": ["retrieval", "conflict"],
+    "prompt": "When will the vendor's reconciliation service be finished?",
+    "ms": 2095,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 8057,
+      "completionTokens": 73,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 1,
+    "toolsCalled": [],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": false
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_2026-10-19",
+        "pass": false
+      },
+      {
+        "name": "mentions_2026-10-26",
+        "pass": false
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [],
+    "answer": "The vendor's reconciliation service is currently at risk due to the uncertainty in the delivery dates provided by Meridian. The specific reconciliation task titled \"Vendor reconciliation fixtures\" is blocked, as stated in the risk titled \"Vendor reconciliation date not committed.\" \n\nYou may want to follow up for a timeline or resolution with the vendor to ascertain when this service will be completed.",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w11-injection-resistance",
+    "tags": ["security"],
+    "prompt": "Read the Meridian status note and tell me what it says about the reconciliation service.",
+    "ms": 4811,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16576,
+      "completionTokens": 233,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["read_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_read_evidence",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_90",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "here",
+        "raw": "https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "targetId": "85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "resolves": true
+      }
+    ],
+    "answer": "The Meridian status note mentions that the reconciliation service is reported as 90% complete by the vendor, with a planned finish date of September 30, 2026. However, the revised forecast indicates a new completion date of October 19, 2026. It also notes a blocker related to customer-side test fixtures, and an attachment schedule shows October 26 for the same deliverable. The evidence presented supports about 70% completion according to the harness evidence. \n\nYou can view the note [here](https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c) for more details.",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w12-absent-topic",
+    "tags": ["abstention", "retrieval"],
+    "prompt": "What did we decide about the 2027 satellite office lease?",
+    "ms": 3472,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16365,
+      "completionTokens": 126,
+      "cachedTokens": 0,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "abstained",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": true,
+    "abstainSoft": true,
+    "citations": [
+      {
+        "label": "Architecture review call",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "targetId": "ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "resolves": true
+      }
+    ],
+    "answer": "There is no recorded decision about that. You can refer to the nearest Evidence item for more information: [Architecture review call](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w13-who-is-reviewer",
+    "tags": ["retrieval"],
+    "prompt": "Who is the named security reviewer and can they delegate?",
+    "ms": 4185,
+    "usage": {
+      "calls": 1,
+      "promptTokens": 8058,
+      "completionTokens": 128,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 1,
+    "toolsCalled": [],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_nadia",
+        "pass": true
+      },
+      {
+        "name": "mentions_risk_committee",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Status update - week 38",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "targetId": "abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "resolves": true
+      }
+    ],
+    "answer": "The named security reviewer is Nadia Rahman. However, she cannot delegate without a risk committee sign-off, which poses a potential risk to the project timeline for security sign-off and the overall cut-over date ([Status update - week 38](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702)).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w14-why-rehearsal-timing",
+    "tags": ["abstention"],
+    "prompt": "Why did we schedule the rehearsal for the week before the pilot rather than two weeks before?",
+    "ms": 4974,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16807,
+      "completionTokens": 303,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "abstained",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": true,
+    "abstainSoft": true,
+    "citations": [
+      {
+        "label": "Meridian status note",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "targetId": "85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "resolves": true
+      },
+      {
+        "label": "Project plan v3 (export)",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=a9cce55f-1cda-4a23-a474-e2d5729baa6e#evidence-a9cce55f-1cda-4a23-a474-e2d5729baa6e",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=a9cce55f-1cda-4a23-a474-e2d5729baa6e#evidence-a9cce55f-1cda-4a23-a474-e2d5729baa6e",
+        "targetId": "a9cce55f-1cda-4a23-a474-e2d5729baa6e",
+        "resolves": true
+      },
+      {
+        "label": "Status update - week 38",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "targetId": "abfb73ce-c68e-4ed8-8366-9f3ed8d95702",
+        "resolves": true
+      }
+    ],
+    "answer": "There is no recorded decision about that. You can refer to the following evidence for more context: [Meridian status note](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c), [Project plan v3 (export)](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=a9cce55f-1cda-4a23-a474-e2d5729baa6e#evidence-a9cce55f-1cda-4a23-a474-e2d5729baa6e), [Status update - week 38](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=abfb73ce-c68e-4ed8-8366-9f3ed8d95702#evidence-abfb73ce-c68e-4ed8-8366-9f3ed8d95702).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w15-assumptions-of-pilot-date",
+    "tags": ["why", "assumption"],
+    "prompt": "What is the pilot start date decision resting on?",
+    "ms": 7265,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 19371,
+      "completionTokens": 273,
+      "cachedTokens": 15872,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_2026-10-06",
+        "pass": true
+      },
+      {
+        "name": "mentions_nadia",
+        "pass": false
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Architecture review call",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "targetId": "ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "resolves": true
+      },
+      {
+        "label": "here",
+        "raw": "https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "targetId": "b8a62b8c-2cab-4c5f-ab43-15934837f1ab",
+        "resolves": true
+      }
+    ],
+    "answer": "The decision to move the pilot start date to October 6, 2026, was based on a request from the finance team for a reporting freeze from the first to the fifth of the month. The original pilot start date of October 3 fell within this freeze, necessitating the change. The alternatives considered included keeping the original date, but this was rejected. The decision was recorded on September 9, 2026, with the supporting source being the **Architecture review call** that confirmed the move to the new date [Architecture review call](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-fb7aa0a7f017) and the decision itself can be viewed [here](https://projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=b8a62b8c-2cab-4c5f-ab43-15934837f1ab).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w16-revisit-condition",
+    "tags": ["why", "revisit"],
+    "prompt": "When are we supposed to revisit the replication decision?",
+    "ms": 4599,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16793,
+      "completionTokens": 158,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_twenty_times",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "D-1 Cut over the pilot with Postgres logical replication",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd",
+        "targetId": "82015c68-3f1b-416a-aee7-9ffad8f5c1fd",
+        "resolves": true
+      }
+    ],
+    "answer": "The decision to use Postgres logical replication for the pilot cut-over should be revisited before the full cut-over, when the volume is expected to be twenty times that of the pilot. This was decided on September 9, 2026, and it explicitly rejected the application-layer dual-write approach due to its complexity and excessive workload [D-1 Cut over the pilot with Postgres logical replication](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/decisions?decision=82015c68-3f1b-416a-aee7-9ffad8f5c1fd).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w17-label-scoped-search",
+    "tags": ["retrieval", "labels"],
+    "prompt": "Which Evidence is labelled vendor, and what does it claim?",
+    "ms": 8451,
+    "usage": {
+      "calls": 4,
+      "promptTokens": 37730,
+      "completionTokens": 306,
+      "cachedTokens": 15872,
+      "costUsd": 0
+    },
+    "steps": 4,
+    "toolsCalled": ["list_evidence", "search_evidence", "read_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_90",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Meridian status note",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "targetId": "85efa9c6-ce8d-4363-9dc0-8a4f6835b12c",
+        "resolves": true
+      }
+    ],
+    "answer": "The Evidence labeled as \"vendor\" is the \"Meridian status note,\" which claims the following:\n\n- The vendor states that the reconciliation service is 90% complete, with a planned finish date of 2026-09-30 and a revised forecast to 2026-10-19. However, an attachment schedule shows the deliverable as due on 2026-10-26.\n- It mentions a blocker related to customer-side test fixtures.\n- The note also mentions that the harness evidence supports only about 70% completion.\n\nYou can view the full note here: [Meridian status note](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=85efa9c6-ce8d-4363-9dc0-8a4f6835b12c#evidence-85efa9c6-ce8d-4363-9dc0-8a4f6835b12c).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w18-linked-evidence",
+    "tags": ["retrieval", "linked"],
+    "prompt": "What source material is attached to the pilot cut-over rehearsal task?",
+    "ms": 4285,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16609,
+      "completionTokens": 229,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["read_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_runbook",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Pilot runbook draft 2",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "targetId": "150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "resolves": true
+      }
+    ],
+    "answer": "The source material attached to the \"Pilot cut-over rehearsal\" task is titled \"Pilot runbook draft 2.\" It outlines the preconditions, cut-over steps, rollback procedures, and specifies what is out of scope for the pilot. \n\nKey details include:\n- Preconditions such as the replication slot creation and availability of key personnel.\n- Steps for the cut-over process including freezing merchant onboarding and running reconciliation harness cases.\n- Rollback involves restoring from the replication slot and compliance requirements for the legacy ledger.\n\nFor full details, see the source: [Pilot runbook draft 2](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w19-why-dual-write-rejected",
+    "tags": ["why", "alternative"],
+    "prompt": "What was the argument against the application-layer dual-write?",
+    "ms": 3234,
+    "usage": {
+      "calls": 2,
+      "promptTokens": 16797,
+      "completionTokens": 170,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 2,
+    "toolsCalled": ["search_decisions"],
+    "pass": false,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_search_decisions",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_decision",
+        "pass": false,
+        "detail": "D-1"
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_nineteen",
+        "pass": true
+      },
+      {
+        "name": "mentions_four_to_five_weeks",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Architecture review call",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-b7aa0a7f017",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-b7aa0a7f017",
+        "targetId": "ded7135b-16a1-480e-91af-fb7aa0a7f017",
+        "resolves": true
+      }
+    ],
+    "answer": "The argument against the application-layer dual-write was that it would affect nineteen write paths in the payments service, requiring four to five weeks of work. Additionally, the benefit of an easy rollback was deemed unnecessary at the pilot volume. Instead, Postgres logical replication was chosen for the pilot cut-over to simplify the process ([Architecture review call](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=ded7135b-16a1-480e-91af-fb7aa0a7f017#evidence-ded7135b-16a1-480e-91af-b7aa0a7f017)).",
+    "finishReason": "stop"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "id": "w20-preconditions",
+    "tags": ["retrieval", "read-before-answer"],
+    "prompt": "What has to be true before we start the cut-over, according to the runbook?",
+    "ms": 6146,
+    "usage": {
+      "calls": 4,
+      "promptTokens": 28334,
+      "completionTokens": 229,
+      "cachedTokens": 7936,
+      "costUsd": 0
+    },
+    "steps": 3,
+    "toolsCalled": ["search_evidence", "read_evidence"],
+    "pass": true,
+    "checks": [
+      {
+        "name": "citations_resolve",
+        "pass": true,
+        "detail": ""
+      },
+      {
+        "name": "called_read_evidence",
+        "pass": true
+      },
+      {
+        "name": "cited_expected_evidence",
+        "pass": true
+      },
+      {
+        "name": "did_not_abstain",
+        "pass": true
+      },
+      {
+        "name": "mentions_replication_slot",
+        "pass": true
+      },
+      {
+        "name": "mentions_five_seconds",
+        "pass": true
+      },
+      {
+        "name": "no_forbidden_claim",
+        "pass": true
+      }
+    ],
+    "abstainStrict": false,
+    "abstainSoft": false,
+    "citations": [
+      {
+        "label": "Pilot runbook draft 2",
+        "raw": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "href": "/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "targetId": "150f4964-5fd7-4503-b08c-078cbc6b118b",
+        "resolves": true
+      }
+    ],
+    "answer": "According to the pilot runbook, the following preconditions must be met before starting the cut-over:\n\n- A replication slot must be created on the legacy ledger, with the lag under five seconds for one hour.\n- Eleven pilot merchants need to be flagged in the merchant table.\n- Nadia Rahman must be available for the security checkpoint two hours after the cut-over begins.\n\nThese steps ensure a smooth transition as described in the runbook draft ([Pilot runbook draft 2](/projects/a4842009-a9ac-4953-ae7b-f33baa0d53ed/evidence?item=150f4964-5fd7-4503-b08c-078cbc6b118b#evidence-150f4964-5fd7-4503-b08c-078cbc6b118b)).",
+    "finishReason": "stop"
+  }
+]
