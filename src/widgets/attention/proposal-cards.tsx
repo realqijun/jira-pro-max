@@ -1,27 +1,35 @@
-import { FileText, GitBranch, MessageSquare } from "lucide-react";
+import { GitBranch } from "lucide-react";
+import type { ProjectRefs } from "@/server/modules/projects/refs";
 import type { ProposalRow } from "@/server/modules/proposals/schema";
+import type { ReviewableItem } from "@/server/modules/proposals/service";
 import { labelFor } from "@/shared/domain";
 import { fmtDate } from "@/shared/lib/dates";
 import { Panel } from "@/shared/ui";
 import { ASSUMPTION_ICON } from "@/entities/decision/assumption-chip";
+import { ItemProposalCard } from "./item-proposal-cards";
 import { ProposalActions } from "./proposal-actions";
+import { ProposalSources } from "./proposal-sources";
 
 /**
  * Pending Proposals on the Project Overview (issue #39): what the Assistant thinks was decided,
  * with the verbatim excerpt it rests on and the Assumptions it suggests. Accept is one click;
  * "Edit and accept" opens the Decision dialog prefilled; Reject keeps it out of future passes.
+ * Task and Milestone Proposals (#115) follow in the same queue, each with its own card.
  */
 export function ProposalCards({
   proposals,
+  items,
   projectId,
   sourceLabels,
 }: {
   proposals: ProposalRow[];
+  /** Pending Task and Milestone Proposals, with the reference data their dialogs need; null when none. */
+  items?: { list: ReviewableItem[]; refs: ProjectRefs } | null;
   projectId: string;
   /** `kind:entityId` to display label (Evidence title / Comment preview). */
   sourceLabels: Map<string, string>;
 }) {
-  if (!proposals.length) return null;
+  if (!proposals.length && !items?.list.length) return null;
   return (
     <section className="flex flex-col gap-3" data-testid="proposal-cards">
       {proposals.map((p) => (
@@ -42,29 +50,7 @@ export function ProposalCards({
             <ProposalActions proposalId={p.id} projectId={projectId} />
           </div>
           <div className="grid grid-cols-2 gap-4 border-t border-hairline px-4 py-3 text-body-sm">
-            <div>
-              <p className="mb-1 text-caption font-medium text-ink-subtle">Sources</p>
-              <ul className="flex flex-col gap-1.5">
-                {p.sources.map((s, i) => {
-                  const Icon = s.kind === "comment" ? MessageSquare : FileText;
-                  return (
-                    <li key={`${s.kind}:${s.entityId}:${i}`} className="flex flex-col gap-0.5">
-                      <span className="flex items-center gap-1.5 text-ink">
-                        <Icon className="size-3.5 shrink-0 text-ink-tertiary" />
-                        <span className="truncate">
-                          {(s.passageId ? sourceLabels.get(`${s.kind}:${s.entityId}:${s.passageId}`) : undefined) ??
-                            sourceLabels.get(`${s.kind}:${s.entityId}`) ??
-                            labelFor(s.kind)}
-                        </span>
-                      </span>
-                      <blockquote className="border-l-2 border-hairline pl-2 text-caption text-ink-subtle italic">
-                        {s.excerpt}
-                      </blockquote>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <ProposalSources sources={p.sources} sourceLabels={sourceLabels} />
             <div>
               <p className="mb-1 text-caption font-medium text-ink-subtle">Suggested assumptions</p>
               {p.assumptions.length === 0 && <p className="text-caption text-ink-tertiary">None</p>}
@@ -90,6 +76,9 @@ export function ProposalCards({
             </div>
           </div>
         </Panel>
+      ))}
+      {items?.list.map((item) => (
+        <ItemProposalCard key={item.id} item={item} refs={items.refs} sourceLabels={sourceLabels} />
       ))}
     </section>
   );

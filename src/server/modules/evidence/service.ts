@@ -3,8 +3,8 @@ import path from "node:path";
 import type { Ctx } from "@/server/core/context";
 import { compactPatch, diffFields } from "@/server/core/diff";
 import { NotFoundError, ValidationError } from "@/server/core/errors";
-import { mutate } from "@/server/core/mutation";
-import type { DbOrTx } from "@/server/db/client";
+import { mutate, type Recorder } from "@/server/core/mutation";
+import type { DbOrTx, Tx } from "@/server/db/client";
 import { milestonesRepo } from "@/server/modules/milestones/repository";
 import { assertOwnsProject } from "@/server/modules/projects/service";
 import { risksRepo } from "@/server/modules/risks/repository";
@@ -101,6 +101,29 @@ async function syncPassages(tx: DbOrTx, row: EvidenceRow) {
     }
   }
   await passagesRepo.replaceForEvidence(tx, row.id, passages);
+}
+
+/**
+ * The body of `evidenceService.link`, for a caller already inside a `mutate` whose Project
+ * ownership it checked (accepting an item Proposal links its Evidence in the create's
+ * transaction, #115).
+ */
+export async function linkEvidenceIn(tx: Tx, rec: Recorder, input: EvidenceLinkInput) {
+  const ev = await ownedEvidenceInProject(tx, input.projectId, input.evidenceId);
+  const itemLabel = await linkedItemLabel(tx, input.projectId, input.entityType, input.entityId);
+  const inserted = await evidenceLinksRepo.insertIgnore(tx, input);
+  if (!inserted) return (await evidenceLinksRepo.find(tx, input))!;
+  rec.updated(input.entityType, input.projectId, input.entityId, itemLabel, [
+    { field: "evidence", oldValue: null, newValue: ev.title },
+  ]);
+  rec.signal("evidence.linked", {
+    projectId: input.projectId,
+    entityType: "evidence",
+    entityId: ev.id,
+    entityLabel: ev.title,
+    changes: [{ field: "link", oldValue: null, newValue: { entityType: input.entityType, entityId: input.entityId } }],
+  });
+  return inserted;
 }
 
 export const evidenceService = {
@@ -227,23 +250,7 @@ export const evidenceService = {
   link: (ctx: Ctx, input: EvidenceLinkInput) =>
     mutate(ctx, async (tx, rec) => {
       await assertOwnsProject(tx, ctx.userId, input.projectId);
-      const ev = await ownedEvidenceInProject(tx, input.projectId, input.evidenceId);
-      const itemLabel = await linkedItemLabel(tx, input.projectId, input.entityType, input.entityId);
-      const inserted = await evidenceLinksRepo.insertIgnore(tx, input);
-      if (!inserted) return (await evidenceLinksRepo.find(tx, input))!;
-      rec.updated(input.entityType, input.projectId, input.entityId, itemLabel, [
-        { field: "evidence", oldValue: null, newValue: ev.title },
-      ]);
-      rec.signal("evidence.linked", {
-        projectId: input.projectId,
-        entityType: "evidence",
-        entityId: ev.id,
-        entityLabel: ev.title,
-        changes: [
-          { field: "link", oldValue: null, newValue: { entityType: input.entityType, entityId: input.entityId } },
-        ],
-      });
-      return inserted;
+      return linkEvidenceIn(tx, rec, input);
     }),
 
   /** Removing a link that does not exist is a no-op success. */

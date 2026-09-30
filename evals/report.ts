@@ -1,6 +1,6 @@
 /**
  * Turns the raw run directories under `artifacts/` into the tables quoted in
- * `docs/submission/m9-model-bakeoff.md`, `m11-evals.md` and `m12-optimization.md`.
+ * `docs/submission/m9-model-bakeoff.md`, `m11-evals.md`, `m11-item-evals.md` and `m12-optimization.md`.
  * Pure aggregation over files already written by `scripts/eval.mts`; makes no model calls.
  *
  * Usage: npx tsx evals/report.ts
@@ -16,7 +16,7 @@ interface CaseResult {
   usage: { calls: number; promptTokens: number; completionTokens: number; cachedTokens: number; costUsd: number };
   checks: Array<{ name: string; pass: boolean; detail?: string }>;
 }
-type Results = Record<string, { extraction: CaseResult[]; why: CaseResult[] }>;
+type Results = Record<string, { extraction: CaseResult[]; items?: CaseResult[]; why: CaseResult[] }>;
 
 const read = async <T>(path: string) => JSON.parse(await readFile(path, "utf8")) as T;
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -264,6 +264,71 @@ async function main() {
   });
   out.push("\n## Steps actually used against the step cap\n");
   out.push(table(["Model", "Median steps", "Max steps", "`ASSISTANT_MAX_STEPS`"], stepRows));
+
+  /* ------------------------------------------------- item extraction (#116) */
+  const itemRuns: Array<[string, string, string]> = [
+    ["`heuristic` (no model)", "artifacts/item-evals-2026-09-30/heuristic/results.json", "heuristic"],
+    ["`gpt-4o-mini`", "artifacts/item-evals-2026-09-30/results.json", "gpt-4o-mini"],
+    ["`gpt-4o-mini` (repeat)", "artifacts/item-evals-2026-09-30/repeat/results.json", "gpt-4o-mini"],
+  ];
+  // Direct OpenAI returns no price, so a zero cost with tokens spent is unpriced rather than free.
+  const cost = (s: ReturnType<typeof suiteStats>) =>
+    s.costUsd === 0 && s.promptTokens > 0 ? "unpriced" : usd(s.costUsd);
+  const itemSets: Array<[string, ReturnType<typeof suiteStats>]> = [];
+  for (const [label, path, model] of itemRuns) {
+    itemSets.push([label, suiteStats((await read<Results>(path))[model]!.items ?? [])]);
+  }
+  out.push("\n## Task and Milestone extraction, 12 cases\n");
+  out.push(
+    table(
+      ["Extractor", "Items", "Median ms", "Prompt tokens", "Completion tokens", "Cost"],
+      itemSets.map(([label, s]) => [
+        label,
+        `${s.passed}/${s.cases}`,
+        `${s.medianMs}`,
+        String(s.promptTokens),
+        String(s.completionTokens),
+        cost(s),
+      ]),
+    ),
+  );
+  out.push("\nFailed cases per run:\n");
+  for (const [label, s] of itemSets) out.push(`- ${label}: ${s.failures.join(", ") || "none"}`);
+
+  const decisionRuns: Array<[string, string, string]> = [
+    ["temperature 0, OpenRouter (28 Sep)", "artifacts/param-sweep-2026-09-28/t0-a/results.json", "openai/gpt-4o-mini"],
+    [
+      "temperature 0, OpenRouter (28 Sep, repeat)",
+      "artifacts/param-sweep-2026-09-28/t0-b/results.json",
+      "openai/gpt-4o-mini",
+    ],
+    ["temperature 0, OpenAI (30 Sep)", "artifacts/item-evals-2026-09-30/results.json", "gpt-4o-mini"],
+    ["temperature 0, OpenAI (30 Sep, repeat)", "artifacts/item-evals-2026-09-30/repeat/results.json", "gpt-4o-mini"],
+  ];
+  const decisionSets: Array<[string, CaseResult[]]> = [];
+  for (const [label, path, model] of decisionRuns) {
+    decisionSets.push([label, (await read<Results>(path))[model]!.extraction]);
+  }
+  out.push("\n## Decision extraction re-run after the item pass, `gpt-4o-mini`\n");
+  out.push(
+    table(
+      ["Run", "Extraction", "Completion tokens", "Failed cases"],
+      decisionSets.map(([label, rows]) => {
+        const s = suiteStats(rows);
+        return [label, `${s.passed}/${s.cases}`, String(s.completionTokens), s.failures.join(", ") || "none"];
+      }),
+    ),
+  );
+  const decisionChanged = decisionSets[0]![1]
+    .map((c) => c.id)
+    .map((id) => [id, ...decisionSets.map(([, rows]) => (rows.find((c) => c.id === id)!.pass ? "pass" : "FAIL"))])
+    .filter((row) => new Set(row.slice(1)).size > 1);
+  out.push("\nCases whose verdict differs between any two runs:\n");
+  out.push(table(["Case", ...decisionSets.map(([label]) => label)], decisionChanged));
+  metrics.itemExtraction = {
+    items: Object.fromEntries(itemSets),
+    decisionRerun: Object.fromEntries(decisionSets.map(([label, rows]) => [label, suiteStats(rows)])),
+  };
 
   await writeFile("artifacts/eval-tables-2026-09-28.md", `${out.join("\n")}\n`, "utf8");
   await writeFile("artifacts/eval-metrics-2026-09-28.json", `${JSON.stringify(metrics, null, 2)}\n`, "utf8");

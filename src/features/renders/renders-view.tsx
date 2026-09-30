@@ -4,11 +4,12 @@ import { AlertTriangle, ImageIcon, Loader2, Plus, RotateCcw, Trash2 } from "luci
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import { createRenderAction, deleteRenderAction, renderStatesAction } from "@/server/modules/renders/actions";
+import { deleteRenderAction, renderStatesAction } from "@/server/modules/renders/actions";
 import type { RenderRow } from "@/server/modules/renders/schema";
-import { RENDER_MAX_PER_PROJECT, RENDER_POLL_GIVE_UP_MS, RENDER_POLL_MS, RENDER_PROMPT_MAX } from "@/shared/domain";
+import { RENDER_EVIDENCE_MAX, RENDER_MAX_PER_PROJECT, RENDER_POLL_GIVE_UP_MS, RENDER_POLL_MS } from "@/shared/domain";
 import { relative } from "@/shared/lib/dates";
-import { ActionForm, Button, Dialog, EmptyState, TextareaField } from "@/shared/ui";
+import { ActionForm, Button, Dialog, EmptyState } from "@/shared/ui";
+import { NewRenderForm, type Drafting } from "./new-render-form";
 
 /**
  * Wait for pending Renders the way the message pane waits for Chat Messages (ADR 0011): ask
@@ -75,11 +76,13 @@ export function RendersView({
   projectId,
   items,
   configured,
+  drafting,
 }: {
   projectId: string;
   items: RenderRow[];
   /** False when no image key is set; the tab explains itself instead of offering a dead button. */
   configured: boolean;
+  drafting: Drafting;
 }) {
   const [adding, setAdding] = React.useState(false);
   const { waiting, gaveUp } = usePendingRenders(projectId, items);
@@ -139,27 +142,11 @@ export function RendersView({
         open={adding}
         onClose={() => setAdding(false)}
         title="New concept render"
-        description="Describe the deliverable in your own words. Project data is never sent, only what you type here."
+        description={`Describe the deliverable, or draft a description from up to ${RENDER_EVIDENCE_MAX} pieces of Evidence. Only the description below is sent to the image service.`}
         className="max-w-xl"
       >
-        <ActionForm
-          action={createRenderAction}
-          hidden={{ projectId }}
-          submitLabel="Generate"
-          cancel={() => setAdding(false)}
-          onSuccess={() => setAdding(false)}
-        >
-          <TextareaField
-            name="prompt"
-            label="Description"
-            required
-            autoFocus
-            maxLength={RENDER_PROMPT_MAX}
-            placeholder="A two storey community centre with a pitched roof, brick facade and a glazed entrance atrium"
-            hint="The image takes up to a minute. You can keep working while it generates."
-            inputClassName="min-h-32"
-          />
-        </ActionForm>
+        {/* Mounted per opening, so a cancelled draft does not come back next time. */}
+        {adding && <NewRenderForm projectId={projectId} drafting={drafting} onDone={() => setAdding(false)} />}
       </Dialog>
     </div>
   );
@@ -167,6 +154,8 @@ export function RendersView({
 
 function RenderCard({ render }: { render: RenderRow }) {
   const [deleting, setDeleting] = React.useState(false);
+  // A snapshot of the titles at request time, so it still reads after the Evidence is deleted.
+  const draftedFrom = render.evidence.map((e) => e.title).join(", ");
   return (
     <li className="flex flex-col overflow-hidden panel">
       <div className="flex aspect-4/3 items-center justify-center bg-surface-2">
@@ -194,6 +183,7 @@ function RenderCard({ render }: { render: RenderRow }) {
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3">
         <p className="line-clamp-3 text-body-sm text-ink">{render.prompt}</p>
+        {draftedFrom && <p className="line-clamp-2 text-caption text-ink-subtle">Drafted from: {draftedFrom}</p>}
         <div className="mt-auto flex items-center gap-2 text-caption text-ink-tertiary">
           <span>{relative(render.createdAt)}</span>
           {render.state === "failed" && (
@@ -219,6 +209,12 @@ function RenderCard({ render }: { render: RenderRow }) {
               <dt className="text-ink-subtle">Seed</dt>
               <dd className="font-mono">{render.seed}</dd>
             </div>
+            {draftedFrom && (
+              <div className="flex gap-2">
+                <dt className="text-ink-subtle">Evidence</dt>
+                <dd>{draftedFrom}</dd>
+              </div>
+            )}
           </dl>
         </details>
       </div>

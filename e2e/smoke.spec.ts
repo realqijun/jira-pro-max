@@ -11,6 +11,8 @@ async function signUp(page: Page) {
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL("/dashboard");
+  // Signup starts the product tour, whose overlay takes every click until it is dismissed.
+  await page.getByRole("button", { name: "Skip tour" }).click();
 }
 
 test.describe.configure({ mode: "serial" });

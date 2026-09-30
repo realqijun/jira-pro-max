@@ -5,7 +5,9 @@ import * as React from "react";
 import type { ProjectRefs } from "@/server/modules/projects/refs";
 import type { DependencyRow } from "@/server/modules/dependencies/schema";
 import type { TaskListItem } from "@/server/modules/tasks/repository";
+import { acceptTaskProposalAction } from "@/server/modules/proposals/actions";
 import { createTaskAction, deleteTaskAction, updateTaskAction } from "@/server/modules/tasks/actions";
+import type { CreateTaskInput } from "@/server/modules/tasks/validation";
 import { PRIORITIES } from "@/shared/domain";
 import { ActionForm, Button, Dialog, FormRow, SelectField, TextField, TextareaField, enumOptions } from "@/shared/ui";
 import { CommentThread } from "@/features/comment/comment-thread";
@@ -19,30 +21,41 @@ export function TaskDialog({
   onClose,
   refs,
   task,
-  tasks,
-  dependencies,
+  tasks = [],
+  dependencies = [],
   defaults,
+  proposal,
 }: {
   open: boolean;
   onClose: () => void;
   refs: ProjectRefs;
   /** Present when editing. */
   task?: TaskListItem | null;
-  tasks: TaskListItem[];
-  dependencies: DependencyRow[];
+  /** Read in edit mode only. */
+  tasks?: TaskListItem[];
+  dependencies?: DependencyRow[];
   /** Pre-fill for create (e.g. status from a board column). */
   defaults?: { statusId?: string; milestoneId?: string };
+  /** A pending Task Proposal to confirm (#115): prefills the create form, and saving accepts it. */
+  proposal?: { id: string; defaults: CreateTaskInput } | null;
 }) {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const t = task?.task;
+  const draft = t ? undefined : proposal?.defaults;
   const taskStatuses = refs.statuses.filter((s) => s.scope === "task");
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      title={t ? `${refs.project.key}-${t.number}` : "New task"}
-      description={t ? undefined : "Tasks are the units of work inside this project."}
+      title={t ? `${refs.project.key}-${t.number}` : draft ? "Confirm proposed task" : "New task"}
+      description={
+        t
+          ? undefined
+          : draft
+            ? "Saving creates the task and accepts the Assistant's proposal."
+            : "Tasks are the units of work inside this project."
+      }
       className="max-w-2xl"
     >
       {confirmDelete && t ? (
@@ -62,10 +75,10 @@ export function TaskDialog({
       ) : (
         <ItemDialogTabs history={t ? { projectId: t.projectId, entityType: "task", entityId: t.id } : null}>
           <ActionForm
-            key={t?.id ?? "new"}
-            action={t ? updateTaskAction : createTaskAction}
-            hidden={t ? { id: t.id } : { projectId: refs.project.id }}
-            submitLabel={t ? "Save changes" : "Create task"}
+            key={t?.id ?? proposal?.id ?? "new"}
+            action={t ? updateTaskAction : draft ? acceptTaskProposalAction : createTaskAction}
+            hidden={t ? { id: t.id } : { projectId: refs.project.id, proposalId: draft ? proposal?.id : undefined }}
+            submitLabel={t ? "Save changes" : draft ? "Accept and create task" : "Create task"}
             cancel={onClose}
             onSuccess={onClose}
             footerStart={
@@ -87,13 +100,13 @@ export function TaskDialog({
               label="Title"
               required
               autoFocus
-              defaultValue={t?.title}
+              defaultValue={t?.title ?? draft?.title}
               placeholder="What needs to happen?"
             />
             <TextareaField
               name="description"
               label="Description"
-              defaultValue={t?.description ?? ""}
+              defaultValue={t?.description ?? draft?.description ?? ""}
               placeholder="Context, acceptance criteria, links…"
             />
             <FormRow>
@@ -114,7 +127,7 @@ export function TaskDialog({
               <SelectField
                 name="assigneeId"
                 label="Owner"
-                defaultValue={t?.assigneeId ?? ""}
+                defaultValue={t?.assigneeId ?? draft?.assigneeId ?? ""}
                 placeholder="Unassigned"
                 options={refs.people.map((p) => ({ value: p.id, label: p.name }))}
               />
@@ -130,7 +143,7 @@ export function TaskDialog({
               <SelectField
                 name="milestoneId"
                 label="Milestone"
-                defaultValue={t?.milestoneId ?? defaults?.milestoneId ?? ""}
+                defaultValue={t?.milestoneId ?? draft?.milestoneId ?? defaults?.milestoneId ?? ""}
                 placeholder="No milestone"
                 options={refs.milestones.map((m) => ({ value: m.id, label: m.name }))}
               />
@@ -144,8 +157,18 @@ export function TaskDialog({
               />
             </FormRow>
             <FormRow>
-              <TextField name="startDate" label="Start date" type="date" defaultValue={t?.startDate ?? ""} />
-              <TextField name="dueDate" label="Due date" type="date" defaultValue={t?.dueDate ?? ""} />
+              <TextField
+                name="startDate"
+                label="Start date"
+                type="date"
+                defaultValue={t?.startDate ?? draft?.startDate ?? ""}
+              />
+              <TextField
+                name="dueDate"
+                label="Due date"
+                type="date"
+                defaultValue={t?.dueDate ?? draft?.dueDate ?? ""}
+              />
             </FormRow>
             <LabelPicker labels={refs.labels} selected={task?.labels.map((l) => l.id) ?? []} />
 

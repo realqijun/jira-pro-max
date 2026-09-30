@@ -12,11 +12,13 @@ import {
   ENTITY_TYPES,
   EVIDENCE_KINDS,
   HEALTH_LEVELS,
+  ITEM_PROPOSAL_KINDS,
   MEMORY_AUTHORS,
   MESSAGE_ROLES,
   PRIORITIES,
   PROJECT_STATUSES,
   PROPOSAL_EXTRACTORS,
+  PROPOSAL_PASSES,
   PROPOSAL_STATUSES,
   AI_PROVIDERS,
   RENDER_STATES,
@@ -51,6 +53,8 @@ export const decisionEdgeKindEnum = pgEnum("decision_edge_kind", DECISION_EDGE_K
 export const sourceKindEnum = pgEnum("source_kind", SOURCE_KINDS);
 export const proposalStatusEnum = pgEnum("proposal_status", PROPOSAL_STATUSES);
 export const proposalExtractorEnum = pgEnum("proposal_extractor", PROPOSAL_EXTRACTORS);
+export const itemProposalKindEnum = pgEnum("item_proposal_kind", ITEM_PROPOSAL_KINDS);
+export const proposalPassEnum = pgEnum("proposal_pass", PROPOSAL_PASSES);
 export const roomTypeEnum = pgEnum("room_type", ROOM_TYPES);
 export const aiProviderEnum = pgEnum("ai_provider", AI_PROVIDERS);
 export const renderStateEnum = pgEnum("render_state", RENDER_STATES);

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 const chapterTitles = [
   "Stand above the whole thing",
@@ -7,6 +7,26 @@ const chapterTitles = [
   "Down to the single room",
   "Everything is wired to everything",
 ];
+
+/** The descent film; the stage also holds the prologue's prism clip. */
+const film = (section: Locator) => section.locator('video[poster="/landing/prismpm-scroll-poster.jpg"]');
+
+/** Scroll the pinned stage to `fraction` of the descent, past the prologue's screens. */
+async function scrollDescent(section: Locator, fraction: number) {
+  await section
+    .locator(".relative")
+    .first()
+    .evaluate(
+      (stage, { fraction, chapters }) => {
+        const screens = Math.round(stage.clientHeight / innerHeight);
+        const prologueShare = (screens - chapters) / screens;
+        const progress = prologueShare + (1 - prologueShare) * fraction;
+        const start = stage.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: start + (stage.clientHeight - innerHeight) * progress, behavior: "instant" });
+      },
+      { fraction, chapters: chapterTitles.length },
+    );
+}
 
 for (const viewport of [
   { width: 390, height: 844 },
@@ -20,18 +40,7 @@ for (const viewport of [
     const section = page.locator("#how");
     if (viewport.height >= 544) await expect(section.locator(".sticky")).toBeVisible();
     for (const [index, title] of chapterTitles.entries()) {
-      if (viewport.height >= 544) {
-        await section
-          .locator(".relative")
-          .first()
-          .evaluate(
-            (stage, progress) => {
-              const start = stage.getBoundingClientRect().top + window.scrollY;
-              window.scrollTo({ top: start + (stage.clientHeight - innerHeight) * progress, behavior: "instant" });
-            },
-            (index + 0.3) / chapterTitles.length,
-          );
-      }
+      if (viewport.height >= 544) await scrollDescent(section, (index + 0.3) / chapterTitles.length);
       const heading = section.getByRole("heading", { name: title, exact: true });
       await expect(heading).toBeVisible();
       if (viewport.height < 544) {
@@ -50,11 +59,9 @@ test("desktop scrubbing survives compact and reduced-motion viewports", async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   const section = page.locator("#how");
-  const video = section.locator("video");
+  const video = film(section);
   await expect(section.locator(".sticky")).toBeVisible();
-  await section.evaluate((el) => {
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + innerHeight, behavior: "instant" });
-  });
+  await scrollDescent(section, 0.5);
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(2);
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime)).toBeGreaterThan(1);
   await page.setViewportSize({ width: 844, height: 390 });
@@ -85,7 +92,7 @@ test("the phone hero does not download the film until it enters view", async ({ 
   await page.locator("#how").evaluate((el) => el.scrollIntoView({ behavior: "instant" }));
   await expect.poll(() => downloads.length).toBeGreaterThan(0);
   await expect
-    .poll(() => page.locator("#how video").evaluate((el: HTMLVideoElement) => el.readyState))
+    .poll(() => film(page.locator("#how")).evaluate((el: HTMLVideoElement) => el.readyState))
     .toBeGreaterThanOrEqual(2);
 });
 

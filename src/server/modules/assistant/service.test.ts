@@ -1,10 +1,11 @@
 import type { UIMessage } from "ai";
 import { sql } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Ctx } from "@/server/core/context";
 import { ForbiddenError, NotFoundError } from "@/server/core/errors";
 import { closeDb, makeCtx, makeProject } from "@/test/helpers";
-import { messagesRepo } from "./repository";
+import { conversationsRepo, messagesRepo } from "./repository";
+import { conversations } from "./schema";
 import { assistantService } from "./service";
 
 let ctx: Ctx;
@@ -21,6 +22,13 @@ const msg = (id: string, role: UIMessage["role"], text: string): UIMessage => ({
   role,
   parts: [{ type: "text", text }],
 });
+
+/** Backdate a Conversation past the prune grace, so an empty one counts as litter. */
+const settle = (id: string) =>
+  ctx.db
+    .update(conversations)
+    .set({ createdAt: sql`now() - interval '1 hour'`, updatedAt: sql`now() - interval '1 hour'` })
+    .where(sql`${conversations.id} = ${id}`);
 
 describe("assistantService conversations", () => {
   it("returns the latest Conversation in a scope, creating one on first open", async () => {
@@ -125,6 +133,23 @@ describe("assistantService conversations", () => {
     await expect(assistantService.thread(ctx, c.id, projectId)).resolves.toBeDefined();
   });
 
+  it("opens a fresh Conversation when a concurrent prune deletes the empty one it was about to open", async () => {
+    const own = await makeCtx();
+    const pid = (await makeProject(own, "RACE")).id;
+    // Another request's `library` prune lands between the dock's read and its thread load.
+    const latest = vi.spyOn(conversationsRepo, "latest").mockImplementationOnce(async (db, userId, scope) => {
+      const row = (await conversationsRepo.listByScope(db, userId, scope))[0]!;
+      await settle(row.id);
+      await assistantService.library(own);
+      return row;
+    });
+    const dock = await assistantService.dock(own, pid);
+    latest.mockRestore();
+    expect(dock.thread.messages).toEqual([]);
+    expect(dock.conversations.map((c) => c.id)).toEqual([dock.thread.conversation.id]);
+    await expect(assistantService.thread(own, dock.thread.conversation.id)).resolves.toBeDefined();
+  });
+
   it("pins Conversations to the top and prunes empty ones", async () => {
     const first = await assistantService.createConversation(ctx, projectId);
     await assistantService.saveMessages(ctx, first.id, [msg("x1", "user", "thread one")]);
@@ -133,6 +158,8 @@ describe("assistantService conversations", () => {
     await assistantService.pinConversation(ctx, pinnedEmpty.id, true);
     const latest = await assistantService.createConversation(ctx, projectId);
     await assistantService.saveMessages(ctx, latest.id, [msg("x2", "user", "thread two")]);
+    await settle(empty.id);
+    await settle(pinnedEmpty.id);
 
     const dock = await assistantService.dock(ctx, projectId);
     expect(dock.conversations[0]?.id).toBe(pinnedEmpty.id); // pinned sorts first
@@ -146,6 +173,18 @@ describe("assistantService conversations", () => {
 
     const stranger = await makeCtx();
     await expect(assistantService.pinConversation(stranger, first.id, true)).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
+  it("never prunes a just-created Conversation another page load is opening", async () => {
+    // Two concurrent loads for a new User each create a first Conversation, then prune empty
+    // ones: neither may delete the one the other is about to open.
+    const fresh = await makeCtx();
+    const theirs = await assistantService.createConversation(fresh, null);
+    const ours = await assistantService.createConversation(fresh, null);
+    const dock = await assistantService.dock(fresh, null);
+    expect(dock.thread.conversation.id).toBe(ours.id);
+    await assistantService.library(fresh, ours.id);
+    await expect(assistantService.thread(fresh, theirs.id)).resolves.toBeDefined();
   });
 
   it("re-scopes a Conversation between a Project and overall, for the owner only", async () => {
@@ -191,6 +230,7 @@ describe("assistantService.library", () => {
 
   it("prunes empty non-pinned Conversations but keeps keepId", async () => {
     const empty = await assistantService.createConversation(ctx, projectId);
+    await settle(empty.id);
     // keepId first: once pruned the row is gone, so it must survive this call.
     const kept = (await assistantService.library(ctx, empty.id)).map((c) => c.id);
     expect(kept).toContain(empty.id);

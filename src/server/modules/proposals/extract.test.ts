@@ -112,3 +112,28 @@ describe("modelExtract temperature", () => {
     expect(m.doGenerateCalls).toHaveLength(1);
   });
 });
+
+describe("modelExtract prompt", () => {
+  it("sends the Decision prompt unchanged (evals in evals/cases/ measure this exact text)", async () => {
+    const m = new MockLanguageModelV4({
+      doGenerate: {
+        content: [{ type: "text", text: JSON.stringify({ proposals: [] }) }],
+        finishReason: { unified: "stop", raw: "stop" },
+        usage: {
+          inputTokens: { total: 1, noCache: 1, cacheRead: 0, cacheWrite: 0 },
+          outputTokens: { total: 1, text: 1, reasoning: 0 },
+        },
+        warnings: [],
+      },
+    });
+    model.current = m;
+    await modelExtract({ userId: "u1" } as Ctx)({
+      sources: [
+        { kind: "evidence", entityId: "e1", title: "Call", evidenceKind: "transcript", text: "We decided to ship." },
+        { kind: "comment", entityId: "c1", title: "Comment by Priya", text: "Agreed." },
+      ],
+      context: { people: ["Priya Nair"], milestones: ["UAT begins"], tasks: [], conversation: "user: hi" },
+    });
+    expect(m.doGenerateCalls[0]!.prompt).toMatchSnapshot();
+  });
+});

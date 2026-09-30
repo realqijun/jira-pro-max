@@ -88,7 +88,7 @@ A citation from a Decision or an edge to something already in the Project histor
 _Avoid_: Reference, link (see Dependency and Evidence link), attachment, footnote
 
 **Proposal**:
-A Decision the Assistant extracted from Evidence or a Comment and offers to the PM for confirmation, with the Sources it came from and any typed Assumptions it suggests. It is pending, accepted or rejected; nothing enters the graph until a PM accepts it.
+A Decision, Task or Milestone the Assistant extracted from Evidence or a Comment and offers to the PM for confirmation, with the Sources it came from (and, for a Decision, any typed Assumptions it suggests). It is pending, accepted or rejected; nothing enters the Project until a PM accepts it.
 _Avoid_: Suggestion, draft decision, candidate, recommendation
 
 **Cause**, **Consequence**:
@@ -120,7 +120,7 @@ _Avoid_: Invitation email, magic link, signup link, token
 ### Renders
 
 **Render**:
-A generated picture of what a Project delivers, made from a description the PM writes by hand, so the PM and the people building the thing can react to one image instead of a paragraph each. It is pending, ready or failed, and it carries the exact description, model and seed it was produced from.
+A generated picture of what a Project delivers, made from a description the PM writes by hand or drafts from up to 3 pieces of Evidence and then approves, so the PM and the people building the thing can react to one image instead of a paragraph each. It is pending, ready or failed, and it carries the exact description, model and seed it was produced from, plus the Evidence it was drafted from, as titled at the time.
 A Render illustrates intent. It is not a drawing, is not to scale, and never enters a build package.
 _Avoid_: Image, mockup, visualisation, drawing, rendering (the verb)
 

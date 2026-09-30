@@ -77,6 +77,8 @@ test.describe("auth", () => {
     await expect(page).toHaveURL("/dashboard");
     // A new account is not empty: every User starts with the sample Project (ADR 0013).
     await expect(page.getByText("Bedok Community Centre").first()).toBeVisible();
+    // Signup starts the product tour, whose overlay takes every click until it is dismissed.
+    await page.getByRole("button", { name: "Skip tour" }).click();
     await shot(page, "starter-workspace");
 
     await page.getByRole("button", { name: "Sign out" }).click();
@@ -493,9 +495,13 @@ test.describe("command-palette", () => {
 
   test("⌘K jumps between sections and projects", async ({ page }) => {
     await login(page);
-    await page.keyboard.press("Meta+k");
     const input = page.getByPlaceholder("Type a command or search…");
-    await expect(input).toBeVisible();
+    // Straight after navigation the shell's shortcut listener may not be hydrated yet; press
+    // again only while the palette is still closed, so a slow open is never toggled shut.
+    await expect(async () => {
+      if (!(await input.isVisible())) await page.keyboard.press("Meta+k");
+      await expect(input).toBeVisible({ timeout: 1_000 });
+    }).toPass();
     await shot(page, "open");
     await input.fill("Payments");
     await shot(page, "search-project");
@@ -1227,13 +1233,23 @@ test.describe("transcripts", () => {
     await expect(cited).toHaveClass(/ring-1/);
     await shot(page, "citation-opens-passage");
 
-    // The Assistant's pass (already run after the ingest; the button confirms nothing is left) cites the Passage too.
+    // The Assistant's pass runs in the background after the ingest and cites the Passage too.
+    await page.getByRole("main").getByRole("link", { name: "Overview", exact: true }).click();
+    await expect(page).toHaveURL(/\/projects\/[0-9a-f-]{36}$/);
+    const card = page.getByTestId("proposal-card").filter({ hasText: "freeze scope after the pilot" });
+    await expect(async () => {
+      await page.reload();
+      await expect(card).toContainText("Steering meeting transcript · Marcus", { timeout: 2_000 });
+    }).toPass({ timeout: 30_000 });
+    // With the pass done, the button finds nothing left to read and opens the waiting Proposal.
     await page.getByRole("main").getByRole("link", { name: "Decisions", exact: true }).click();
     await expect(page).toHaveURL(/\/decisions$/);
     await page.getByTestId("propose-from-evidence").click();
-    await expect(page.getByText(/proposed from|already read/)).toBeVisible();
+    await expect(page.getByText(/^All evidence already read/)).toBeVisible();
+    const review = page.getByRole("dialog", { name: "Confirm proposed decision" });
+    await review.getByRole("button", { name: "Close" }).click();
+    await expect(review).toBeHidden();
     await page.getByRole("main").getByRole("link", { name: "Overview", exact: true }).click();
-    const card = page.getByTestId("proposal-card").filter({ hasText: "freeze scope after the pilot" });
     await expect(card).toContainText("Steering meeting transcript · Marcus");
     await shot(page, "proposal-cites-passage");
     await card.getByTestId("reject-proposal").click();

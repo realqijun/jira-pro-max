@@ -1,7 +1,7 @@
 import type { Ctx } from "@/server/core/context";
 import { compactPatch, diffFields, type FieldChange } from "@/server/core/diff";
 import { NotFoundError, ValidationError } from "@/server/core/errors";
-import { mutate } from "@/server/core/mutation";
+import { mutate, type AfterCreate } from "@/server/core/mutation";
 import { nextNumber } from "@/server/core/sequence";
 import type { DbOrTx } from "@/server/db/client";
 import { commentsRepo } from "@/server/modules/comments/repository";
@@ -60,7 +60,12 @@ export const tasksService = {
     );
   },
 
-  create: (ctx: Ctx, { labelIds = [], ...input }: CreateTaskInput) =>
+  /**
+   * `afterCreate` runs inside the same transaction, after the Activity Event is recorded, so a
+   * caller that confirms something else with the create (an item Proposal, #115) commits or rolls
+   * back with it and publishes once.
+   */
+  create: (ctx: Ctx, { labelIds = [], ...input }: CreateTaskInput, afterCreate?: AfterCreate<TaskRow>) =>
     mutate(ctx, async (tx, rec) => {
       await assertOwnsProject(tx, ctx.userId, input.projectId);
       await Promise.all([
@@ -80,6 +85,7 @@ export const tasksService = {
       });
       await tasksRepo.setLabels(tx, task.id, labelIds);
       rec.created("task", input.projectId, task.id, task.title);
+      await afterCreate?.(tx, rec, task);
       return task;
     }),
 

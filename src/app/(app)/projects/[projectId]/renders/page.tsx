@@ -8,10 +8,19 @@ export const metadata = { title: "Renders" };
 export default async function RendersPage({ params }: PageProps<"/projects/[projectId]/renders">) {
   const { projectId } = await params;
   const ctx = await ctxForCurrentUser();
-  const items = await rendersService.list(ctx, projectId);
+  const [items, sources, canDraft] = await Promise.all([
+    rendersService.list(ctx, projectId),
+    rendersService.draftSources(ctx, projectId),
+    rendersService.canDraft(ctx),
+  ]);
   return (
     <Suspense>
-      <RendersView projectId={projectId} items={items} configured={rendersService.enabled()} />
+      <RendersView
+        projectId={projectId}
+        items={items}
+        configured={rendersService.enabled()}
+        drafting={{ enabled: canDraft, sources }}
+      />
     </Suspense>
   );
 }

@@ -42,7 +42,17 @@ export const assistantService = {
         return { ...c, title };
       }),
     );
-    const thread = await assistantService.thread(ctx, latest.id);
+    let thread = await assistantService.thread(ctx, latest.id).catch((e) => {
+      if (e instanceof ForbiddenError) return null;
+      throw e;
+    });
+    if (!thread) {
+      // Another request's `library` prune (the dashboard re-rendering beside this page) deleted
+      // the empty Conversation between the reads above and this one. Open a fresh one instead.
+      const fresh = await conversationsRepo.create(ctx.db, ctx.userId, projectId);
+      conversations = [fresh, ...conversations.filter((c) => c.id !== latest.id)];
+      thread = await assistantService.thread(ctx, fresh.id);
+    }
     return {
       conversations: conversations.map(({ id, title, pinned, updatedAt }) => ({ id, title, pinned, updatedAt })),
       thread,

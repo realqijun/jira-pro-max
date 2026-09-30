@@ -590,5 +590,109 @@
         "failures": ["x09-person-assumption"]
       }
     }
+  },
+  "itemExtraction": {
+    "items": {
+      "`heuristic` (no model)": {
+        "cases": 12,
+        "passed": 6,
+        "passPct": 50,
+        "medianMs": 0,
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "cachedPct": 0,
+        "costUsd": 0,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": [
+          "i02-named-owner-due",
+          "i04-dated-checkpoint",
+          "i05-milestone-with-owner",
+          "i06-several-in-one-source",
+          "i07-task-under-known-milestone",
+          "i08-commitment-in-long-transcript"
+        ]
+      },
+      "`gpt-4o-mini`": {
+        "cases": 12,
+        "passed": 9,
+        "passPct": 75,
+        "medianMs": 1807,
+        "promptTokens": 8615,
+        "completionTokens": 963,
+        "cachedPct": 0,
+        "costUsd": 0,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["i01-action-item-line", "i04-dated-checkpoint", "i06-several-in-one-source"]
+      },
+      "`gpt-4o-mini` (repeat)": {
+        "cases": 12,
+        "passed": 9,
+        "passPct": 75,
+        "medianMs": 1824,
+        "promptTokens": 8615,
+        "completionTokens": 959,
+        "cachedPct": 0,
+        "costUsd": 0,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["i01-action-item-line", "i04-dated-checkpoint", "i06-several-in-one-source"]
+      }
+    },
+    "decisionRerun": {
+      "temperature 0, OpenRouter (28 Sep)": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 2721,
+        "promptTokens": 13694,
+        "completionTokens": 3230,
+        "cachedPct": 0,
+        "costUsd": 0.0039921,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x03-status-report-no-decision", "x07-prompt-injection"]
+      },
+      "temperature 0, OpenRouter (28 Sep, repeat)": {
+        "cases": 22,
+        "passed": 20,
+        "passPct": 90.9,
+        "medianMs": 2762,
+        "promptTokens": 13694,
+        "completionTokens": 3372,
+        "cachedPct": 0,
+        "costUsd": 0.0040773,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x03-status-report-no-decision", "x07-prompt-injection"]
+      },
+      "temperature 0, OpenAI (30 Sep)": {
+        "cases": 22,
+        "passed": 21,
+        "passPct": 95.5,
+        "medianMs": 2269,
+        "promptTokens": 16582,
+        "completionTokens": 2835,
+        "cachedPct": 0,
+        "costUsd": 0,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x07-prompt-injection"]
+      },
+      "temperature 0, OpenAI (30 Sep, repeat)": {
+        "cases": 22,
+        "passed": 19,
+        "passPct": 86.4,
+        "medianMs": 2616,
+        "promptTokens": 16582,
+        "completionTokens": 3091,
+        "cachedPct": 0,
+        "costUsd": 0,
+        "medianSteps": 0,
+        "maxSteps": 0,
+        "failures": ["x02-two-decisions-one-source", "x07-prompt-injection", "x18-decision-with-revisit"]
+      }
+    }
   }
 }

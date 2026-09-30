@@ -8,8 +8,8 @@ import { capture } from "./server";
  * prompt, Evidence text, transcript or answer leaves the server.
  */
 
-/** Which of the three model call sites produced the generation. */
-export type AiSpan = "assistant_turn" | "proposal_extraction" | "reflection";
+/** Which model call site produced the generation. */
+export type AiSpan = "assistant_turn" | "proposal_extraction" | "item_extraction" | "reflection" | "render_draft";
 
 /**
  * Who a model call is attributed to, handed to a model-backed function by its service. Optional

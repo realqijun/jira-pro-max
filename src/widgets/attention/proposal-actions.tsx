@@ -1,24 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import * as React from "react";
-import type { ActionResult } from "@/server/core/action";
 import { acceptProposalAction, rejectProposalAction } from "@/server/modules/proposals/actions";
 import { Button } from "@/shared/ui";
+import { useProposalTransition } from "./use-proposal-transition";
 
 export function ProposalActions({ proposalId, projectId }: { proposalId: string; projectId: string }) {
   const router = useRouter();
-  const [pending, setPending] = React.useState<"accept" | "reject" | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
-
-  async function run(kind: "accept" | "reject", fn: () => Promise<ActionResult<unknown>>) {
-    setPending(kind);
-    setError(null);
-    const res = await fn();
-    setPending(null);
-    if (!res.ok) setError(res.error);
-    else router.refresh();
-  }
+  const { pending, error, run } = useProposalTransition();
 
   return (
     <div className="flex flex-col items-end gap-1">

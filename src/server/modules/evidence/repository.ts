@@ -116,6 +116,7 @@ const linkKey = (k: LinkKey) =>
 
 /** `sourceDate` is nullable: sort by the date the artifact refers to, falling back to when it was added. */
 const evidenceRecency = desc(sql`coalesce(${evidence.sourceDate}, ${evidence.createdAt}::date)`);
+const summaryColumns = { id: evidence.id, title: evidence.title, kind: evidence.kind, sourceDate: evidence.sourceDate };
 
 /** Links with both sides labelled in one query (polymorphic side via three left joins). */
 const withLabels = (db: DbOrTx) =>
@@ -212,9 +213,25 @@ export const evidenceLinksRepo = {
   /** Light rows for the item-dialog picker. */
   listSummaries: (db: DbOrTx, projectId: string) =>
     db
-      .select({ id: evidence.id, title: evidence.title, kind: evidence.kind, sourceDate: evidence.sourceDate })
+      .select(summaryColumns)
       .from(evidence)
       .where(eq(evidence.projectId, projectId))
+      .orderBy(evidenceRecency, desc(evidence.createdAt)),
+
+  /**
+   * The same light rows, only for Evidence with readable text: what a Render can be drafted
+   * from. Mirrors `draftText` in the renders module (pruned, else extracted, else body).
+   */
+  listSummariesWithText: (db: DbOrTx, projectId: string) =>
+    db
+      .select(summaryColumns)
+      .from(evidence)
+      .where(
+        and(
+          eq(evidence.projectId, projectId),
+          sql`btrim(coalesce(${evidence.prunedText}, ${evidence.extractedText}, ${evidence.body}, '')) <> ''`,
+        ),
+      )
       .orderBy(evidenceRecency, desc(evidence.createdAt)),
 };
 

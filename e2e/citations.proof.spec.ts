@@ -32,6 +32,9 @@ test("the Assistant cites Evidence with links that open the document", async ({ 
 
   // Opening a new chat keeps the previous panel mounted but hidden, so target the visible one.
   const box = dock.locator("textarea[aria-label='Message']:visible");
+  // The chat model belongs to the server, not to this process, so the skip reads the dock's own
+  // "not configured" state rather than our own env.
+  test.skip((await box.getAttribute("placeholder")) === "Assistant not configured", "the server has no chat model");
   await expect(box).toBeEnabled();
   await box.fill("What do the documents say about the delivery blockers? Cite your sources.");
   await box.press("Enter");

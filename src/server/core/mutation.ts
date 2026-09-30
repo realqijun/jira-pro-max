@@ -122,6 +122,9 @@ export class Recorder {
   }
 }
 
+/** More writes a caller adds to a service's create, in the same transaction and under the same `Recorder`. */
+export type AfterCreate<T> = (tx: Tx, rec: Recorder, created: T) => Promise<void>;
+
 /** Run `fn` in a transaction; activity is persisted with it and events published on commit. */
 export function mutate<T>(ctx: Ctx, fn: (tx: Tx, rec: Recorder) => Promise<T>): Promise<T> {
   return run(ctx.db, ctx.userId, ctx.via ?? null, fn);

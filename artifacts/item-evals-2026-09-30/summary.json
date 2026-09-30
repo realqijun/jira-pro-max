@@ -1,0 +1,24 @@
+{
+  "gpt-4o-mini": {
+    "extraction": {
+      "cases": 22,
+      "passRate": 0.9545454545454546,
+      "medianMs": 2269,
+      "usd": 0
+    },
+    "items": {
+      "cases": 12,
+      "passRate": 0.75,
+      "medianMs": 1807,
+      "usd": 0
+    },
+    "why": {
+      "cases": 0,
+      "passRate": 0,
+      "medianMs": 0,
+      "usd": 0
+    },
+    "overallPassRate": 0.8823529411764706,
+    "totalUsd": 0
+  }
+}

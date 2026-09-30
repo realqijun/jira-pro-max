@@ -1,9 +1,10 @@
 import type { Ctx } from "@/server/core/context";
 import type { CreateDecisionInput } from "@/server/modules/decisions/validation";
+import type { ItemAcceptInput } from "./accept";
 import { capture } from "@/shared/analytics/server";
 import type { ProposalExtractor } from "@/shared/domain";
 import type { CitableKind } from "./extract";
-import type { ProposalRow } from "./schema";
+import type { ItemProposalRow, ProposalRow } from "./schema";
 
 /**
  * The Evidence -> Proposal -> Decision funnel (issue #74). The transitions emit these events,
@@ -104,6 +105,93 @@ export function proposalGenerated(
     evidence_source_count: pass.sourceKinds.evidence,
     comment_source_count: pass.sourceKinds.comment,
     discarded_count: pass.discarded,
+  }));
+}
+
+/** Same contract as `proposalGenerated` for the item pass (#114): created rows only, silent otherwise. */
+export function itemProposalGenerated(
+  ctx: Ctx,
+  pass: {
+    projectId: string;
+    trigger: PassTrigger;
+    extractor: ProposalExtractor;
+    tasks: number;
+    milestones: number;
+    sourcesPassed: number;
+    discarded: number;
+  },
+) {
+  if (pass.tasks + pass.milestones < 1) return;
+  return record(ctx.userId, "item_proposal_generated", () => ({
+    project_id: pass.projectId,
+    trigger: pass.trigger,
+    extractor: pass.extractor,
+    task_count: pass.tasks,
+    milestone_count: pass.milestones,
+    source_count: pass.sourcesPassed,
+    discarded_count: pass.discarded,
+  }));
+}
+
+/**
+ * `editedBeforeAccept` for item Proposals (#115): the accepted input against the one a one-click
+ * accept submits, so a dialog saved untouched is not an edit. A field the Proposal never states
+ * (priority, team, estimate, labels, a Status other than the Project default) counts once supplied.
+ */
+export function itemEditedBeforeAccept(
+  base: ItemAcceptInput,
+  accepted: ItemAcceptInput,
+  /** The Status a create without `statusId` gets; the dialog always posts one. */
+  defaultStatusId: string | null,
+): boolean {
+  const same = (a: unknown, b: unknown) =>
+    (typeof a === "string" ? text(a) : (a ?? "")) === (typeof b === "string" ? text(b) : (b ?? ""));
+  if (accepted.input.statusId && accepted.input.statusId !== defaultStatusId) return true;
+  if (base.kind === "milestone" && accepted.kind === "milestone") {
+    const [b, a] = [base.input, accepted.input];
+    return (
+      !same(a.name, b.name) ||
+      !same(a.description, b.description) ||
+      a.dueDate !== b.dueDate ||
+      !same(a.ownerId, b.ownerId)
+    );
+  }
+  if (base.kind === "task" && accepted.kind === "task") {
+    const [b, a] = [base.input, accepted.input];
+    return (
+      !same(a.title, b.title) ||
+      !same(a.description, b.description) ||
+      !same(a.assigneeId, b.assigneeId) ||
+      !same(a.milestoneId, b.milestoneId) ||
+      !same(a.startDate, b.startDate) ||
+      !same(a.dueDate, b.dueDate) ||
+      a.priority !== "none" ||
+      !!a.teamId ||
+      a.estimateHours != null ||
+      !!a.labelIds?.length
+    );
+  }
+  return true;
+}
+
+/** Called after the transaction that turned an item Proposal into a Task or Milestone committed. */
+export function itemProposalAccepted(ctx: Ctx, proposal: ItemProposalRow, edited: boolean) {
+  return record(ctx.userId, "item_proposal_accepted", () => ({
+    project_id: proposal.projectId,
+    proposal_id: proposal.id,
+    kind: proposal.kind,
+    extractor: proposal.extractor,
+    edited_before_accept: edited,
+  }));
+}
+
+/** Called after the conditional update that rejected a still-pending item Proposal returned a row. */
+export function itemProposalRejected(ctx: Ctx, proposal: ItemProposalRow) {
+  return record(ctx.userId, "item_proposal_rejected", () => ({
+    project_id: proposal.projectId,
+    proposal_id: proposal.id,
+    kind: proposal.kind,
+    extractor: proposal.extractor,
   }));
 }
 

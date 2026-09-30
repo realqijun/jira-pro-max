@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -18,7 +21,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.4.2
 
       - name: Install dependencies
         # No bun.lock yet; bun migrates package-lock.json on the fly.
@@ -32,3 +35,108 @@ jobs:
 
       - name: Typecheck
         run: bun run typecheck
+
+  unit:
+    name: Vitest
+    runs-on: ubuntu-latest
+    services:
+      db_test:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pm
+          POSTGRES_PASSWORD: pm
+          POSTGRES_DB: pm_test
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U pm -d pm_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Install dependencies
+        # Same install as the lint job; package-lock.json is not in sync for `npm ci`.
+        run: bun install
+
+      - name: Environment
+        run: cp .env.example .env
+
+      - name: Vitest
+        run: npm test
+
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pm
+          POSTGRES_PASSWORD: pm
+          POSTGRES_DB: pm
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U pm -d pm"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      # The proposal flows assert exact Proposals; the heuristic extractor is the deterministic one.
+      PROPOSALS_EXTRACTOR: heuristic
+      E2E_DATABASE_URL: postgres://pm:pm@localhost:5433/pm
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Install dependencies
+        # Same install as the lint job; package-lock.json is not in sync for `npm ci`.
+        run: bun install
+
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p 'require("@playwright/test/package.json").version')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Environment
+        # A throwaway key per run for the spec that stores an encrypted AI credential.
+        run: |
+          cp .env.example .env
+          echo "AI_CREDENTIALS_ENCRYPTION_KEY=$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+
+      - name: Migrate and seed
+        run: npm run db:migrate && npm run db:seed
+
+      - name: Playwright
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7

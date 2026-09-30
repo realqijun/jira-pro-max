@@ -19,7 +19,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx scripts/seed.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e:renders": "RENDERS_E2E=1 playwright test -c playwright.renders.config.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.52",
@@ -75,5 +76,8 @@
   },
   "allowScripts": {
     "faiss-node@0.5.1": true
-  }
+  },
+  "trustedDependencies": [
+    "faiss-node"
+  ]
 }

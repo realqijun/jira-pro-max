@@ -278,7 +278,7 @@ A process-global client avoids creating a new pool on every development reload; 
 | Decision memory   | `decisions`, `assumptions`, `decision_edges`, `decision_sources` | Decisions cite Sources; typed edges represent causes and consequences; Assumptions can hold, break, or retire              |
 | History           | `activity_events`                                                | Project-local immutable records, with actor, changed values, and optional `via` attribution                                |
 | Assistant state   | `conversations`, `messages`, `memory_versions`                   | Conversation per User and Project, or workspace scope; Message parts preserve tool state; versioned Profile/Working Memory |
-| Proposal workflow | `decision_proposals`, `proposal_pass_sources`                    | Pending/accepted/rejected candidates and processed-source hashes                                                           |
+| Proposal workflow | `decision_proposals`, `item_proposals`, `proposal_pass_sources`  | Pending/accepted/rejected Decision, Task and Milestone candidates, and processed-source hashes per extractor               |
 | Human messaging   | `rooms`, `room_participants`, `room_messages`                    | Rooms belong to Projects; admission joins Rooms to People; Chat Messages preserve author-name snapshots                    |
 
 The following is a conceptual relationship map, not an exhaustive foreign-key diagram.

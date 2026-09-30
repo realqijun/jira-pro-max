@@ -4,10 +4,11 @@ import { ConflictError } from "@/server/core/errors";
 import { commentsService } from "@/server/modules/comments/service";
 import { decisionsService } from "@/server/modules/decisions/service";
 import { evidenceService } from "@/server/modules/evidence/service";
+import { statusesService } from "@/server/modules/statuses/service";
 import { tasksService } from "@/server/modules/tasks/service";
 import { capture } from "@/shared/analytics/server";
 import { closeDb, makeCtx, makeProject } from "@/test/helpers";
-import { editedBeforeAccept, proposalAccepted, today } from "./analytics";
+import { editedBeforeAccept, itemEditedBeforeAccept, proposalAccepted, today } from "./analytics";
 import { heuristicExtract, type Extract } from "./extract";
 import type { ProposalRow } from "./schema";
 import { proposalsService } from "./service";
@@ -103,7 +104,7 @@ describe("generation", () => {
     vi.mocked(capture).mockClear();
 
     expect(await proposalsService.runPass(ctx, projectId, { extract: heuristicExtract, trigger: "automatic" })).toEqual(
-      { skipped: "nothing_new" },
+      { skipped: "nothing_new", items: { skipped: "nothing_new" } },
     );
     expect(events()).toEqual([]);
   });
@@ -116,6 +117,7 @@ describe("generation", () => {
 
     expect(await proposalsService.runPass(ctx, project.id, { trigger: "manual" })).toEqual({
       skipped: "not_configured",
+      items: { skipped: "not_configured" },
     });
     expect(events()).toEqual([]);
     vi.unstubAllEnvs();
@@ -124,13 +126,17 @@ describe("generation", () => {
   it("stays silent when the extractor throws", async () => {
     const project = await makeProject(ctx, "ERR");
     await evidenceService.create(ctx, { projectId: project.id, title: "Minutes", kind: "minutes", body: SENTENCE });
-    const failing: Extract = async () => {
+    const failing = async (): Promise<never> => {
       throw new Error("extractor unavailable");
     };
 
-    expect(await proposalsService.runPass(ctx, project.id, { extract: failing, trigger: "automatic" })).toEqual({
-      skipped: "failed",
-    });
+    expect(
+      await proposalsService.runPass(ctx, project.id, {
+        extract: failing,
+        extractItems: failing,
+        trigger: "automatic",
+      }),
+    ).toEqual({ skipped: "failed", items: { skipped: "failed" } });
     expect(events()).toEqual([]);
 
     // The failed pass wrote no bookkeeping, so the retry reads the same Source and records once.
@@ -346,5 +352,141 @@ describe("what counts as an edit", () => {
     const broken = { ...proposed, sources: null } as unknown as ProposalRow;
     await expect(proposalAccepted(ctx, broken, baseline)).resolves.toBeUndefined();
     expect(() => editedBeforeAccept(broken, baseline)).toThrow();
+  });
+});
+
+describe("item Proposals (#114)", () => {
+  const NOTES = "Action item: Book the usability lab\nMilestone: Pilot readout on 2026-10-20.";
+
+  it("records created Tasks and Milestones with counts only, and stays silent when nothing is new", async () => {
+    const project = await makeProject(ctx, "IGN");
+    await evidenceService.create(ctx, { projectId: project.id, title: "Minutes", kind: "minutes", body: NOTES });
+    await proposalsService.runPass(ctx, project.id, { extract: heuristicExtract, trigger: "manual" });
+
+    expect(events("item_proposal_generated")).toEqual([
+      {
+        userId: ctx.userId,
+        event: "item_proposal_generated",
+        properties: {
+          project_id: project.id,
+          trigger: "manual",
+          extractor: "heuristic",
+          task_count: 1,
+          milestone_count: 1,
+          source_count: 1,
+          discarded_count: 0,
+        },
+      },
+    ]);
+    // Nothing decided in the notes, so the Decision side stays silent too.
+    expect(events("proposal_generated")).toEqual([]);
+
+    vi.mocked(capture).mockClear();
+    await proposalsService.runPass(ctx, project.id, { extract: heuristicExtract, trigger: "manual" });
+    expect(events()).toEqual([]);
+  });
+
+  it("records a rejection once, with the kind and no content", async () => {
+    const project = await makeProject(ctx, "IRE");
+    await evidenceService.create(ctx, { projectId: project.id, title: "Minutes", kind: "minutes", body: NOTES });
+    await proposalsService.runPass(ctx, project.id, { extract: heuristicExtract, trigger: "manual" });
+    const milestone = (await proposalsService.listPendingItems(ctx, project.id)).find((p) => p.kind === "milestone")!;
+    vi.mocked(capture).mockClear();
+
+    await proposalsService.rejectItem(ctx, milestone.id);
+    await expect(proposalsService.rejectItem(ctx, milestone.id)).rejects.toBeInstanceOf(ConflictError);
+    expect(events()).toEqual([
+      {
+        userId: ctx.userId,
+        event: "item_proposal_rejected",
+        properties: { project_id: project.id, proposal_id: milestone.id, kind: "milestone", extractor: "heuristic" },
+      },
+    ]);
+  });
+});
+
+describe("item Proposal acceptance (#115)", () => {
+  const NOTES = "Action item: Book the usability lab\nMilestone: Pilot readout on 2026-10-20.";
+  const setup = async (key: string) => {
+    const project = await makeProject(ctx, key);
+    await evidenceService.create(ctx, { projectId: project.id, title: "Minutes", kind: "minutes", body: NOTES });
+    await proposalsService.runPass(ctx, project.id, { extract: heuristicExtract, trigger: "manual" });
+    const pending = await proposalsService.listPendingItems(ctx, project.id);
+    vi.mocked(capture).mockClear();
+    return {
+      projectId: project.id,
+      task: pending.find((p) => p.kind === "task")!,
+      milestone: pending.find((p) => p.kind === "milestone")!,
+    };
+  };
+  const accepted = (projectId: string, proposalId: string, kind: string, edited: boolean) => ({
+    userId: ctx.userId,
+    event: "item_proposal_accepted",
+    properties: {
+      project_id: projectId,
+      proposal_id: proposalId,
+      kind,
+      extractor: "heuristic",
+      edited_before_accept: edited,
+    },
+  });
+
+  it("records a one-click accept and an untouched dialog save as unedited, with the kind and no content", async () => {
+    const { projectId, task, milestone } = await setup("IAC");
+    await proposalsService.acceptItem(ctx, { id: task.id });
+    const defaultStatus = await statusesService.resolveForNewItem(ctx.db, projectId, "milestone", undefined);
+    // The dialog always posts the default Status.
+    const dialog = milestone.acceptInput!;
+    await proposalsService.acceptItem(ctx, {
+      id: milestone.id,
+      input: { ...dialog, input: { ...dialog.input, statusId: defaultStatus.id } } as typeof dialog,
+    });
+    expect(events()).toEqual([
+      accepted(projectId, task.id, "task", false),
+      accepted(projectId, milestone.id, "milestone", false),
+    ]);
+  });
+
+  it("records a changed title as edited", async () => {
+    const { projectId, task } = await setup("IAE");
+    const base = task.acceptInput!;
+    await proposalsService.acceptItem(ctx, {
+      id: task.id,
+      input: { ...base, input: { ...base.input, title: "Book lab B" } } as typeof base,
+    });
+    expect(events()).toEqual([accepted(projectId, task.id, "task", true)]);
+  });
+});
+
+describe("what counts as an item edit", () => {
+  const base = {
+    kind: "task" as const,
+    input: {
+      projectId: "p",
+      title: "Book the lab",
+      description: null,
+      priority: "none" as const,
+      assigneeId: null,
+      milestoneId: null,
+      startDate: null,
+      dueDate: "2026-10-10",
+    },
+  };
+  const edit = (patch: object) =>
+    itemEditedBeforeAccept(base, { ...base, input: { ...base.input, ...patch } }, "s-default");
+
+  it("is false for the input as it stands, whitespace and empty strings included", () => {
+    expect(edit({})).toBe(false);
+    expect(edit({ title: " Book the lab ", description: "", statusId: "s-default", labelIds: [] })).toBe(false);
+  });
+
+  it("is true for a changed field or one the Proposal never stated", () => {
+    expect(edit({ dueDate: "2026-10-11" })).toBe(true);
+    expect(edit({ assigneeId: "person" })).toBe(true);
+    expect(edit({ priority: "high" })).toBe(true);
+    expect(edit({ teamId: "team" })).toBe(true);
+    expect(edit({ estimateHours: 2 })).toBe(true);
+    expect(edit({ labelIds: ["l"] })).toBe(true);
+    expect(edit({ statusId: "s-started" })).toBe(true);
   });
 });

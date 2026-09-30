@@ -1,0 +1,593 @@
+{
+  "heuristic": {
+    "extraction": [],
+    "items": [
+      {
+        "model": "heuristic",
+        "id": "i01-action-item-line",
+        "tags": ["action-item", "task"],
+        "ms": 3,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 1, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 1, kept 1"
+          }
+        ],
+        "matched": ["rollback runbook"],
+        "missed": [],
+        "rawCount": 1,
+        "discarded": 0,
+        "kept": [
+          {
+            "kind": "task",
+            "fields": {
+              "title": "Write the rollback runbook for the pilot merchants",
+              "description": null,
+              "assigneeId": null,
+              "assigneeName": null,
+              "milestoneId": null,
+              "milestoneName": null,
+              "startDate": null,
+              "dueDate": null
+            },
+            "sources": [
+              {
+                "kind": "evidence",
+                "entityId": "src-i01",
+                "excerpt": "Action item: write the rollback runbook for the pilot merchants."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "model": "heuristic",
+        "id": "i02-named-owner-due",
+        "tags": ["named-owner", "due-date", "task", "transcript"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": false,
+            "detail": "load test summary"
+          },
+          {
+            "name": "no_extra_items",
+            "pass": false,
+            "detail": "kept 0, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": ["load test summary"],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i03-first-name-owner",
+        "tags": ["named-owner", "due-date", "task", "comment"],
+        "ms": 1,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 1, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 1, kept 1"
+          }
+        ],
+        "matched": ["settlement file format with the vendor"],
+        "missed": [],
+        "rawCount": 1,
+        "discarded": 0,
+        "kept": [
+          {
+            "kind": "task",
+            "fields": {
+              "title": "Pair with the vendor on the settlement file format",
+              "description": null,
+              "assigneeId": "person-4",
+              "assigneeName": "Marcus Reyes",
+              "milestoneId": null,
+              "milestoneName": null,
+              "startDate": null,
+              "dueDate": "2026-10-14"
+            },
+            "sources": [
+              {
+                "kind": "comment",
+                "entityId": "src-i03",
+                "excerpt": "Marcus will pair with the vendor on the settlement file format by 2026-10-14."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "model": "heuristic",
+        "id": "i04-dated-checkpoint",
+        "tags": ["milestone", "due-date"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": false,
+            "detail": "go-live readiness review"
+          },
+          {
+            "name": "no_extra_items",
+            "pass": false,
+            "detail": "kept 0, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": ["go-live readiness review"],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i05-milestone-with-owner",
+        "tags": ["milestone", "named-owner", "due-date"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": false,
+            "detail": "load test sign-off"
+          },
+          {
+            "name": "no_extra_items",
+            "pass": false,
+            "detail": "kept 0, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": ["load test sign-off"],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i06-several-in-one-source",
+        "tags": ["multi-item", "named-owner", "due-date", "milestone", "transcript"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": false,
+            "detail": "parity queries; staging replica; data freeze"
+          },
+          {
+            "name": "no_extra_items",
+            "pass": false,
+            "detail": "kept 0, expected 3"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": ["parity queries", "staging replica", "data freeze"],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i07-task-under-known-milestone",
+        "tags": ["named-owner", "start-date", "due-date", "milestone-link", "task"],
+        "ms": 1,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 1, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": false,
+            "detail": "parity report for the Security sign-off: dueDate want 2026-10-09 got null; parity report for the Security sign-off: startDate want 2026-10-05 got null; parity report for the Security sign-off: milestone want Security sign-off got none"
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 1, kept 1"
+          }
+        ],
+        "matched": ["parity report for the Security sign-off"],
+        "missed": [],
+        "rawCount": 1,
+        "discarded": 0,
+        "kept": [
+          {
+            "kind": "task",
+            "fields": {
+              "title": "Start the parity report on 2026-10-05 and finish it by 2026-10-09, ahead of the Security sign-off",
+              "description": null,
+              "assigneeId": "person-1",
+              "assigneeName": "Wei Ling",
+              "milestoneId": null,
+              "milestoneName": null,
+              "startDate": null,
+              "dueDate": null
+            },
+            "sources": [
+              {
+                "kind": "evidence",
+                "entityId": "src-i07",
+                "excerpt": "Wei Ling will start the parity report on 2026-10-05 and finish it by 2026-10-09, ahead of the Security sign-off."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "model": "heuristic",
+        "id": "i08-commitment-in-long-transcript",
+        "tags": ["long-source", "named-owner", "due-date", "task", "transcript"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": false,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": false,
+            "detail": "merchant comms email"
+          },
+          {
+            "name": "no_extra_items",
+            "pass": false,
+            "detail": "kept 0, expected 1"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": ["merchant comms email"],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i09-decision-only",
+        "tags": ["abstention", "decision"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 0, expected 0"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": [],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i10-status-lines",
+        "tags": ["abstention", "status"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 0, expected 0"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": [],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i11-restated-existing",
+        "tags": ["abstention", "restated"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 0, expected 0"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": [],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      },
+      {
+        "model": "heuristic",
+        "id": "i12-injected-instruction",
+        "tags": ["abstention", "security"],
+        "ms": 0,
+        "usage": {
+          "calls": 0,
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "cachedTokens": 0,
+          "costUsd": 0
+        },
+        "pass": true,
+        "checks": [
+          {
+            "name": "expected_items_found",
+            "pass": true
+          },
+          {
+            "name": "no_extra_items",
+            "pass": true,
+            "detail": "kept 0, expected 0"
+          },
+          {
+            "name": "fields_exact",
+            "pass": true
+          },
+          {
+            "name": "no_forbidden_content",
+            "pass": true
+          },
+          {
+            "name": "citations_survived_tracing",
+            "pass": true,
+            "detail": "raw 0, kept 0"
+          }
+        ],
+        "matched": [],
+        "missed": [],
+        "rawCount": 0,
+        "discarded": 0,
+        "kept": []
+      }
+    ],
+    "why": []
+  }
+}

@@ -53,7 +53,7 @@ External MCP client -----> /api/mcp adapter
                     deterministic impact subscriber
 
 After a chat turn: Reflection may rewrite Profile and Working Memory.
-After Evidence or Comment changes: a proposal pass may extract Decision Proposals.
+After Evidence or Comment changes: a proposal pass may extract Decision, Task and Milestone Proposals.
 ```
 
 Sources: [chat route](../src/app/api/assistant/chat/route.ts), [MCP route](../src/app/api/mcp/route.ts), [AI tool adapter](../src/server/modules/assistant/ai-tools.ts), [mutation core](../src/server/core/mutation.ts), [proposal scheduler](../src/server/modules/proposals/schedule.ts), [event subscribers](../src/server/events/subscribers.ts).
@@ -345,6 +345,21 @@ Acceptance calls `decisionsService.create` with `via: "assistant"`, creates the 
 
 Sources: [proposal schema](../src/server/modules/proposals/schema.ts), [proposal service](../src/server/modules/proposals/service.ts), [ADR 0008](adr/0008-decision-memory-graph.md).
 
+### Task and Milestone Proposals
+
+The same pass makes a second, separate extractor call that proposes Tasks and Milestones the team committed to (action items, assignments, dated checkpoints).
+It has its own prompt, so the Decision prompt and its eval cases are unchanged, and it leaves the recent Conversation out.
+Each extractor keeps its own rows in `proposal_pass_sources` (column `pass`), and each side of the pass catches its own failures, so one failing never blocks or re-runs the other.
+The heuristic fallback reads `Action item:` / `TODO:` lines, `<known Person> will ... [by YYYY-MM-DD].` sentences and `Milestone: <name> on YYYY-MM-DD` lines.
+
+Candidates pass the same verbatim-excerpt check as Decisions.
+Names of People and Milestones are resolved to ids where they match, and kept as written where they do not.
+A Milestone without an ISO date is discarded, and so is any item that duplicates an existing Task or Milestone or an item Proposal already raised.
+Survivors are stored in `item_proposals` with `pending` status; nothing is written to `tasks` or `milestones` until the PM accepts .
+The PM reviews them on the Project Overview beside Decision Proposals (#115): Accept creates the Task or Milestone through its service under `via: "assistant"` and links each cited Evidence in the same transaction; Edit and accept opens the Task or Milestone dialog prefilled; Reject keeps the row so the item is not raised again.
+
+Sources: [item extractor](../src/server/modules/proposals/extract-items.ts), [proposal trace logic](../src/server/modules/proposals/trace.ts), [ADR 0015](adr/0015-item-proposals.md).
+
 ## 7. “Why did we?” answers
 
 This feature combines deterministic retrieval with model-written presentation.
@@ -421,7 +436,12 @@ If passages are later replaced or deleted, Decision citations can degrade to the
 The Assistant's `read_evidence` tool exposes at most 20,000 characters in one result and reports whether the text was truncated.
 This is separate from the larger ingestion cap and limits how much untrusted source material enters one model tool result.
 
-Sources: [Evidence extraction](../src/server/modules/evidence/extract.ts), [Evidence passages](../src/server/modules/evidence/passages.ts), [Evidence service](../src/server/modules/evidence/service.ts), [tool registry](../src/server/modules/assistant/tools.ts), [proposal service](../src/server/modules/proposals/service.ts).
+A Render description can be drafted from up to three pieces of Evidence (ADR 0016).
+The User's own Assistant model reads each text (pruned, else extracted, else pasted, cut to 6,000 characters) fenced as data, and returns one visual description of at most 1,000 characters.
+The PM edits it, and only that approved description reaches the image provider; the Render keeps a title snapshot of the Evidence as provenance.
+The call is traced under the `render_draft` span and has no eval suite, because its output is subjective and always reviewed.
+
+Sources: [Evidence extraction](../src/server/modules/evidence/extract.ts), [Evidence passages](../src/server/modules/evidence/passages.ts), [Evidence service](../src/server/modules/evidence/service.ts), [tool registry](../src/server/modules/assistant/tools.ts), [proposal service](../src/server/modules/proposals/service.ts), [Render drafter](../src/server/modules/renders/draft.ts).
 
 ## 10. Impact detection and the decision graph
 
@@ -471,16 +491,17 @@ Sources: [model configuration](../src/server/modules/assistant/model.ts), [envir
 
 ## 12. Data stored by the AI layer
 
-| Data                              | Storage                 | Activity Event? | Notes                                                        |
-| --------------------------------- | ----------------------- | --------------- | ------------------------------------------------------------ |
-| Conversation                      | `conversations`         | No              | One per User and Project, plus one dashboard Conversation.   |
-| Message                           | `messages`              | No              | Stores AI SDK `parts`, including tool states.                |
-| Profile or Working Memory version | `memory_versions`       | No              | Append-only, authored by User or Reflection.                 |
-| Pending Decision Proposal         | `decision_proposals`    | No              | Isolated from confirmed Decisions until acceptance.          |
-| Proposal source checkpoint        | `proposal_pass_sources` | No              | Records the hash last processed for each source.             |
-| MCP API token                     | `api_tokens`            | No              | Stores only token hash and identifying prefix.               |
-| Assistant-created Project item    | Feature tables          | Yes             | Written through feature service and marked `via: assistant`. |
-| System-broken Assumption          | `assumptions`           | Yes             | Written through decision service and marked `via: system`.   |
+| Data                               | Storage                 | Activity Event? | Notes                                                        |
+| ---------------------------------- | ----------------------- | --------------- | ------------------------------------------------------------ |
+| Conversation                       | `conversations`         | No              | One per User and Project, plus one dashboard Conversation.   |
+| Message                            | `messages`              | No              | Stores AI SDK `parts`, including tool states.                |
+| Profile or Working Memory version  | `memory_versions`       | No              | Append-only, authored by User or Reflection.                 |
+| Pending Decision Proposal          | `decision_proposals`    | No              | Isolated from confirmed Decisions until acceptance.          |
+| Pending Task or Milestone Proposal | `item_proposals`        | No              | Nothing enters `tasks` or `milestones` until acceptance.     |
+| Proposal source checkpoint         | `proposal_pass_sources` | No              | Records the hash each extractor last processed per source.   |
+| MCP API token                      | `api_tokens`            | No              | Stores only token hash and identifying prefix.               |
+| Assistant-created Project item     | Feature tables          | Yes             | Written through feature service and marked `via: assistant`. |
+| System-broken Assumption           | `assumptions`           | Yes             | Written through decision service and marked `via: system`.   |
 
 Sources: [Assistant schema](../src/server/modules/assistant/schema.ts), [memory schema](../src/server/modules/memory/schema.ts), [proposal schema](../src/server/modules/proposals/schema.ts), [API token schema](../src/server/modules/api-tokens/schema.ts), [mutation core](../src/server/core/mutation.ts).
 

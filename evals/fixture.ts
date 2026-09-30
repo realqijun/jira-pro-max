@@ -28,6 +28,7 @@ import { projectsService } from "@/server/modules/projects/service";
 import { risksService } from "@/server/modules/risks/service";
 import { statusesService } from "@/server/modules/statuses/service";
 import { tasksService } from "@/server/modules/tasks/service";
+import { assertLocalDatabase } from "./local-db";
 
 const EMAIL = "eval@example.com";
 const PASSWORD = "eval-password-123";
@@ -132,6 +133,8 @@ Out of scope for the pilot
 Vendor-hosted reconciliation dashboard. No decision has been taken on it.`;
 
 async function main() {
+  // Before the first query: the client above connects lazily.
+  assertLocalDatabase();
   const userId = await ensureUser();
   const ctx: Ctx = { db, userId };
 

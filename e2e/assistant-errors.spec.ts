@@ -32,6 +32,8 @@ test("a failed turn keeps its error in the thread across a reload", async ({ pag
     insert into user_ai_configs (user_id, provider, model, base_url, encrypted_api_key, is_default)
     values (${userId}, 'openai_compatible', 'openai/gpt-4o-mini', 'https://openrouter.ai/api/v1',
       ${encryptApiKey("sk-or-rejected", userId)}, true)`;
+  // The dashboard rendered before the config existed; reload so the dock sees it.
+  await page.reload();
 
   const dock = page.getByRole("complementary", { name: "Assistant" });
   if (!(await dock.isVisible())) await page.getByRole("button", { name: "Assistant" }).first().click();

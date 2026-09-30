@@ -30,6 +30,7 @@ export function ActionForm({
   danger,
   footerStart,
   formRef,
+  submitDisabled,
 }: {
   action: Action;
   onSuccess?: (data: unknown) => void;
@@ -43,11 +44,14 @@ export function ActionForm({
   /** Rendered at the left of the footer row, opposite Cancel/Submit (e.g. a Delete button). */
   footerStart?: React.ReactNode;
   formRef?: React.Ref<HTMLFormElement>;
+  /** Blocks submitting while the caller has other work in flight. */
+  submitDisabled?: boolean;
 }) {
   const [state, setState] = React.useState<Ctx>({ pending: false, error: null, fieldErrors: {} });
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitDisabled) return;
     const fd = new FormData(e.currentTarget);
     setState({ pending: true, error: null, fieldErrors: {} });
     try {
@@ -88,7 +92,12 @@ export function ActionForm({
               Cancel
             </Button>
           )}
-          <Button type="submit" variant={danger ? "danger" : "primary"} loading={state.pending}>
+          <Button
+            type="submit"
+            variant={danger ? "danger" : "primary"}
+            loading={state.pending}
+            disabled={submitDisabled}
+          >
             {submitLabel}
           </Button>
         </div>

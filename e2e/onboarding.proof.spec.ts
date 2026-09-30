@@ -18,6 +18,8 @@ test("a new account starts with the sample project, and can make it its own", as
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL("/dashboard");
+  // Signup starts the product tour, whose overlay takes every click until it is dismissed.
+  await page.getByRole("button", { name: "Skip tour" }).click();
 
   await expect(page.getByText(SAMPLE).first()).toBeVisible();
   await page.screenshot({ path: "artifacts/after-onboarding-dashboard.png" });

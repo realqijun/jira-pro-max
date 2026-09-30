@@ -9,6 +9,8 @@ import {
   updateMilestoneAction,
 } from "@/server/modules/milestones/actions";
 import type { MilestoneRow } from "@/server/modules/milestones/schema";
+import type { CreateMilestoneInput } from "@/server/modules/milestones/validation";
+import { acceptMilestoneProposalAction } from "@/server/modules/proposals/actions";
 import type { ProjectRefs } from "@/server/modules/projects/refs";
 import type { TaskListItem } from "@/server/modules/tasks/repository";
 import { ActionForm, Button, Dialog, FormRow, SelectField, TextField, TextareaField } from "@/shared/ui";
@@ -22,26 +24,37 @@ export function MilestoneDialog({
   onClose,
   refs,
   milestone,
-  tasks,
-  dependencies,
+  tasks = [],
+  dependencies = [],
+  proposal,
 }: {
   open: boolean;
   onClose: () => void;
   refs: ProjectRefs;
   milestone?: MilestoneRow | null;
-  tasks: TaskListItem[];
-  dependencies: DependencyRow[];
+  /** Read in edit mode only. */
+  tasks?: TaskListItem[];
+  dependencies?: DependencyRow[];
+  /** A pending Milestone Proposal to confirm (#115): prefills the create form, and saving accepts it. */
+  proposal?: { id: string; defaults: CreateMilestoneInput } | null;
 }) {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const m = milestone;
+  const draft = m ? undefined : proposal?.defaults;
   const statuses = refs.statuses.filter((s) => s.scope === "milestone");
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      title={m ? "Milestone" : "New milestone"}
-      description={m ? undefined : "A dated checkpoint tasks roll up to."}
+      title={m ? "Milestone" : draft ? "Confirm proposed milestone" : "New milestone"}
+      description={
+        m
+          ? undefined
+          : draft
+            ? "Saving creates the milestone and accepts the Assistant's proposal."
+            : "A dated checkpoint tasks roll up to."
+      }
       className="max-w-xl"
     >
       {confirmDelete && m ? (
@@ -61,10 +74,10 @@ export function MilestoneDialog({
       ) : (
         <ItemDialogTabs history={m ? { projectId: m.projectId, entityType: "milestone", entityId: m.id } : null}>
           <ActionForm
-            key={m?.id ?? "new"}
-            action={m ? updateMilestoneAction : createMilestoneAction}
-            hidden={m ? { id: m.id } : { projectId: refs.project.id }}
-            submitLabel={m ? "Save changes" : "Create milestone"}
+            key={m?.id ?? proposal?.id ?? "new"}
+            action={m ? updateMilestoneAction : draft ? acceptMilestoneProposalAction : createMilestoneAction}
+            hidden={m ? { id: m.id } : { projectId: refs.project.id, proposalId: draft ? proposal?.id : undefined }}
+            submitLabel={m ? "Save changes" : draft ? "Accept and create milestone" : "Create milestone"}
             cancel={onClose}
             onSuccess={onClose}
             footerStart={
@@ -81,10 +94,27 @@ export function MilestoneDialog({
               )
             }
           >
-            <TextField name="name" label="Name" required autoFocus defaultValue={m?.name} placeholder="UAT begins" />
-            <TextareaField name="description" label="Description" defaultValue={m?.description ?? ""} />
+            <TextField
+              name="name"
+              label="Name"
+              required
+              autoFocus
+              defaultValue={m?.name ?? draft?.name}
+              placeholder="UAT begins"
+            />
+            <TextareaField
+              name="description"
+              label="Description"
+              defaultValue={m?.description ?? draft?.description ?? ""}
+            />
             <FormRow>
-              <TextField name="dueDate" label="Due date" type="date" required defaultValue={m?.dueDate} />
+              <TextField
+                name="dueDate"
+                label="Due date"
+                type="date"
+                required
+                defaultValue={m?.dueDate ?? draft?.dueDate}
+              />
               <SelectField
                 name="statusId"
                 label="Status"
@@ -95,7 +125,7 @@ export function MilestoneDialog({
             <SelectField
               name="ownerId"
               label="Owner"
-              defaultValue={m?.ownerId ?? ""}
+              defaultValue={m?.ownerId ?? draft?.ownerId ?? ""}
               placeholder="No owner"
               options={refs.people.map((p) => ({ value: p.id, label: p.name }))}
             />

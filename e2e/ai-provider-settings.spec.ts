@@ -8,7 +8,7 @@ test("Assistant provider settings switch fields and protect saved-key semantics"
   await page.getByLabel("Email").fill("demo@example.com");
   await page.getByLabel("Password").fill("demo-password-123");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL("/");
+  await expect(page).toHaveURL("/dashboard");
   await page.goto("/settings");
 
   await expect(page.getByRole("heading", { name: "Provider" })).toBeVisible();

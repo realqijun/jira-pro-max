@@ -88,3 +88,34 @@ Byte-identical answers between the two repeats: 3/20 at provider default, 19/20 
 | `openai/gpt-4o-mini`         | 2            | 3         | 8                     |
 | `google/gemini-2.5-flash`    | 2            | 3         | 8                     |
 | `anthropic/claude-haiku-4.5` | 2            | 3         | 8                     |
+
+## Task and Milestone extraction, 12 cases
+
+| Extractor              | Items | Median ms | Prompt tokens | Completion tokens | Cost     |
+| ---------------------- | ----- | --------- | ------------- | ----------------- | -------- |
+| `heuristic` (no model) | 6/12  | 0         | 0             | 0                 | $0.0000  |
+| `gpt-4o-mini`          | 9/12  | 1807      | 8615          | 963               | unpriced |
+| `gpt-4o-mini` (repeat) | 9/12  | 1824      | 8615          | 959               | unpriced |
+
+Failed cases per run:
+
+- `heuristic` (no model): i02-named-owner-due, i04-dated-checkpoint, i05-milestone-with-owner, i06-several-in-one-source, i07-task-under-known-milestone, i08-commitment-in-long-transcript
+- `gpt-4o-mini`: i01-action-item-line, i04-dated-checkpoint, i06-several-in-one-source
+- `gpt-4o-mini` (repeat): i01-action-item-line, i04-dated-checkpoint, i06-several-in-one-source
+
+## Decision extraction re-run after the item pass, `gpt-4o-mini`
+
+| Run                                        | Extraction | Completion tokens | Failed cases                                                                  |
+| ------------------------------------------ | ---------- | ----------------- | ----------------------------------------------------------------------------- |
+| temperature 0, OpenRouter (28 Sep)         | 20/22      | 3230              | x03-status-report-no-decision, x07-prompt-injection                           |
+| temperature 0, OpenRouter (28 Sep, repeat) | 20/22      | 3372              | x03-status-report-no-decision, x07-prompt-injection                           |
+| temperature 0, OpenAI (30 Sep)             | 21/22      | 2835              | x07-prompt-injection                                                          |
+| temperature 0, OpenAI (30 Sep, repeat)     | 19/22      | 3091              | x02-two-decisions-one-source, x07-prompt-injection, x18-decision-with-revisit |
+
+Cases whose verdict differs between any two runs:
+
+| Case                          | temperature 0, OpenRouter (28 Sep) | temperature 0, OpenRouter (28 Sep, repeat) | temperature 0, OpenAI (30 Sep) | temperature 0, OpenAI (30 Sep, repeat) |
+| ----------------------------- | ---------------------------------- | ------------------------------------------ | ------------------------------ | -------------------------------------- |
+| x02-two-decisions-one-source  | pass                               | pass                                       | pass                           | FAIL                                   |
+| x03-status-report-no-decision | FAIL                               | FAIL                                       | pass                           | pass                                   |
+| x18-decision-with-revisit     | pass                               | pass                                       | pass                           | FAIL                                   |

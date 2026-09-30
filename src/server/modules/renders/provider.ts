@@ -3,7 +3,8 @@
  * free feature of the app, so it must not spend the key the User configured for their own
  * Assistant (ADR 0007). Different key, different provider, different failure mode.
  */
-const BASE_URL = "https://gen.pollinations.ai/image";
+/** Overridable only so the e2e suite can point it at a local stub (`e2e/renders-server.mjs`). */
+const baseUrl = () => process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai/image";
 
 /** Supports `seed`, which is what makes a Render reproducible from its stored provenance. */
 export const RENDER_MODEL = "tongyi-mai/z-image-turbo";
@@ -47,14 +48,14 @@ function messageForStatus(status: number): string {
  * service stores it on the row verbatim, so it must never carry a key or a stack trace.
  *
  * `safe=privacy,secrets` asks the provider to reject prompts carrying personal data or
- * credentials. It is a backstop, not the control: the prompt is written by hand and no
- * Project data is ever put into it (see the service).
+ * credentials. It is a backstop, not the control: the prompt is only what the PM approved,
+ * typed or drafted from Evidence and edited, and nothing else is added to it (ADR 0016).
  */
 export async function generateImage(prompt: string, seed: number): Promise<GeneratedImage> {
   const apiKey = process.env.POLLINATIONS_API_KEY;
   if (!apiKey) throw new RenderProviderError("Image previews are not configured.");
 
-  const url = new URL(`${BASE_URL}/${encodeURIComponent(promptSentFor(prompt))}`);
+  const url = new URL(`${baseUrl()}/${encodeURIComponent(promptSentFor(prompt))}`);
   url.searchParams.set("model", RENDER_MODEL);
   url.searchParams.set("width", String(RENDER_WIDTH));
   url.searchParams.set("height", String(RENDER_HEIGHT));

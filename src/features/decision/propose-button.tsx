@@ -35,14 +35,20 @@ export function ProposeButton({ projectId }: { projectId: string }) {
           setPending(false);
           if (!res.ok) return setNote(res.error);
           const out = res.data;
+          // Task and Milestone Proposals are reviewed on the Overview (#115), not here.
+          const items = "skipped" in out.items ? 0 : out.items.tasks + out.items.milestones;
+          const itemNote = items
+            ? `; ${items} task or milestone proposal${items === 1 ? "" : "s"} on the Overview`
+            : "";
           setNote(
-            "skipped" in out
+            ("skipped" in out
               ? out.skipped === "nothing_new"
                 ? out.proposalId
                   ? "All evidence already read"
                   : "All evidence already read, no suggested decisions"
                 : SKIPPED_NOTE[out.skipped]
-              : `${out.proposed} proposed${out.discarded ? `, ${out.discarded} discarded` : ""} from ${out.sourcesPassed} source${out.sourcesPassed === 1 ? "" : "s"}`,
+              : `${out.proposed} proposed${out.discarded ? `, ${out.discarded} discarded` : ""} from ${out.sourcesPassed} source${out.sourcesPassed === 1 ? "" : "s"}`) +
+              itemNote,
           );
           if ("proposalId" in out && out.proposalId) {
             router.replace(`/projects/${projectId}/decisions?proposal=${out.proposalId}`, { scroll: false });

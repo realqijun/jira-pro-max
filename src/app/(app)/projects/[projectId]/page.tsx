@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ctxForCurrentUser } from "@/server/core/action";
 import { activityService } from "@/server/modules/activity/service";
 import { milestonesService } from "@/server/modules/milestones/service";
+import { loadProjectRefs } from "@/server/modules/projects/refs";
 import { projectsService } from "@/server/modules/projects/service";
 import { risksService } from "@/server/modules/risks/service";
 import { tasksService } from "@/server/modules/tasks/service";
@@ -26,7 +27,7 @@ export const metadata = { title: "Overview" };
 export default async function ProjectOverviewPage({ params }: PageProps<"/projects/[projectId]">) {
   const { projectId } = await params;
   const ctx = await ctxForCurrentUser();
-  const [project, tasks, milestones, risks, activity, counts, alerts, proposals] = await Promise.all([
+  const [project, tasks, milestones, risks, activity, counts, alerts, proposals, items] = await Promise.all([
     projectsService.get(ctx, projectId),
     tasksService.list(ctx, projectId),
     milestonesService.list(ctx, projectId),
@@ -35,10 +36,13 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/projec
     tasksService.countsByStatusCategory(ctx, projectId),
     impactService.listAlerts(ctx, projectId),
     proposalsService.listPending(ctx, projectId),
+    proposalsService.listPendingItems(ctx, projectId),
   ]);
-  const sourceLabels = proposals.length
-    ? await decisionsService.sourceLabels(ctx, projectId)
-    : new Map<string, string>();
+  const [sourceLabels, refs] = await Promise.all([
+    proposals.length || items.length ? decisionsService.sourceLabels(ctx, projectId) : new Map<string, string>(),
+    // The item dialogs need the Project's reference data; only loaded when there is something to review.
+    items.length ? loadProjectRefs(ctx, projectId) : null,
+  ]);
   // Reuse the collections above; only the dependency edges are fetched inside.
   const attention = await projectAttention(ctx, projectId, { rows: { tasks, milestones, risks } });
   const base = `/projects/${projectId}`;
@@ -104,8 +108,16 @@ export default async function ProjectOverviewPage({ params }: PageProps<"/projec
             <section className="flex flex-col gap-3">
               <SectionTitle>Needs attention</SectionTitle>
               <ImpactAlerts alerts={alerts} projectId={projectId} />
-              <ProposalCards proposals={proposals} projectId={projectId} sourceLabels={sourceLabels} />
-              <AttentionList result={attention} />
+              <ProposalCards
+                proposals={proposals}
+                items={refs && { list: items, refs }}
+                projectId={projectId}
+                sourceLabels={sourceLabels}
+              />
+              {/* "Nothing needs attention" would contradict the alerts and Proposals just above it. */}
+              {(attention.groups.length > 0 || !(alerts.length || proposals.length || items.length)) && (
+                <AttentionList result={attention} />
+              )}
             </section>
 
             <section>

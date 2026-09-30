@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, isNull, ne, notInArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, isNull, lt, ne, notInArray, sql } from "drizzle-orm";
 import type { DbOrTx } from "@/server/db/client";
 import { conversations, messages, toolPermissions, type ConversationRow } from "./schema";
 
@@ -6,6 +6,18 @@ const scopeWhere = (userId: string, projectId: string | null) =>
   and(
     eq(conversations.userId, userId),
     projectId ? eq(conversations.projectId, projectId) : isNull(conversations.projectId),
+  );
+
+/**
+ * An empty Conversation is litter only once it has sat unused for a while. A younger one may be
+ * the first Conversation a concurrent page load just created and is about to open, so pruning it
+ * would pull the thread out from under that load.
+ */
+const settledEmpty = () =>
+  and(
+    eq(conversations.pinned, false),
+    lt(conversations.createdAt, sql`now() - interval '10 minutes'`),
+    sql`not exists (select 1 from ${messages} where ${messages.conversationId} = ${conversations.id})`,
   );
 
 export const conversationsRepo = {
@@ -66,22 +78,15 @@ export const conversationsRepo = {
   /** Hard delete; Messages cascade. */
   remove: (db: DbOrTx, id: string) => db.delete(conversations).where(eq(conversations.id, id)),
 
-  /** Deletes empty Conversations in a scope, keeping `keepId` (the active one) and anything pinned. */
+  /** Deletes settled empty Conversations in a scope, keeping `keepId` (the active one) and anything pinned. */
   pruneEmpty: (db: DbOrTx, userId: string, projectId: string | null, keepId: string) =>
     db
       .delete(conversations)
-      .where(
-        and(
-          scopeWhere(userId, projectId),
-          ne(conversations.id, keepId),
-          eq(conversations.pinned, false),
-          sql`not exists (select 1 from ${messages} where ${messages.conversationId} = ${conversations.id})`,
-        ),
-      )
+      .where(and(scopeWhere(userId, projectId), ne(conversations.id, keepId), settledEmpty()))
       .returning({ id: conversations.id }),
 
   /**
-   * Deletes empty Conversations across every scope, keeping any id in `keepIds` (the ones a
+   * Deletes settled empty Conversations across every scope, keeping any id in `keepIds` (the ones a
    * caller currently has open) and anything pinned.
    */
   pruneAllEmpty: (db: DbOrTx, userId: string, keepIds: string[]) =>
@@ -91,8 +96,7 @@ export const conversationsRepo = {
         and(
           eq(conversations.userId, userId),
           keepIds.length ? notInArray(conversations.id, keepIds) : undefined,
-          eq(conversations.pinned, false),
-          sql`not exists (select 1 from ${messages} where ${messages.conversationId} = ${conversations.id})`,
+          settledEmpty(),
         ),
       )
       .returning({ id: conversations.id }),

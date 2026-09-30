@@ -1,7 +1,7 @@
 import type { Ctx } from "@/server/core/context";
 import { compactPatch, diffFields } from "@/server/core/diff";
 import { NotFoundError } from "@/server/core/errors";
-import { mutate } from "@/server/core/mutation";
+import { mutate, type AfterCreate } from "@/server/core/mutation";
 import type { DbOrTx } from "@/server/db/client";
 import { commentsRepo } from "@/server/modules/comments/repository";
 import { dependenciesRepo } from "@/server/modules/dependencies/repository";
@@ -28,13 +28,15 @@ export const milestonesService = {
 
   get: (ctx: Ctx, id: string) => getOwned(ctx.db, ctx.userId, id),
 
-  create: (ctx: Ctx, input: CreateMilestoneInput) =>
+  /** `afterCreate` runs inside the create's transaction, as for `tasksService.create`. */
+  create: (ctx: Ctx, input: CreateMilestoneInput, afterCreate?: AfterCreate<MilestoneRow>) =>
     mutate(ctx, async (tx, rec) => {
       await assertOwnsProject(tx, ctx.userId, input.projectId);
       await assertPersonInProject(tx, input.projectId, input.ownerId);
       const status = await statusesService.resolveForNewItem(tx, input.projectId, "milestone", input.statusId);
       const milestone = await milestonesRepo.insert(tx, { ...input, statusId: status.id });
       rec.created("milestone", input.projectId, milestone.id, milestone.name);
+      await afterCreate?.(tx, rec, milestone);
       return milestone;
     }),
 

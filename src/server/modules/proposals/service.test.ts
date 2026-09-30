@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Ctx } from "@/server/core/context";
 import { ConflictError, ForbiddenError } from "@/server/core/errors";
 import { activityRepo } from "@/server/modules/activity/service";
+import { conversationsRepo } from "@/server/modules/assistant/repository";
 import { commentsService } from "@/server/modules/comments/service";
 import { assumptionsRepo, sourcesRepo } from "@/server/modules/decisions/repository";
 import { assumptions, decisionEdges, decisionSources, decisions } from "@/server/modules/decisions/schema";
@@ -14,7 +15,8 @@ import { peopleService } from "@/server/modules/people/service";
 import { tasksService } from "@/server/modules/tasks/service";
 import { closeDb, makeCtx, makeProject } from "@/test/helpers";
 import { heuristicExtract, type Extract } from "./extract";
-import { proposalsRepo } from "./repository";
+import { heuristicExtractItems } from "./extract-items";
+import { itemProposalsRepo, proposalsRepo } from "./repository";
 import { proposalsService } from "./service";
 
 let ctx: Ctx;
@@ -92,6 +94,7 @@ describe("proposalsService.runPass", () => {
     expect(out).toMatchObject({ sourcesPassed: 1, proposed: 0, proposalId: older!.id });
     expect(await proposalsService.runPass(ctx, p.id, { extract: heuristicExtract, trigger: "automatic" })).toEqual({
       skipped: "nothing_new",
+      items: { skipped: "nothing_new" },
     });
   });
 
@@ -433,5 +436,221 @@ describe("transcripts (#42)", () => {
     const d = await proposalsService.accept(ctx, { id: proposal!.id });
     const [source] = await sourcesRepo.listForDecisions(ctx.db, [d.id]);
     expect(source).toMatchObject({ passageId: null, label: "Late call", entityId: transcript.id });
+  });
+});
+
+describe("item pass (#114)", () => {
+  const NOTES = [
+    "Action item: Book the usability lab by 2026-10-01",
+    "Priya will draft the interview guide by 2026-10-02.",
+    "Milestone: Pilot readout on 2026-10-20.",
+  ].join("\n");
+  const itemCounts = async (pid: string) => [
+    (await tasksService.list(ctx, pid)).length,
+    (await milestonesService.list(ctx, pid)).length,
+  ];
+  const setup = async (key: string, body = NOTES) => {
+    const pid = (await makeProject(ctx, key)).id;
+    await peopleService.createPerson(ctx, { projectId: pid, name: "Priya Nair" });
+    const ev = await evidenceService.create(ctx, { projectId: pid, title: "Kickoff notes", kind: "minutes", body });
+    return { pid, ev };
+  };
+  const failing = async () => {
+    throw new Error("extractor unavailable");
+  };
+
+  it("proposes traceable Tasks and Milestones beside Decisions, never writing the items", async () => {
+    const { pid, ev } = await setup("ITM");
+    const before = [await itemCounts(pid), await graphCounts()];
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    expect(out.items).toEqual({ extractor: "heuristic", sourcesPassed: 1, tasks: 2, milestones: 1, discarded: 0 });
+    expect([await itemCounts(pid), await graphCounts()]).toEqual(before);
+
+    const pending = await proposalsService.listPendingItems(ctx, pid);
+    const priya = (await peopleService.list(ctx, pid)).people[0]!;
+    const label = (f: object) => ("title" in f ? f.title : "name" in f ? f.name : "") as string;
+    const byLabel = (a: [string, object], b: [string, object]) => label(a[1]).localeCompare(label(b[1]));
+    expect(pending.map((p): [string, object] => [p.kind, p.fields]).sort(byLabel)).toEqual(
+      (
+        [
+          [
+            "milestone",
+            { name: "Pilot readout", description: null, dueDate: "2026-10-20", ownerId: null, ownerName: null },
+          ],
+          [
+            "task",
+            {
+              title: "Book the usability lab",
+              description: null,
+              assigneeId: null,
+              assigneeName: null,
+              milestoneId: null,
+              milestoneName: null,
+              startDate: null,
+              dueDate: "2026-10-01",
+            },
+          ],
+          [
+            "task",
+            {
+              title: "Draft the interview guide",
+              description: null,
+              assigneeId: priya.id,
+              assigneeName: "Priya Nair",
+              milestoneId: null,
+              milestoneName: null,
+              startDate: null,
+              dueDate: "2026-10-02",
+            },
+          ],
+        ] as Array<[string, object]>
+      ).sort(byLabel),
+    );
+    expect(pending.find((p) => p.kind === "milestone")!.sources).toEqual([
+      { kind: "evidence", entityId: ev.id, excerpt: "Milestone: Pilot readout on 2026-10-20." },
+    ]);
+
+    const again = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    expect(again.items).toEqual({ skipped: "nothing_new" });
+    expect(await proposalsService.listPendingItems(ctx, pid)).toHaveLength(3);
+  });
+
+  it("cites the transcript Passage an item's excerpt sits in", async () => {
+    const pid = (await makeProject(ctx, "ITR")).id;
+    const t = await evidenceService.create(ctx, {
+      projectId: pid,
+      title: "Standup",
+      kind: "transcript",
+      body: "[00:00:05] Priya: Morning.\n[00:00:09] Marcus: Action item: book the lab.",
+    });
+    const [, marcus] = await evidenceService.passages(ctx, t.id);
+    await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    const [item] = await proposalsService.listPendingItems(ctx, pid);
+    expect(item!.sources).toEqual([
+      { kind: "evidence", entityId: t.id, passageId: marcus!.id, excerpt: "Action item: book the lab." },
+    ]);
+  });
+
+  it("a failing item call leaves the Decision side intact and is retried alone", async () => {
+    const { pid } = await setup("IFL", `${NOTES}\nWe decided to run the pilot in two cities.`);
+    const out = await proposalsService.runPass(ctx, pid, {
+      extract: heuristicExtract,
+      extractItems: failing,
+      trigger: "automatic",
+    });
+    expect(out).toMatchObject({ proposed: 1, items: { skipped: "failed" } });
+
+    const decisionSpy = vi.fn(heuristicExtract);
+    const retry = await proposalsService.runPass(ctx, pid, { extract: decisionSpy, trigger: "automatic" });
+    expect(decisionSpy).not.toHaveBeenCalled();
+    expect(retry).toMatchObject({ skipped: "nothing_new", items: { sourcesPassed: 1, tasks: 2, milestones: 1 } });
+  });
+
+  it("a failing Decision call leaves the item side intact and is retried alone", async () => {
+    const { pid } = await setup("DFL");
+    const out = await proposalsService.runPass(ctx, pid, { extract: failing, trigger: "automatic" });
+    expect(out).toMatchObject({ skipped: "failed", items: { tasks: 2, milestones: 1 } });
+
+    const itemSpy = vi.fn(heuristicExtractItems);
+    const retry = await proposalsService.runPass(ctx, pid, {
+      extract: heuristicExtract,
+      extractItems: itemSpy,
+      trigger: "automatic",
+    });
+    expect(itemSpy).not.toHaveBeenCalled();
+    expect(retry).toMatchObject({ sourcesPassed: 1, items: { skipped: "nothing_new" } });
+  });
+
+  it("a write failure on one side does not reject the pass", async () => {
+    const { pid } = await setup("WFL");
+    const insert = vi.spyOn(itemProposalsRepo, "insertMany").mockRejectedValueOnce(new Error("db down"));
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "automatic" });
+    insert.mockRestore();
+    expect(out.items).toEqual({ skipped: "failed" });
+    const retry = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "automatic" });
+    expect(retry.items).toMatchObject({ sourcesPassed: 1, tasks: 2 });
+  });
+
+  it("a load only one side needs fails that side alone", async () => {
+    const { pid } = await setup("LDF", `${NOTES}\nWe decided to run the pilot in two cities.`);
+    const latest = vi.spyOn(conversationsRepo, "latest").mockRejectedValueOnce(new Error("db down"));
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "automatic" });
+    latest.mockRestore();
+    expect(out).toMatchObject({ skipped: "failed", items: { tasks: 2, milestones: 1 } });
+
+    const { pid: other } = await setup("LDI", `${NOTES}\nWe decided to run the pilot in two cities.`);
+    const list = vi.spyOn(itemProposalsRepo, "listByProject").mockRejectedValueOnce(new Error("db down"));
+    const second = await proposalsService.runPass(ctx, other, { extract: heuristicExtract, trigger: "automatic" });
+    list.mockRestore();
+    expect(second).toMatchObject({ proposed: 1, items: { skipped: "failed" } });
+  });
+
+  it("a failed read after commit never loses what the pass created", async () => {
+    const { pid } = await setup("PCF", `${NOTES}\nWe decided to run the pilot in two cities.`);
+    const list = vi.spyOn(proposalsRepo, "listByProject").mockRejectedValue(new Error("db down"));
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    list.mockRestore();
+    expect(out).toMatchObject({ proposed: 1, items: { tasks: 2, milestones: 1 } });
+    expect(out.proposalId).toBeUndefined();
+  });
+
+  it("never raises a rejected item again, nor a pending one restated elsewhere", async () => {
+    const { pid, ev } = await setup("IRJ");
+    await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    const lab = (await proposalsService.listPendingItems(ctx, pid)).find(
+      (p) => p.kind === "task" && (p.fields as { title: string }).title === "Book the usability lab",
+    )!;
+    const rejected = await proposalsService.rejectItem(ctx, lab.id);
+    expect(rejected).toMatchObject({ status: "rejected" });
+    expect(rejected.resolvedAt).toBeInstanceOf(Date);
+    await expect(proposalsService.rejectItem(ctx, lab.id)).rejects.toBeInstanceOf(ConflictError);
+
+    await evidenceService.update(ctx, { id: ev.id, body: `${NOTES}\nLunch was late.` });
+    await evidenceService.create(ctx, {
+      projectId: pid,
+      title: "Follow-up",
+      kind: "minutes",
+      body: "TODO: draft the interview guide.",
+    });
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    // Every item restates a known one: the rejected lab booking, and the two still pending.
+    expect(out.items).toMatchObject({ sourcesPassed: 2, tasks: 0, milestones: 0, discarded: 4 });
+    expect(await proposalsService.listPendingItems(ctx, pid)).toHaveLength(2);
+  });
+
+  it("a manual pass that only finds items reports them under items", async () => {
+    const { pid } = await setup("IMN");
+    const out = await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    expect(out).toMatchObject({ proposed: 0, sourcesPassed: 1, items: { tasks: 2, milestones: 1 } });
+    expect(out.proposalId).toBeUndefined();
+  });
+
+  it("reports not_configured on both sides when no extractor can run", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "");
+    vi.stubEnv("PROPOSALS_EXTRACTOR", "model");
+    const { pid } = await setup("INC");
+    expect(await proposalsService.runPass(ctx, pid, { trigger: "manual" })).toEqual({
+      skipped: "not_configured",
+      items: { skipped: "not_configured" },
+    });
+    vi.unstubAllEnvs();
+  });
+
+  it("two passes in parallel yield each item once", async () => {
+    const { pid } = await setup("IPR");
+    await Promise.all([
+      proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" }),
+      proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" }),
+    ]);
+    expect(await proposalsService.listPendingItems(ctx, pid)).toHaveLength(3);
+  });
+
+  it("refuses a stranger", async () => {
+    const { pid } = await setup("IST");
+    await proposalsService.runPass(ctx, pid, { extract: heuristicExtract, trigger: "manual" });
+    const [item] = await proposalsService.listPendingItems(ctx, pid);
+    const stranger = await makeCtx();
+    await expect(proposalsService.listPendingItems(stranger, pid)).rejects.toBeInstanceOf(ForbiddenError);
+    await expect(proposalsService.rejectItem(stranger, item!.id)).rejects.toBeInstanceOf(ForbiddenError);
   });
 });

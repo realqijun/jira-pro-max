@@ -53,9 +53,12 @@ test("seeded renders display with provenance", async ({ page }) => {
 test("generating a render shows pending, then the image", async ({ page }) => {
   test.setTimeout(180_000);
   await openRenders(page);
+  // The URL changes before the Renders view paints; read the notice only once the view is up.
+  const newRender = page.getByRole("button", { name: "New render" });
+  await expect(newRender).toBeVisible();
   const unconfigured = await page.getByText("Image previews are not configured").isVisible();
   test.skip(unconfigured, "the server has no POLLINATIONS_API_KEY");
-  await page.getByRole("button", { name: "New render" }).click();
+  await newRender.click();
   await page
     .getByLabel("Description")
     .fill("A single storey timber pavilion with a wide overhanging roof beside a pond");

@@ -80,6 +80,8 @@ Consolidated tables: [artifacts/eval-tables-2026-09-28.md](../../artifacts/eval-
 
 After the prompt work below, on the same cases: `gpt-4o-mini` 20/22 extraction, `gemini-2.5-flash` 21/22 extraction and 20/20 answers.
 
+Task and Milestone extraction (#114) has its own 12 cases and baseline: [M11 addendum](m11-item-evals.md).
+
 ## How the results changed the product
 
 Four decisions came out of these runs, each traceable to a case.
