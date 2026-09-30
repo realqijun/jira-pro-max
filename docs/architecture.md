@@ -563,7 +563,7 @@ File uploads are buffered in server memory, so file-size and request limits matt
 The chat and MCP handlers both declare a sixty-second maximum duration; background work still runs within the hosting platform's execution constraints.
 Database migrations are an explicit operational step, not an automatic production startup action.
 
-Sources: [environment example](../.env.example), [Docker Compose](../docker-compose.yml), [Next configuration](../next.config.ts), [database client](../src/server/db/client.ts), and [deployment checklist](submission/production-checklist.md).
+Sources: [environment example](../.env.example), [Docker Compose](../docker-compose.yml), [Next configuration](../next.config.ts), and [database client](../src/server/db/client.ts).
 
 ## Verification and change guide
 

@@ -1,48 +1,31 @@
-# M15 - Production Stack
+# Milestone 15 - Choice of technologies
 
-## Core framework
+Versions are from `package.json` at the deployed commit `34be9db`.
 
-- Next.js 16.3.5 with Turbopack
-- React 19.0.0
-- TypeScript 5.8
-- Tailwind CSS 4.0.6
-- Radix UI primitives (`@radix-ui/*`)
-- `clsx` + `tailwind-merge` via `src/shared/lib/cn.ts`
+| Layer              | Chosen                                                                                              | Alternatives considered                    | Why this one                                                                                                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| UI framework       | Next.js 16.3 (App Router, Turbopack), React 19.2, TypeScript                                        | Vite + React SPA, Remix                    | Server components read through services directly, server actions give typed writes without a hand-written API, and route handlers host the streaming chat and MCP endpoints in the same app. A SPA would need a separate API server for all three.                                   |
+| Styling            | Tailwind CSS 4 with design tokens in `globals.css`, `lucide-react` icons, `cmdk` palette, `motion`  | CSS Modules, a component kit (MUI, Chakra) | Tokens (`bg-surface-1`, `text-ink-subtle`) keep one visual language across app, landing page and OG image. A component kit would fight the dense, Linear-like layout in `DESIGN.md`.                                                                                                 |
+| Database           | PostgreSQL (Neon in production, Docker locally), `postgres` driver                                  | MongoDB, SQLite, Supabase                  | The domain is relational: Decisions cite Evidence, supersede Decisions, and rest on Assumptions that point at Milestones. Foreign keys, transactions and jsonb for the few flexible payloads (item Proposals) fit exactly. Neon is serverless Postgres that suits Vercel functions.  |
+| ORM and migrations | Drizzle ORM 0.45, `drizzle-kit`                                                                     | Prisma, raw SQL                            | SQL stays visible, migrations are small readable files, and Postgres enums back the fixed vocabularies (ADR 0001, 0003). Prisma's generated client and engine add weight to every serverless cold start.                                                                             |
+| Web server         | Next.js route handlers and server actions on Vercel's Node runtime                                  | Express or Fastify on a VM                 | No separate server to operate. `after()` runs the Proposal pass, Reflection and analytics flushes after the response is sent, which is the background-work story without a queue.                                                                                                    |
+| Hosting            | Vercel (fork `realqijun/jira-pro-max`, https://jira-pro-max.vercel.app)                             | Render, Fly.io, AWS                        | First-party Next.js support, preview deploys per PR, and Blob storage in the same account. The cost is a 60 s function limit (`maxDuration`), which bounds every Assistant turn.                                                                                                     |
+| File storage       | Vercel Blob in production, local disk in development (`STORAGE_DRIVER`)                             | S3, Supabase Storage                       | Same provider as hosting; files are served through an ownership-checked route rather than public URLs.                                                                                                                                                                               |
+| Authentication     | Better Auth 1.7: email and password, Google OAuth, session cookies                                  | NextAuth/Auth.js, Clerk, Supabase Auth     | Self-hosted in our own Postgres, so no third party holds user records, and it has a Drizzle adapter. Clerk is quicker to start but moves identity off-platform. Participants (no account) use a separate signed cookie; MCP clients use hashed personal API tokens (ADR 0002, 0009). |
+| AI SDK             | Vercel AI SDK 7 (`ai`, `@ai-sdk/openai`, `/anthropic`, `/google`, `/openai-compatible`, `/react`)   | LangChain/LangGraph, direct vendor SDKs    | One library covers the tool loop with a step cap, `generateObject` with Zod, streaming into `useChat`, and signed tool approvals; vendor is configuration. See M10.                                                                                                                  |
+| Models             | Any OpenAI-compatible model; measured recommendation `gemini-2.5-flash`; `text-embedding-3-small`   | Self-hosted open-weight models             | Chosen by measurement (M9). Users can bring their own key per provider (ADR 0011).                                                                                                                                                                                                   |
+| Vector search      | `faiss-node`, one in-memory index per Project, rebuilt from `evidence_chunks` rows                  | pgvector, Pinecone                         | The index is scoped to the authorization boundary and can never disagree with the database, because the rows are the index (ADR 0014).                                                                                                                                               |
+| File text          | `unpdf` for PDF, `mammoth` for Word, model transcription for scans, optional LitePruner compression | A hosted document-parsing API              | Runs in-process; a failed enrichment never fails an upload.                                                                                                                                                                                                                          |
+| Image generation   | Pollinations (`gen.pollinations.ai`)                                                                | DALL-E, Stability                          | Free tier suits a research preview; isolated behind `renders/provider.ts` so it can be swapped (ADR 0012).                                                                                                                                                                           |
+| MCP                | `mcp-handler` over the existing tool registry                                                       | A separate MCP server process              | No tool is implemented twice (M23).                                                                                                                                                                                                                                                  |
+| Analytics          | PostHog (`posthog-js` 1.434, `posthog-node` 5.52)                                                   | Google Analytics, Plausible, Mixpanel      | One tool for product events, funnels and LLM spans (`$ai_generation`) with cost and latency. GA and Plausible cover pageviews but not server-side or LLM events.                                                                                                                     |
+| Testing            | Vitest 4 (unit and integration against a real Postgres), Playwright 1.63 (e2e)                      | Jest, Cypress                              | Vitest shares the TypeScript config with no transform setup; Playwright drives multiple browser contexts, which the Participant and approval flows need.                                                                                                                             |
+| Quality gates      | ESLint 9, Prettier 3, Husky + lint-staged, GitHub Actions CI on Bun                                 | -                                          | CI runs format, lint (zero warnings), typecheck, Vitest and Playwright on every PR.                                                                                                                                                                                                  |
 
-## Backend and data
+## Architecture in one paragraph
 
-- Better Auth 1.2.5 (email/password sessions)
-- Drizzle ORM 0.42.1 with `drizzle-kit` migrations
-- PostgreSQL (Neon in production; local Docker containers for dev/test)
-- Vercel Blob for file storage (`STORAGE_DRIVER=vercel-blob`)
-- `unpdf` for PDF text extraction
-
-## AI layer
-
-- `ai` SDK 4.2.1
-- `@ai-sdk/openai` 1.3.5
-- Default production model: `gpt-4o-mini`
-- Proposal extractor: `model` (`PROPOSALS_EXTRACTOR=model`)
-
-## Testing and quality
-
-- Vitest 4.1.11 for unit/integration tests
-- Playwright 1.51.0 for end-to-end tests
-- ESLint 9.39.5 with `@typescript-eslint` and `eslint-config-prettier`
-- Prettier 3.6.0
-- Husky + lint-staged pre-commit
-
-## Monitoring and analytics
-
-- PostHog (`posthog-js` 1.234.10, `posthog-node` 4.13.0)
-
-## Hosting
-
-- Vercel, production branch `prod`
-
-## Alternatives rejected
-
-- No Prisma: Drizzle keeps SQL explicit and migration files small.
-- No Supabase auth: Better Auth gives self-contained credentials and session cookies.
-- No custom file store: Vercel Blob matches the deployment target and keeps URLs short-lived/private.
-- No Plausible: PostHog supports both product analytics and event capture from server actions.
+Routes and server components call `service.ts` functions, never repositories.
+Every write goes through `mutate()`, which checks ownership, runs in one transaction, records an Activity Event and publishes a domain event after commit (ADR 0005).
+The Assistant and MCP are two more callers of the same services through one tool registry, so the AI inherits every rule the UI obeys (ADR 0007).
+Background AI work (Proposal pass, Reflection, embeddings) subscribes to those domain events or runs in `after()`, off the User's response path.
+The full diagrams are in `docs/architecture.md`.

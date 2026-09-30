@@ -86,10 +86,10 @@ A fingerprint of the cited passage stops the same sentence being proposed twice.
 The Proposal pass (`proposalsService.runPass`, ADR 0008) is a pipeline, not a chat.
 
 1. Saving Evidence or creating a Comment schedules a pass in `after()`, off the User's response path.
-2. The pass skips every source whose SHA-1 text hash it has already read.
-3. It sends all remaining sources in one `generateObject` call, transcripts first.
-4. `trace.ts` filters the result; survivors are stored as **pending** Proposals.
-5. The PM accepts, edits or rejects each one; only an accept writes a Decision, through `decisionsService`.
+2. The pass skips every source whose SHA-1 text hash it has already read, tracked separately for the Decision side and the item side.
+3. It sends all remaining sources in one `generateObject` call for Decisions, transcripts first, and a second call for Tasks and Milestones (ADR 0015). Each side commits in its own transaction, so a failure in one never blocks or re-runs the other.
+4. `trace.ts` filters both results; survivors are stored as **pending** Proposals.
+5. The PM accepts, edits or rejects each one on the Overview; only an accept writes a Decision, Task or Milestone, through `decisionsService`, `tasksService` or `milestonesService`, with the cited Evidence linked in the same transaction.
 
 Batching and hashing are the cost story in [M12](m12-optimization.md): 57% fewer tokens than one call per source, and a repeat pass costs $0.
 Step 5 is the safety story in [M13](m13-safety.md): the model never writes to the Decision graph on its own.
@@ -107,7 +107,13 @@ A Reflection failure is logged and never reaches the User, because the answer wa
 The Project system prompt carries the rules first and `JSON.stringify(summary)` of the Project last.
 The model can therefore reference Statuses, People and Milestones by id without a tool call, and the stable prefix is cached by the provider: 95.3% of prompt tokens were served from cache for `gpt-4o-mini` ([M12](m12-optimization.md)).
 
-## 9. Streaming
+## 9. Draft, human edit, then send (Renders)
+
+Render drafting (ADR 0016) is a small two-model chain with a human in the middle.
+The User's own Assistant model reads up to three pieces of Evidence and writes a visual description (`generateText`, `maxOutputTokens: 400`); the PM edits it; only the approved text goes to the separate image model.
+The pattern exists for data flow, not quality: the free image provider must never see Project text a human has not read, so the chain is broken on purpose at the one point where data would leave for a new party.
+
+## 10. Streaming
 
 The route returns `createUIMessageStreamResponse` and the dock uses `useChat`, so text, tool status and approval cards appear while the loop runs rather than after 2.5 to 5 seconds of silence.
 
@@ -125,9 +131,10 @@ The framework decision was not benchmarked against an alternative: the AI SDK wa
 
 ## How the patterns map to the objectives
 
-| Objective                       | Patterns                                                                     |
-| ------------------------------- | ---------------------------------------------------------------------------- |
-| Answer "why" from the record    | Retrieval (4), bounded loop (2), citation copying (4), context injection (8) |
-| Capture Decisions automatically | Structured output and filter (5), background workflow (6)                    |
-| Act on the Project from chat    | Tool registry (1), approval in the loop (3), streaming (9)                   |
-| Get better with use             | Memory by reflection (7)                                                     |
+| Objective                    | Patterns                                                                     |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| Answer "why" from the record | Retrieval (4), bounded loop (2), citation copying (4), context injection (8) |
+| Capture Decisions and work   | Structured output and filter (5), background workflow (6)                    |
+| Act on the Project from chat | Tool registry (1), approval in the loop (3), streaming (10)                  |
+| Illustrate the deliverable   | Draft, human edit, then send (9)                                             |
+| Get better with use          | Memory by reflection (7)                                                     |

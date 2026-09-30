@@ -523,7 +523,7 @@ The main boundaries are layered rather than delegated to the model:
 These controls reduce risk but do not prove model correctness.
 The repository's security evidence document still contains several `TODO` entries for recording actual adversarial test results.
 
-Sources: [security evidence](submission/m13-security.md), [chat route](../src/app/api/assistant/chat/route.ts), [AI tool adapter](../src/server/modules/assistant/ai-tools.ts), [proposal trace logic](../src/server/modules/proposals/trace.ts), [citation renderer](../src/widgets/assistant/linked-text.tsx).
+Sources: [security evidence](submission/m13-safety.md), [chat route](../src/app/api/assistant/chat/route.ts), [AI tool adapter](../src/server/modules/assistant/ai-tools.ts), [proposal trace logic](../src/server/modules/proposals/trace.ts), [citation renderer](../src/widgets/assistant/linked-text.tsx).
 
 ## 14. What is not implemented
 
@@ -546,7 +546,7 @@ The model bake-off and evaluation documents describe intended evaluation work, b
 The security evidence table also has `TODO` results.
 Those documents should not be read as proof that the listed evaluations have already been completed.
 
-Sources: [ADR 0007](adr/0007-assistant-acts-through-services-with-via-actor.md), [ADR 0010](adr/0010-chat-messages-publish-without-an-activity-event.md), [messaging service](../src/server/modules/messaging/service.ts), [workspace read model](../src/server/modules/workspace/queries.ts), [model bake-off](submission/m9-model-bakeoff.md), [evaluation evidence](submission/m11-evals.md), [security evidence](submission/m13-security.md).
+Sources: [ADR 0007](adr/0007-assistant-acts-through-services-with-via-actor.md), [ADR 0010](adr/0010-chat-messages-publish-without-an-activity-event.md), [messaging service](../src/server/modules/messaging/service.ts), [workspace read model](../src/server/modules/workspace/queries.ts), [model bake-off](submission/m9-model-bakeoff.md), [evaluation evidence](submission/m11-evals.md), [security evidence](submission/m13-safety.md).
 
 ## 15. Where to change each behavior
 

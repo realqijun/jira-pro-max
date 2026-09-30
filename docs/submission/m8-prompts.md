@@ -1,7 +1,8 @@
 # M8 - Prompts, and how they were designed
 
-Three prompts do the work in PrismPM.
-All three are in the repository and are quoted here as they ship; the failures and iterations are measured against the suite in [M11](m11-evals.md).
+Six prompts ship in PrismPM: Decision extraction, Task and Milestone extraction, the Project Assistant, the workspace Assistant, Render drafting and Reflection.
+Three are shown in full below, quoted as they ship; the failures and iterations are measured against the suite in [M11](m11-evals.md).
+The item extraction and Render drafting prompts reuse the same techniques and are summarised at the end.
 
 Techniques used across all three, and why:
 
@@ -151,3 +152,16 @@ Use plain text for your answer. Do not use Markdown headers, bold, lists, or oth
 ```
 
 This prompt is not covered by the eval suite, which is Project-scoped. Its behaviour is covered by the e2e flows instead.
+
+## The other two, in brief
+
+**Task and Milestone extraction** (`proposals/extract-items.ts`, ADR 0015) is a second `generateObject` call over the same fenced sources.
+It was kept separate from the Decision prompt on purpose: one combined prompt would have changed the prompt behind the 22 measured Decision cases, and the iteration history above shows that every edit moves some case.
+A snapshot test pins the Decision prompt so this refactor could not drift it.
+Its prompt reuses the same techniques - a negative definition beside the positive one ("A Decision, a status line, a risk and a date restated from an existing plan are not Tasks or Milestones"), verbatim excerpts, fenced data - and adds one rule specific to items: "Give dates only when the text states them ... A Milestone without a stated date is not a Milestone."
+Its baseline is 9/12 on its own cases, and the failures point at the next edit: the model invents an owner from the attendee list ([M11 addendum](m11-item-evals.md)).
+
+**Render drafting** (`renders/draft.ts`, ADR 0016) condenses up to three pieces of Evidence into a visual description for an image model.
+Its distinctive technique is an exclusion list aimed at privacy rather than accuracy: "Leave out names of people and organisations, email addresses, phone numbers, prices, budgets, dates, ids and anything else that is not visible in the picture."
+That sentence is advice, not a control - the control is that the PM edits and approves the text before anything leaves for the image provider.
+It also strips runs of `<<<` or `>>>` from every input, so a crafted Evidence title cannot close the data fence early.

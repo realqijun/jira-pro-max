@@ -18,6 +18,11 @@ The saving is the system prompt plus the People, Milestone and Task context, whi
 The trade is real and was measured too: the batched call returned 5 Proposals where the nine separate calls returned 6, so one Decision was lost in the longer context.
 At this Project size the latency win matters more, because the pass runs inside `after()` on someone's save.
 
+Since #114 the pass makes a second call for Tasks and Milestones.
+That is a deliberate cost increase, traded for keeping the measured Decision prompt untouched (ADR 0015).
+It was kept small: the item prompt leaves out the recent Conversation, and over the 12 item cases it used about 8,600 prompt and 960 completion tokens in total, roughly US$0.002 at `gpt-4o-mini` list price ([M11 addendum](m11-item-evals.md)).
+Each side keeps its own content-hash bookkeeping, so the second call also costs nothing on a repeat pass.
+
 ## 2. Idempotency by content hash: the second pass is free
 
 Every Evidence save and Comment create schedules a pass.
