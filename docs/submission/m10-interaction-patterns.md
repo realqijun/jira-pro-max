@@ -105,7 +105,7 @@ A Reflection failure is logged and never reaches the User, because the answer wa
 ## 8. Context injection ordered for the cache
 
 The Project system prompt carries the rules first and `JSON.stringify(summary)` of the Project last.
-The model can therefore reference Statuses, People and Milestones by id without a tool call, and the stable prefix is cached by the provider: 95.3% of prompt tokens were served from cache for `gpt-4o-mini` ([M12](m12-optimization.md)).
+The model can therefore reference Statuses, People and Milestones by id without a tool call, and the stable prefix is cached by the provider: 95.3% of prompt tokens were served from cache for `gpt-4o-mini` through OpenRouter ([M12](m12-optimization.md)).
 
 ## 9. Draft, human edit, then send (Renders)
 

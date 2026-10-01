@@ -12,16 +12,17 @@ import {
   TURN_ERROR_PART,
   type TurnErrorData,
 } from "@/shared/lib/assistant-errors";
+import { CITABLE_PART } from "@/shared/lib/citation";
 import { cn } from "@/shared/lib/cn";
 import { Button, Panel, SectionTitle, Textarea } from "@/shared/ui";
-import { LinkedText } from "./linked-text";
+import { LinkedText, citableHrefs } from "./linked-text";
 import { MarkdownText } from "./markdown-text";
 import { ToolCall } from "./tool-call";
 
 const isPendingCard = (part: UIMessage["parts"][number]) => isToolUIPart(part) && part.state === "approval-requested";
 const isTurnError = (part: UIMessage["parts"][number]) => part.type === TURN_ERROR_PART;
 /** A reply that died before it produced anything leaves an empty bubble; skip it. */
-const isEmpty = (m: UIMessage) => m.parts.every((p) => p.type === "step-start");
+const isEmpty = (m: UIMessage) => m.parts.every((p) => p.type === "step-start" || p.type === CITABLE_PART);
 const noticeClass = "rounded-md bg-surface-2 px-3 py-2 text-caption text-ink-subtle";
 
 type ProjectSummary = {
@@ -128,6 +129,7 @@ export function ChatPanel({
   const busy = status === "submitted" || status === "streaming";
   // A confirm card must be answered before the next message; a refresh brings the card back.
   const pendingCard = messages.at(-1)?.parts.some(isPendingCard) ?? false;
+  const citable = React.useMemo(() => citableHrefs(messages), [messages]);
   const bottom = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     bottom.current?.scrollIntoView({ block: "end" });
@@ -185,6 +187,7 @@ export function ChatPanel({
                       key={i}
                       part={part}
                       isAssistant={m.role === "assistant"}
+                      citable={citable}
                       onAnswer={(id, approved) => void addToolApprovalResponse({ id, approved })}
                       onAlwaysAllow={alwaysAllow}
                     />
@@ -253,15 +256,18 @@ function friendly(error: Error) {
 function Part({
   part,
   isAssistant,
+  citable,
   onAnswer,
   onAlwaysAllow,
 }: {
   part: UIMessage["parts"][number];
   isAssistant: boolean;
+  citable: ReadonlySet<string>;
   onAnswer: (approvalId: string, approved: boolean) => void;
   onAlwaysAllow: (approvalId: string, toolName: string) => Promise<void>;
 }) {
-  if (part.type === "text") return isAssistant ? <MarkdownText text={part.text} /> : <LinkedText text={part.text} />;
+  if (part.type === "text")
+    return isAssistant ? <MarkdownText text={part.text} citable={citable} /> : <LinkedText text={part.text} />;
   if (part.type === TURN_ERROR_PART)
     return (
       <p role="status" className={cn("my-1", noticeClass)}>

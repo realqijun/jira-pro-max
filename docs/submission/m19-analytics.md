@@ -24,12 +24,12 @@ The sample is small and mixed, so these numbers describe exercised workflows, no
 - Users exercised both outcomes of Proposal review, so the accept and reject paths are used, not just built.
 - The event and property design is sound: every generation has a trace id, no prompt or answer content reached PostHog, and current outcome events carry the Proposal and extractor.
 
-### Not trustworthy yet
+### Limits of this data
 
 - **Mixed environments.** 281 of 594 pageviews came from `localhost`, the internal/test cohort behind every "filter test accounts" toggle is empty, and server events carry no environment or release tag.
 - **Early autocapture.** Until 22 September the browser SDK ran with default autocapture, so the window holds 361 `$autocapture` events, 56 dead clicks and 1 rage click, which may include on-screen text such as Project or Task titles.
   The Data safety section below describes the current configuration only.
-- **The "Core product funnel" is wrong.** It requires a Render before a Proposal is accepted, which the product never requires, so it reads 14 to 7 to 0 to 0 while 9 acceptances happened outside it.
+- **The "Core product funnel" measures the wrong path.** It requires a Render before a Proposal is accepted, which the product never requires, so it reads 14 to 7 to 0 to 0 while 9 acceptances happened outside it.
   Evidence, transcript and Render events also omit `project_id`, so no same-Project funnel can be built yet.
 - **Coverage gaps.** Project, Evidence and Render events are captured in server actions, so Projects created by the Assistant or MCP `create_project` tool, and the sample Project seeded at signup, are not counted.
   Proposal and Assistant events are captured in services and the chat route, so they are counted whichever caller triggers them.

@@ -35,6 +35,7 @@ import {
   turnErrorMessageOf,
 } from "@/server/modules/assistant/turn-error";
 import { ASSISTANT_ERROR_TEXT, ASSISTANT_LIMIT_REACHED, ASSISTANT_NOT_CONFIGURED } from "@/shared/lib/assistant-errors";
+import { CITABLE_PART, citableDataSchemas, citableStrings } from "@/shared/lib/citation";
 
 export const maxDuration = 60;
 
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
     const valid = await safeValidateUIMessages<UIMessage>({
       messages: parsed.data.messages,
       tools: tools as ValidateTools,
-      dataSchemas: turnErrorDataSchemas,
+      dataSchemas: { ...turnErrorDataSchemas, ...citableDataSchemas },
     });
     if (!valid.success) {
       console.warn("Assistant turn rejected: invalid messages", { conversationId, error: valid.error.message });
@@ -146,9 +147,10 @@ async function streamTurn({
     projectId ? memoryService.current(ctx, projectId) : null,
   ]);
   const memory = { profile: profile?.body, workingMemory: workingMemory?.body };
-  const system = projectId
-    ? projectSystemPrompt(await findTool("get_project_summary").handler(ctx, { projectId }), memory)
-    : workspaceSystemPrompt(await findTool("list_projects").handler(ctx, {}), memory);
+  const summary = projectId
+    ? await findTool("get_project_summary").handler(ctx, { projectId })
+    : await findTool("list_projects").handler(ctx, {});
+  const system = projectId ? projectSystemPrompt(summary, memory) : workspaceSystemPrompt(summary, memory);
 
   // One trace per request: each model call is an `$ai_generation`, the turn is `assistant_turn_completed`.
   const traceId = crypto.randomUUID();
@@ -204,8 +206,11 @@ async function streamTurn({
       generateId,
       onError: turnErrorMessage,
       // The error is also written into the reply, so the saved thread keeps it after a reload.
-      execute: ({ writer }) =>
-        writer.merge(keepTurnErrors(toUIMessageStream({ stream: result.stream, onError: turnErrorMessage }))),
+      execute: ({ writer }) => {
+        // Saved with the reply, so the dock can link citations copied from the summary after a reload too.
+        writer.write({ type: CITABLE_PART, data: citableStrings(summary) });
+        writer.merge(keepTurnErrors(toUIMessageStream({ stream: result.stream, onError: turnErrorMessage })));
+      },
       onEnd: async ({ messages: all }) => {
         await assistantService.saveMessages(ctx, conversationId, all).then(
           () => markSaved(true),

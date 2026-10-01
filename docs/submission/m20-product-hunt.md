@@ -42,7 +42,7 @@ We prepared the launch as if submitting today, and have not launched for real: t
 > - When a date slips or a person leaves, PrismPM flags which Decisions rested on that assumption.
 > - The Assistant can plan and update the project for you, but every change shows up as a card you approve.
 >
-> We measured all of this rather than hoping: 42 evaluation cases for extraction and answers, a three-model bake-off, and a prompt injection test that one popular model fails (details in our write-up).
+> We measured all of this rather than hoping: 54 evaluation cases for Decision, Task and Milestone extraction and for answers, a three-model bake-off, and a prompt injection test that one popular model fails (details in our write-up).
 >
 > It's a free research preview. We'd love to hear: **what's the decision you most wish your team had written down?**
 
@@ -67,6 +67,6 @@ Using the M19 events, split by `ref=producthunt`:
 
 ## Prepared replies to likely questions
 
-- **"How is this different from Notion AI or Jira's Rovo?"** Those answer from everything they can see. PrismPM answers "why" only from Decisions a person confirmed, cites them, and says when nothing exists. It's a record, not a guess.
+- **"How is this different from Notion AI or Jira's Rovo?"** Both can pull decisions out of meeting notes now, but their documentation describes answers drawn from everything they can see, not from a set of confirmed Decisions (sources in M1). PrismPM answers "why" only from Decisions a person confirmed, cites them, and says when nothing exists. It's a record, not a guess.
 - **"Is my data used to train models?"** No. Bring your own model key if you prefer, and the image service only ever sees text you approved.
 - **"What if the AI extracts something wrong?"** Nothing enters the project until you accept it, and every Proposal quotes its source so checking takes seconds.

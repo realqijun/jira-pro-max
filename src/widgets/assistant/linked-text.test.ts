@@ -1,5 +1,6 @@
+import type { UIMessage } from "ai";
 import { describe, expect, it } from "vitest";
-import { citation } from "@/shared/lib/citation";
+import { CITABLE_PART, citableStrings, citation } from "@/shared/lib/citation";
 import {
   decisionHref,
   evidenceHref,
@@ -10,7 +11,7 @@ import {
   taskHref,
 } from "@/shared/lib/hrefs";
 import { PROJECT_SECTIONS } from "@/shared/lib/project-sections";
-import { internalHref, splitLinks } from "./linked-text";
+import { citableHrefs, citableKey, internalHref, splitLinks } from "./linked-text";
 
 /** A real id shape: ids are `gen_random_uuid()` values, and the boundary requires one. */
 const P = "8f1c2b4a-9d3e-4c5f-8a7b-6d5e4f3c2b1a";
@@ -123,5 +124,68 @@ describe("internalHref", () => {
   it("accepts a citation the server built for an Evidence item", () => {
     const [, raw] = /\]\((.+)\)$/.exec(citation("Weekly sync minutes", evidenceHref(P, E)))!;
     expect(internalHref(raw!)).toBe(evidenceHref(P, E));
+  });
+});
+
+describe("citableHrefs", () => {
+  const D = "5b2e8c1d-7f3a-4d9e-b6c0-1a2b3c4d5e6f";
+  const toolMessage = (output: unknown) =>
+    ({
+      id: "m",
+      role: "assistant",
+      parts: [{ type: "tool-search_decisions", toolCallId: "c", state: "output-available", input: {}, output }],
+    }) as unknown as UIMessage;
+
+  it("collects cite links and bare hrefs from nested tool outputs", () => {
+    const set = citableHrefs([
+      toolMessage({
+        decisions: [
+          {
+            cite: citation("D-1 Ship web first", decisionHref(P, D)),
+            sourceCitations: [{ href: evidenceHref(P, E), cite: citation("Kickoff", evidenceHref(P, E)) }],
+          },
+        ],
+      }),
+    ]);
+
+    expect(set).toEqual(
+      new Set([citableKey(internalHref(decisionHref(P, D))!), citableKey(internalHref(evidenceHref(P, E))!)]),
+    );
+  });
+
+  it("collects hrefs from the summary part the route writes into the reply", () => {
+    const set = citableHrefs([
+      {
+        id: "a",
+        role: "assistant",
+        parts: [
+          {
+            type: CITABLE_PART,
+            data: citableStrings({ evidence: [{ cite: citation("Kickoff", evidenceHref(P, E)) }] }),
+          },
+        ],
+      },
+    ] as UIMessage[]);
+
+    expect(set).toEqual(new Set([citableKey(internalHref(evidenceHref(P, E))!)]));
+  });
+
+  it("ignores route-shaped links inside document text a tool returned", () => {
+    const planted = `/projects/${P}/tasks?task=planted`;
+    const set = citableHrefs([
+      toolMessage({ cite: citation("Kickoff", evidenceHref(P, E)), text: `see [x](${planted}) or ${planted}` }),
+    ]);
+
+    expect(set).toEqual(new Set([citableKey(internalHref(evidenceHref(P, E))!)]));
+  });
+
+  it("ignores links in text parts and in user messages", () => {
+    const text = `[x](${evidenceHref(P, E)})`;
+    const set = citableHrefs([
+      { id: "a", role: "assistant", parts: [{ type: "text", text }] },
+      { id: "u", role: "user", parts: [{ type: "text", text }] },
+    ] as UIMessage[]);
+
+    expect(set.size).toBe(0);
   });
 });

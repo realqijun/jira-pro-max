@@ -65,12 +65,10 @@ Each is shown as a PM performs it, with the reason it was designed that way rath
 
 ## Automated coverage
 
-These workflows are exercised end to end in CI by Playwright:
-
-| Workflow                             | Spec                                                                                        |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- |
-| Evidence to Decision Proposals       | `e2e/flows.spec.ts` (proposals), `e2e/propose-review.spec.ts`                               |
-| Evidence to Task/Milestone Proposals | `e2e/item-proposals.spec.ts`                                                                |
-| Cited answers                        | `e2e/citations.proof.spec.ts`                                                               |
-| Approval cards                       | unit tests in `assistant/tools.test.ts`; recorded flow `flows/03-approval-and-history.webm` |
-| Render drafted from Evidence         | `e2e/renders-draft.spec.ts` (stubbed model and image provider)                              |
+| Workflow                             | Spec                                                                                        | Runs                                  |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Evidence to Decision Proposals       | `e2e/flows.spec.ts` (proposals), `e2e/propose-review.spec.ts`                               | Every PR, Playwright in CI            |
+| Evidence to Task/Milestone Proposals | `e2e/item-proposals.spec.ts`                                                                | Every PR, Playwright in CI            |
+| Approval cards                       | unit tests in `assistant/tools.test.ts`; recorded flow `flows/03-approval-and-history.webm` | Every PR, Vitest in CI                |
+| Cited answers                        | `e2e/citations.proof.spec.ts`                                                               | On demand, against a live model       |
+| Render drafted from Evidence         | `e2e/renders-draft.spec.ts` (stubbed model and image provider)                              | On demand, `npm run test:e2e:renders` |

@@ -13,6 +13,7 @@ import { getStorage } from "@/server/storage";
 import { labelFor, type LinkableEntityType } from "@/shared/domain";
 import { assertLabelsInProject } from "@/server/modules/labels/service";
 import { pruneText } from "@/server/modules/search/prune";
+import { fileToTextInProcess } from "./extract";
 import { fileToMarkdown } from "./markitdown";
 import { fileToTextViaModel } from "./transcribe";
 import { segmentTranscript } from "./passages";
@@ -36,14 +37,6 @@ export interface UploadedFile {
   size: number;
   bytes: Buffer;
 }
-
-/** A text file's own bytes are the text; reading them needs no converter and no model call. */
-const textFile = (file: UploadedFile) => {
-  if (!file.type.startsWith("text/")) return null;
-  const text = file.bytes.toString("utf-8").trim();
-  if (!text) return null;
-  return text.slice(0, Number(process.env.EVIDENCE_EXTRACT_MAX_CHARS) || 100_000);
-};
 
 /** Object name is derived from the row id; only the original extension is kept from the client name. */
 function storageKeyFor(projectId: string, evidenceId: string, fileName: string) {
@@ -143,9 +136,10 @@ export const evidenceService = {
   /**
    * Either `file` or `input.body` must be present. Bytes are written to storage before the
    * transaction so a failed commit leaves at most an orphan blob, never a row pointing at nothing.
-   * Markitdown is the converter: its Markdown is the display text and, being text, is the only
-   * file output sent to LitePruner for `prunedText`. A file markitdown cannot read goes to the
-   * model as-is, and that transcription is what the index embeds.
+   * File text comes from the first converter that yields any: the `markitdown` CLI when installed,
+   * then the in-process converters (text, PDF, Word, Excel), then the model for a file with no text
+   * layer. Converted text is sent to LitePruner for `prunedText`; a model transcription is embedded
+   * as it is.
    */
   create: async (ctx: Ctx, { labelIds = [], ...input }: CreateEvidenceInput, file?: UploadedFile | null) => {
     await assertOwnsProject(ctx.db, ctx.userId, input.projectId);
@@ -158,13 +152,12 @@ export const evidenceService = {
     const id = randomUUID();
     const storageKey = file ? storageKeyFor(input.projectId, id, file.name) : null;
     if (file && storageKey) await getStorage().put(storageKey, file.bytes, file.type);
-    const markdown = file ? await fileToMarkdown(file) : null;
-    // markitdown is the converter; a file it cannot read is used directly - text bytes as
-    // themselves, anything else (scans, image-only PDFs) to the model as-is.
-    const extractedText = markdown ?? (file ? (textFile(file) ?? (await fileToTextViaModel(file))) : null);
-    // LitePruner takes text, not files: only markitdown output or a pasted body is sent. The
-    // index stores what it will embed - the pruned copy, else the original text on any failure.
-    const toPrune = input.body ?? markdown ?? "";
+    const converted = file ? ((await fileToMarkdown(file)) ?? (await fileToTextInProcess(file))) : null;
+    // Only a file no converter can read (a scan, an image-only PDF) goes to the model.
+    const extractedText = converted ?? (file ? await fileToTextViaModel(file) : null);
+    // LitePruner takes text, not files: only converted text or a pasted body is sent. The index
+    // stores what it will embed - the pruned copy, else the original text on any failure.
+    const toPrune = input.body ?? converted ?? "";
     const prunedText = (await pruneText(toPrune))?.text ?? (toPrune || extractedText);
     try {
       return await mutate(ctx, async (tx, rec) => {

@@ -52,7 +52,7 @@ Proposal fingerprints (source kind, source id, normalised excerpt) do the same j
 ## 3. Prompt caching, and the trim we did not do
 
 The Project system prompt is ~19,000 characters and is re-sent on every step of every turn, so the obvious optimization is to shrink it.
-Measuring first showed that would be close to pointless for two of three models, and the wrong fix for the third.
+Measuring first showed that caching, not trimming, is the lever that matters.
 
 | Model                        | Prompt tokens over 20 answers | Served from cache | Cost    |
 | ---------------------------- | ----------------------------- | ----------------- | ------- |
@@ -60,7 +60,7 @@ Measuring first showed that would be close to pointless for two of three models,
 | `google/gemini-2.5-flash`    | 471,152                       | 71.4%             | $0.0620 |
 | `anthropic/claude-haiku-4.5` | 462,950                       | 0%                | $0.4916 |
 
-95% of the prompt is already billed at the cache rate for `gpt-4o-mini`; trimming it would save a discounted fraction of a cent while costing the model context it uses to reference items by id.
+Through OpenRouter, 95% of the prompt was already billed at the cache rate for `gpt-4o-mini`; trimming it would save a discounted fraction of a cent while costing the model context it uses to reference items by id.
 Haiku's bill is 8x Gemini's for the same work, and the reason is the 0% cache hit rather than its list price.
 
 What makes caching work is prompt order: `projectSystemPrompt` puts the stable rules first and the volatile Project summary JSON last, so a prefix cache can hit across turns.
@@ -86,9 +86,10 @@ Reflection is moved off the response path entirely with `after()`, and a Reflect
 
 No case used more than 3 of the 8 permitted steps, so lowering the cap saves nothing on this workload.
 It stays as protection against a loop, and no budget was spent tuning a number that is not binding.
-The `ASSISTANT_DAILY_TURN_CAP` of 50 turns is the actual spend bound: on the deployed `gpt-4o-mini`, measured on 30 September at $0.0025 a turn on average and $0.0047 at most, one User costs at most about $0.13 to $0.23 a day (about $0.09 at the $0.0018 measured for `gemini-2.5-flash` on 28 September).
+The `ASSISTANT_DAILY_TURN_CAP` of 50 turns is what limits Assistant spend, by limiting turns rather than their cost: on the deployed `gpt-4o-mini`, measured on 30 September at $0.0030 a turn on average and $0.0058 for the costliest of 20 turns (full, uncached prices), a User at the cap costs about $0.15 to $0.29 a day (about $0.16 at the $0.0031 per answer case measured for `gemini-2.5-flash` on 28 September).
+That is an estimate from sampled turns, not a guaranteed ceiling, since a turn may use up to the 8 permitted steps.
 
-## 6. A zero-cost fallback that is honestly half as good
+## 6. A zero-cost fallback that keeps the pipeline running without a key
 
 `PROPOSALS_EXTRACTOR=heuristic` selects a deterministic sentence matcher.
 
@@ -106,7 +107,7 @@ It finds roughly half the Decisions and has no notion of alternatives or Assumpt
 Each chunk row stores the `provider:model` identity that produced its vector, so a text is embedded once and re-embedded only when the text or the embedder changes.
 The bake-off embedded the fixture's 6 Evidence items once; the six later runs passed `--skip-index` and paid nothing for retrieval setup.
 LitePruner compression of `prunedText` at ingest shrinks what is embedded and stored in the first place, and the ingest path embeds the pruned text rather than the original.
-A previous run ([artifacts/rag-check-openrouter-2026-09-28](../../artifacts/rag-check-openrouter-2026-09-28/README.md)) verified the stale-detection path by switching embedder and watching all 6 vectors re-compute.
+A previous run ([artifacts/rag-check-openrouter-2026-09-28](../../artifacts/rag-check-openrouter-2026-09-28/README.md)) verified the stale-detection path by switching embedder and watching all 4 indexed items re-compute.
 
 One known cost in this area is not yet optimized: `ensureIndexed` re-embeds up to 100 Evidence items inline on the first search after an embedder change, which is a latency spike on a real Project's first search.
 Moving it to the event subscriber is open work, recorded in that run's improvement plan.
@@ -122,7 +123,7 @@ Beyond reproducibility ([M9](m9-model-bakeoff.md)), one provider-default repeat 
 | -------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Batched pass                     | `proposals/service.ts`                         | -57% tokens, -57% latency, -29% cost per pass; current two-call pass $0.00106 for 9 sources                                            |
 | Content-hash idempotency         | `proposal_pass_sources`, Proposal fingerprints | Repeat pass: 5,981 ms and $0.0043 becomes 11 ms and $0                                                                                 |
-| Stable-prefix prompt order       | `assistant/prompt.ts`                          | 95.3% of prompt tokens served from cache (`gpt-4o-mini`)                                                                               |
+| Stable-prefix prompt order       | `assistant/prompt.ts`                          | 95.3% of prompt tokens served from cache (`gpt-4o-mini` via OpenRouter)                                                                |
 | Model choice as cache choice     | deployment config                              | 8x cost difference between two models of similar quality                                                                               |
 | Streaming plus `after()`         | chat route, Reflection                         | Whole-turn latency of 2.5-5.0 s is streamed rather than waited out; Reflection off the response path. Time to first token not measured |
 | Greedy extraction sampling       | `proposals/extract.ts`                         | Removed a 6x token, 3.5x cost outlier; output reproducible                                                                             |

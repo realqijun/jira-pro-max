@@ -46,13 +46,14 @@ It also turns 2 to 5 seconds of silence (M12) into visible progress.
 ## 4. Citations are links that open the source in place
 
 Every claim ends with a link to its Source; clicking opens that Evidence or Decision in a dialog without leaving the page.
-Links are rendered only when `internalHref` accepts them as a real route inside this Project; an external, `javascript:` or placeholder link stays plain text.
+A link is rendered only when `internalHref` accepts it as a Project route and a tool returned that exact href earlier in the Conversation (`citableHrefs`); an external, `javascript:`, placeholder or mis-copied link stays plain text.
 
 ![Cited answer with links to the Decision and its Source](flows/assistant-answer-with-citation.png)
 
 _Why:_ PAIR "Explainability + Trust".
 The dock is where the PM decides whether to believe the answer, so verifying must be one click.
-Rendering only validated internal links means a model error (or an injected link) degrades to text instead of to a broken or malicious link; the eval harness grades every citation through this same function (M11).
+Rendering only links a tool vouched for means a model error (or an injected link) degrades to text instead of to a broken or malicious link.
+The eval harness applies the same route check and then requires the id to exist in the Project (M11).
 
 ## 5. Say "I don't know" in plain words
 

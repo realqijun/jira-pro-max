@@ -8,6 +8,10 @@ Fixture: `evals/fixture.ts` (Harbour Ledger Migration, 6 Evidence items and 3 Co
 OpenAI does not return a price, so every cost below is computed from the token counts in each response at OpenAI's list price for `gpt-4o-mini`: US$0.15 per million uncached prompt tokens, US$0.075 per million cached prompt tokens, US$0.60 per million completion tokens; `text-embedding-3-small` US$0.02 per million tokens.
 Token counts are measured; prices are the published list.
 
+**Correction, 1 October 2026.** The saved per-case file for the Assistant run ([../cost-2026-09-30-answers/why-gpt-4o-mini.json](../cost-2026-09-30-answers/why-gpt-4o-mini.json)) records `cachedTokens: 0` for every case, so the 29.4% cache rate in the Assistant table below cannot be reproduced from it.
+Priced from the saved tokens at the full, uncached rate, a turn costs **$0.00296** on average, $0.00280 at the median and $0.00584 at most; the milestone documents use these figures.
+The same file shows **14/20** cases passed, not 13/20.
+
 ## Proposal pass: both calls, one representative batch of 9 sources
 
 Since #114 a pass makes two independent calls in parallel.

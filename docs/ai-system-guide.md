@@ -164,7 +164,7 @@ The registry is an array of `ToolDef` values.
 Each definition contains a name, description, Zod input schema, handler, and optional confirmation metadata.
 Handlers call feature services and do not import repositories or write to the database directly.
 
-The registry currently contains 27 tools.
+The registry currently contains 30 tools (27 Project, 3 workspace); MCP serves the 27 that need no confirmation card.
 
 ### Workspace tools
 

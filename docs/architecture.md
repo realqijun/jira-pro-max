@@ -324,7 +324,7 @@ Sources: [schema barrel](../src/server/db/schema.ts), [Decision schema](../src/s
 The Assistant is a tool-using caller of existing services, acting as the signed-in User with `via: "assistant"`.
 It is not a separate account or a persistent autonomous worker.
 The dashboard offers workspace tools for listing and creating Projects; a Project dock offers Project tools.
-The shared registry contains 27 tools at this revision.
+The shared registry contains 30 tools at this revision: 27 Project tools and 3 workspace tools; the 27 that need no confirmation card are also served over MCP.
 
 ```mermaid
 sequenceDiagram
@@ -367,10 +367,10 @@ sequenceDiagram
 The route validates UI Message/tool shapes, resolves Conversation ownership, and checks the daily turn cap before starting `streamText`.
 For tools with a `projectId` field, the Project dock removes that field from the model-visible schema and binds it server-side.
 Service ownership checks still apply to every resolved target, including tools addressed by item id.
-`delete_task`, `delete_milestone`, and `update_project` require signed approval cards in the app.
+Every writing tool stops at a signed approval card in the app unless the User has always-allowed it; `delete_task`, `delete_milestone`, and `update_project` also carry a confirmation that names the exact target.
 Approval responses continue the streamed tool workflow through the route; the sequence above shows that logical workflow rather than a single uninterrupted HTTP request.
 
-The default model is configured as `gpt-4o-mini`; only the OpenAI provider is implemented.
+The default model is configured as `gpt-4o-mini` on OpenAI; a User's own saved credential can use OpenAI, Anthropic, Google, or any OpenAI-compatible endpoint (`assistant/model.ts`).
 Limits default to eight tool-loop steps and fifty User Messages per UTC day across Conversations.
 The chat route has a sixty-second maximum duration declaration.
 Without a model key, the application still loads and chat returns a not-configured response.
@@ -471,8 +471,8 @@ sequenceDiagram
 
 The service accepts PDF, DOCX, XLSX, CSV, plain text, and Markdown, capped at 15 MiB per file.
 The Server Action body limit is 16 MB to allow form overhead.
-Text extraction currently supports PDF through `unpdf`, DOCX through `mammoth`, and `text/*` as UTF-8.
-XLSX is accepted for storage but has no text extractor.
+Text extraction tries, in order: the `markitdown` CLI when it is installed (`MARKITDOWN_BIN`); the in-process converters in `evidence/extract.ts` - `text/*` as UTF-8, PDF through `unpdf`, DOCX through `mammoth`, XLSX through `read-excel-file` (one `## Sheet` block of CSV rows per sheet); and finally the chat model for a PDF with no text layer.
+A default Vercel deployment has no `markitdown`, so the in-process converters are what run there.
 Extraction failures return null and do not reject the upload; extracted text defaults to a 100,000-character cap.
 Transcript segmentation creates ordered Passages, preserving speaker and timestamp information when recognized.
 

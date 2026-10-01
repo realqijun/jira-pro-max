@@ -1,5 +1,7 @@
+import { isToolUIPart, type UIMessage } from "ai";
 import Link from "next/link";
 import * as React from "react";
+import { CITABLE_PART, citableStrings } from "@/shared/lib/citation";
 import { PROJECT_SECTIONS } from "@/shared/lib/project-sections";
 
 export type TextChunk = { type: "text"; text: string } | { type: "link"; label: string; href: string };
@@ -49,6 +51,42 @@ export function internalHref(href: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * What makes two citations the same target: path and query. The fragment only scrolls the page, so
+ * a model that drops a tool's `#evidence-<id>` still points at the item it was given.
+ */
+export const citableKey = (href: string) => href.split("#")[0]!;
+
+/**
+ * Every in-app href the server handed the model anywhere in this Conversation - tool results, and
+ * the Project summary from the system prompt (`CITABLE_PART`) - normalised by `internalHref`.
+ * Tools hand the model ready-made `cite` links (and `href` fields), so a citation the model copied
+ * correctly is always in this set. A citation that is not - a mis-copied id, an id from another
+ * Project, or a path the model wrote itself - is route-shaped but points at nothing the tools
+ * vouched for, and the dock renders it as plain text.
+ */
+export function citableHrefs(messages: UIMessage[]): Set<string> {
+  const out = new Set<string>();
+  const add = (value: string) => {
+    const links = [...value.matchAll(LINK)].map((m) => m[2]!);
+    for (const raw of links.length ? links : [value]) {
+      const href = internalHref(raw);
+      if (href) out.add(citableKey(href));
+    }
+  };
+  for (const m of messages) {
+    if (m.role !== "assistant") continue;
+    for (const part of m.parts) {
+      // Only `cite` and `href` fields count: a route-shaped link inside Evidence text or a Task
+      // description was written by a person, not handed out by a tool.
+      if (isToolUIPart(part) && part.state === "output-available") citableStrings(part.output).forEach(add);
+      else if (part.type === CITABLE_PART && Array.isArray(part.data))
+        part.data.forEach((v: unknown) => typeof v === "string" && add(v));
+    }
+  }
+  return out;
 }
 
 /** Split Assistant text into plain runs and internal Markdown links; anything else stays literal text. */

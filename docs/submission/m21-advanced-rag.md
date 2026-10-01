@@ -28,16 +28,16 @@ Three of our answer cases were written to expose that.
 | `w17`, `w18` | Top-k over the whole Project, mixing vendors and workstreams                                               | Label and linked-item filters narrow the search to what the PM filed            | Pass                       |
 
 With the final prompt, `gemini-2.5-flash` passes all 20 answer cases ([M11](m11-evals.md)).
-The design still depends on the model following the route: `gpt-4o-mini` fails `w03` and `w14`, which is one reason M9 recommends against it.
+The design still depends on the model following the route: the deployed `gpt-4o-mini` still misses `w03` and `w14`, which is why a User who brings their own key can run `gemini-2.5-flash` instead (M9).
 
 ## Measured impact of the retrieval changes
 
 - **Citations:** giving every retrieval result a ready-made `cite` took citations the model had to build itself from **0 of 6 working to 16 of 16** ([rag-check-citation-fix](../../artifacts/rag-check-citation-fix-2026-09-28/README.md)).
 - **Abstention:** four cases must abstain (`w04`, `w05`, `w12`, `w14`); all pass with the routed design on the recommended model.
   Before the prompt required calling `search_decisions` before abstaining, `w06` abstained without retrieving at all; that one rule took the model from 19/20 to 20/20.
-- **Stale vectors:** each chunk records the `provider:model` that embedded it, so switching embedder re-embeds instead of mixing vector spaces; verified by switching and watching all 6 vectors re-compute.
+- **Stale vectors:** each chunk records the `provider:model` that embedded it, so switching embedder re-embeds instead of mixing vector spaces; verified by switching and watching all 4 indexed items re-compute.
 
 ## Limits, stated plainly
 
 We did not run a controlled ablation of "the same model with plain top-k chunk RAG" against this design, so the table above shows what each case requires rather than a measured basic-RAG score.
-Retrieval ranking itself is weak on paraphrases and has no relevance threshold ([rag-check-openrouter](../../artifacts/rag-check-openrouter-2026-09-28/README.md)); the graph route is what keeps that weakness away from "why" answers.
+Retrieval ranking is the next thing to improve: paraphrases rank below exact wording and there is no relevance threshold yet ([rag-check-openrouter](../../artifacts/rag-check-openrouter-2026-09-28/README.md)); the graph route is what keeps that weakness away from "why" answers.

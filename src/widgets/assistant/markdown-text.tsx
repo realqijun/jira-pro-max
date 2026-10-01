@@ -5,19 +5,26 @@ import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { captureEvent } from "@/shared/analytics/browser";
-import { CITATION_KINDS, internalHref } from "./linked-text";
+import { CITATION_KINDS, citableKey, internalHref } from "./linked-text";
 
 /**
  * Markdown emitted by the Assistant. ReactMarkdown treats raw HTML as text unless the
  * rehype-raw plugin is added, which we intentionally do not enable.
+ *
+ * A link renders only when it is a Project route (`internalHref`) and a tool returned that exact
+ * href in this Conversation (`citable`, from `citableHrefs`); anything else stays plain text.
  */
-export function MarkdownText({ text }: { text: string }) {
+export function MarkdownText({ text, citable }: { text: string; citable: ReadonlySet<string> }) {
   return (
     <div className="min-w-0 break-words">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          a: SafeLink,
+          a: ({ href, children }) => (
+            <SafeLink href={href} citable={citable}>
+              {children}
+            </SafeLink>
+          ),
           p: ({ children }) => <p className="my-1 first:mt-0 last:mb-0">{children}</p>,
           h1: ({ children }) => <h1 className="mt-3 mb-1 text-body font-semibold text-ink first:mt-0">{children}</h1>,
           h2: ({ children }) => (
@@ -55,9 +62,9 @@ export function MarkdownText({ text }: { text: string }) {
   );
 }
 
-function SafeLink({ href, children }: ComponentPropsWithoutRef<"a">) {
+function SafeLink({ href, children, citable }: ComponentPropsWithoutRef<"a"> & { citable: ReadonlySet<string> }) {
   const safeHref = href ? internalHref(href) : null;
-  if (!safeHref) return <span>{children}</span>;
+  if (!safeHref || !citable.has(citableKey(safeHref))) return <span>{children}</span>;
   return (
     <Link
       href={safeHref}

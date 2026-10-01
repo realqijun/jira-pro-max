@@ -84,7 +84,7 @@ Per-case verdicts for every stage: [artifacts/prompt-iteration-2026-09-28](../..
 - **Source:** `src/server/modules/assistant/prompt.ts`, `projectSystemPrompt`
 - **Call:** `streamText` with the Project tool set, `stopWhen: stepCountIs(ASSISTANT_MAX_STEPS)`
 - **Context injected:** `CITATION_RULES`, `WHY_RULES`, the User's Profile and the Project's Working Memory when set, and `JSON.stringify(summary)`
-- **Order matters:** stable rules first, volatile Project summary last, so a provider prefix cache can hit across turns - measured at 95.3% for `gpt-4o-mini` ([M12](m12-optimization.md))
+- **Order matters:** stable rules first, volatile Project summary last, so a provider prefix cache can hit across turns - measured at 95.3% for `gpt-4o-mini` through OpenRouter ([M12](m12-optimization.md))
 
 ```text
 You are the Assistant inside PrismPM, a project management app. You act on behalf of the signed-in User inside one Project.
