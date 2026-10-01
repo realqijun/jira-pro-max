@@ -398,7 +398,7 @@ Sources: [chat route](../src/app/api/assistant/chat/route.ts), [AI adapter](../s
 
 MCP exposes the shared tool registry through Streamable HTTP at `/api/mcp`.
 It does not run the in-app OpenAI loop: the external MCP host chooses its own model and when to call a tool.
-New personal tokens begin with `prismpm_`; existing `vtg_` tokens remain valid until revoked.
+Personal tokens begin with `prismpm_`; any other bearer value is rejected.
 The endpoint exports GET and POST and advertises the server identity `prismpm` version `1.0.0`.
 The auth wrapper checks the bearer token on requests; tool discovery does not establish a separate PM browser session.
 

@@ -48,8 +48,9 @@ export const apiTokensService = {
     if (!row) throw new ForbiddenError("Token not found");
   },
 
-  /** The User a live token belongs to, or null. Touches `lastUsedAt`. */
+  /** The User a live `prismpm_` token belongs to, or null. Touches `lastUsedAt`. */
   resolve: async (db: DbOrTx, token: string): Promise<string | null> => {
+    if (!token.startsWith(PREFIX)) return null;
     const [row] = await db
       .update(apiTokens)
       .set({ lastUsedAt: new Date() })

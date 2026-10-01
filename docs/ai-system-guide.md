@@ -232,8 +232,8 @@ Sources: [MCP route](../src/app/api/mcp/route.ts), [ADR 0007](adr/0007-assistant
 ### 5.2 Authentication
 
 The User creates a personal token in Settings.
-New tokens start with `prismpm_`, and the raw token is shown only once.
-Previously issued `vtg_` tokens remain valid until revoked because authentication looks up the hash of the complete token.
+Tokens start with `prismpm_`, and the raw token is shown only once.
+Authentication rejects any token without that prefix before looking up the hash of the complete token.
 Only a SHA-256 hash and a short identifying prefix are stored.
 A revoked token is rejected, and successful resolution updates `lastUsedAt`.
 

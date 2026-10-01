@@ -33,7 +33,7 @@ describe("apiTokensService", () => {
     expect((await apiTokensService.list(ctx)).find((t) => t.id === row.id)?.revokedAt).toBeInstanceOf(Date);
   });
 
-  it("continues to authenticate and revoke tokens issued before the rename", async () => {
+  it("rejects tokens issued before the rename", async () => {
     const token = "vtg_" + randomBytes(24).toString("base64url");
     const [row] = await ctx.db
       .insert(apiTokens)
@@ -44,9 +44,9 @@ describe("apiTokensService", () => {
         prefix: token.slice(0, 12),
       })
       .returning();
-    expect(await apiTokensService.resolve(ctx.db, token)).toBe(ctx.userId);
-    await apiTokensService.revoke(ctx, row!.id);
     expect(await apiTokensService.resolve(ctx.db, token)).toBeNull();
+    const listed = (await apiTokensService.list(ctx)).find((t) => t.id === row!.id);
+    expect(listed?.lastUsedAt).toBeNull();
   });
 
   it("only lets the owner revoke", async () => {
